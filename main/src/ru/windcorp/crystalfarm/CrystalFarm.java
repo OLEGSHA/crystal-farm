@@ -36,7 +36,7 @@ public class CrystalFarm {
 	
 	static {
 		DEVELOPERS.add("OLEGSHA");
-		DEVELOPERS.add("Neirock");
+		DEVELOPERS.add("Neiroc");
 	}
 	
 }
