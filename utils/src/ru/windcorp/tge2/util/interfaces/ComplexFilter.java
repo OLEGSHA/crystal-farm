@@ -11,6 +11,7 @@ public class ComplexFilter<T> implements Filter<T> {
 	private final int type;
 	private final List<Filter<T>> subfilters = new ArrayList<Filter<T>>();
 
+	@SafeVarargs
 	public ComplexFilter(int type, Filter<T>... subfilters) {
 		this.type = type;
 		

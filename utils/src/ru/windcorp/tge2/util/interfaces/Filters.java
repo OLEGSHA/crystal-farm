@@ -35,6 +35,7 @@ public class Filters {
 		};
 	}
 	
+	@SafeVarargs
 	public static <T> Filter<T> or(final Filter<? super T>... filters) {
 		return new Filter<T>() {
 
@@ -57,6 +58,7 @@ public class Filters {
 		};
 	}
 	
+	@SafeVarargs
 	public static <T> Filter<T> and(final Filter<? super T>... filters) {
 		return new Filter<T>() {
 

@@ -9,6 +9,7 @@ import ru.windcorp.tge2.util.synch.SynchUtil;
 
 public class TextUI {
 	
+	@SafeVarargs
 	public static <T> T select(String query, T... options) {
 		ConsoleIO.write(query);
 		ConsoleIO.write("");

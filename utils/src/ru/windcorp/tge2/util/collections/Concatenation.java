@@ -11,6 +11,7 @@ public class Concatenation<E> extends AbstractCollection<E> {
 	
 	private final Collection<Collection<? extends E>> collections;
 	
+	@SafeVarargs
 	public Concatenation(Collection<? extends E>... collections) {
 		this.collections = Collections.unmodifiableCollection(Arrays.asList(collections));
 	}

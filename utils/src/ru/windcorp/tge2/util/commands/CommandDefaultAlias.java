@@ -10,7 +10,7 @@ public class CommandDefaultAlias extends Command {
 	}
 
 	@Override
-	protected void execute(List<String> args, String _, CommandRegistry registry) {
+	protected void execute(List<String> args, String ownAlias, CommandRegistry registry) {
 		if (args.size() == 0) {
 			printSyntax();
 			return;
