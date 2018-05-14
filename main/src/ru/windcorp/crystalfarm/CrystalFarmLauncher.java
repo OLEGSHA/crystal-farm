@@ -17,11 +17,27 @@
  */
 package ru.windcorp.crystalfarm;
 
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
+
 public class CrystalFarmLauncher {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		System.out.println("Starting " + CrystalFarm.FULL_NAME + " version " + CrystalFarm.VERSION);
+		
+		setupExecutionReport();
+		setupLog();
+	}
 
+	public static void setupExecutionReport() {
+		ExecutionReport.enableReportAtShutdown();
+		ExecutionReport.enableUnhandledThrowableHandling();
+		ExecutionReport.addDefaults();
+	}
+	
+	private static void setupLog() {
+		// TODO Auto-generated method stub
+		System.err.println("Called auto-generated method CrystalFarmLauncher.CrystalFarmLauncher");
+		
 	}
 
 }
