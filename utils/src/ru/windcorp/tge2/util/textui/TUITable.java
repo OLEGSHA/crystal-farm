@@ -11,9 +11,16 @@ public class TUITable {
 	
 	private Object[] headers;
 	private final List<Object[]> data = Collections.synchronizedList(new LinkedList<Object[]>());
+	
+	private boolean drawGrid;
+	
+	public TUITable(boolean drawGrid, Object... headers) {
+		this.setDrawGrid(drawGrid);
+		this.headers = headers;
+	}
 
 	public TUITable(Object... headers) {
-		this.headers = headers;
+		this(true, headers);
 	}
 	
 	public Object[] getHeaders() {
@@ -117,16 +124,22 @@ public class TUITable {
 			StringBuilder sb = new StringBuilder(StringUtil.padToLeft(headers[0], widths[0]));
 			
 			for (int column = 1; column < getColumns(); ++column) {
-				sb.append(" | ");
+				if (getDrawGrid()) {
+					sb.append(" | ");
+				} else {
+					sb.append(" ");
+				}
 				sb.append(StringUtil.padToLeft(headers[column], widths[column]));
 			}
 			
 			sb.append('\n');
 			sb.append(StringUtil.sequence('-', widths[0]));
 			
-			for (int column = 1; column < getColumns(); ++column) {
-				sb.append("-+-");
-				sb.append(StringUtil.sequence('-', widths[column]));
+			if (getDrawGrid()) {
+				for (int column = 1; column < getColumns(); ++column) {
+					sb.append("-+-");
+					sb.append(StringUtil.sequence('-', widths[column]));
+				}
 			}
 			
 			for (int row = 0; row < data.length; ++row) {
@@ -135,13 +148,25 @@ public class TUITable {
 					sb.append(StringUtil.padToLeft(data[row][column], widths[column]));
 					
 					if (column != data[0].length - 1) {
-						sb.append(" | ");
+						if (getDrawGrid()) {
+							sb.append(" | ");
+						} else {
+							sb.append(" ");
+						}
 					}
 				}
 			}
 			
 			return sb.toString();
 		}
+	}
+	
+	public boolean getDrawGrid() {
+		return drawGrid;
+	}
+
+	public void setDrawGrid(boolean drawGrid) {
+		this.drawGrid = drawGrid;
 	}
 
 }
