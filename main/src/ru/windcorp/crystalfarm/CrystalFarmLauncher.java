@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm;
 
+import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
 public class CrystalFarmLauncher {
@@ -35,8 +36,6 @@ public class CrystalFarmLauncher {
 	}
 	
 	private static void setupLog() {
-		// TODO Auto-generated method stub
-		System.err.println("Called auto-generated method CrystalFarmLauncher.CrystalFarmLauncher");
 		
 	}
 
