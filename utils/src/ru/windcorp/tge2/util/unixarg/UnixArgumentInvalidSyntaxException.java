@@ -1,4 +1,4 @@
-package ru.windcorp.tge2.util.posixarg;
+package ru.windcorp.tge2.util.unixarg;
 
 public class UnixArgumentInvalidSyntaxException extends Exception {
 

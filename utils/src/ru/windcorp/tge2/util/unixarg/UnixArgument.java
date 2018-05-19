@@ -1,4 +1,4 @@
-package ru.windcorp.tge2.util.posixarg;
+package ru.windcorp.tge2.util.unixarg;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -155,25 +155,65 @@ public abstract class UnixArgument<T> implements Comparable<UnixArgument<?>> {
 			return run((T) args);
 		}
 		
-		String argumentRaw = null;
-		
-		if (isArgumentRequired()) {
-			
-			if (input.isEmpty()) {
+		if (input.isEmpty()) {
+			if (isArgumentRequired()) {
 				throw new UnixArgumentInvalidSyntaxException(this + " is missing required arguments", this);
 			} else {
-				
+				return run(null);
 			}
-			
 		} else {
-			
-			while (!input.isEmpty()) {
-				if () {
-					if (input.peek()) {
-						
-					}
-				}
+			return run(parseSingleInput(input.peek()));
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private T parseSingleInput(String input) throws UnixArgumentInvalidSyntaxException {
+		if (getArgumentType() == String.class) {
+			return (T) input;
+		} else if (getArgumentType() == Byte.class) {
+			try {
+				return (T) Byte.decode(input);
+			} catch (NumberFormatException e) {
+				throw new UnixArgumentInvalidSyntaxException("Could not parse " + input + " as a byte", e, this);
 			}
+		} else if (getArgumentType() == Short.class) {
+			try {
+				return (T) Short.decode(input);
+			} catch (NumberFormatException e) {
+				throw new UnixArgumentInvalidSyntaxException("Could not parse " + input + " as a short", e, this);
+			}
+		} else if (getArgumentType() == Integer.class) {
+			try {
+				return (T) Integer.decode(input);
+			} catch (NumberFormatException e) {
+				throw new UnixArgumentInvalidSyntaxException("Could not parse " + input + " as a integer", e, this);
+			}
+		} else if (getArgumentType() == Long.class) {
+			try {
+				return (T) Long.decode(input);
+			} catch (NumberFormatException e) {
+				throw new UnixArgumentInvalidSyntaxException("Could not parse " + input + " as a long", e, this);
+			}
+		} else if (getArgumentType() == Float.class) {
+			try {
+				return (T) Float.valueOf(input);
+			} catch (NumberFormatException e) {
+				throw new UnixArgumentInvalidSyntaxException("Could not parse " + input + " as a float", e, this);
+			}
+		} else if (getArgumentType() == Double.class) {
+			try {
+				return (T) Double.valueOf(input);
+			} catch (NumberFormatException e) {
+				throw new UnixArgumentInvalidSyntaxException("Could not parse " + input + " as a double", e, this);
+			}
+		} else if (getArgumentType() == Character.class) {
+			if (input.length() != 1) {
+				throw new UnixArgumentInvalidSyntaxException("Could not parse " + input + " as a single character", this);
+			}
+			
+			return (T) (Character) input.charAt(0);
+		} else {
+			return null;
 		}
 	}
 
