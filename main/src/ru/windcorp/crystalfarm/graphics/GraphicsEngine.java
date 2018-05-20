@@ -17,7 +17,7 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
-import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.glfw.GLFW.*;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 
