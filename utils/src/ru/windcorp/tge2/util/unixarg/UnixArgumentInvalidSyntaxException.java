@@ -18,10 +18,5 @@ public class UnixArgumentInvalidSyntaxException extends Exception {
 	public UnixArgument<?> getArgument() {
 		return argument;
 	}
-	
-	@Override
-	public String getMessage() {
-		return super.getMessage() + "(in " + getArgument() + ")";
-	}
 
 }

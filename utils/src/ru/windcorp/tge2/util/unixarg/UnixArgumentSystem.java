@@ -2,6 +2,7 @@ package ru.windcorp.tge2.util.unixarg;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.SortedSet;
@@ -13,35 +14,79 @@ import ru.windcorp.tge2.util.textui.TUITable;
 
 public class UnixArgumentSystem {
 	
-	public static enum UnknownArgumentPolicy {
-		IGNORE,
-		WARN,
-		TERMINATE
+	public static interface UnknownArgumentPolicy {
+		public static final UnknownArgumentPolicy
+		IGNORE = new UnknownArgumentPolicy() {
+			
+			@Override
+			public boolean onUnknownArgument(String name) {
+				return false;
+			}
+			
+		},
+		WARN = new UnknownArgumentPolicy() {
+
+			@Override
+			public boolean onUnknownArgument(String name) {
+				ConsoleIO.write("Unknown argument " + name);
+				return false;
+			}
+			
+		},
+		TERMINATE = new UnknownArgumentPolicy() {
+			
+			@Override
+			public boolean onUnknownArgument(String name) {
+				ConsoleIO.write("Unknown argument " + name);
+				return true;
+			}
+			
+		};
+		
+		public boolean onUnknownArgument(String name);
 	}
 	
-	public static enum InvalidSyntaxPolicy {
-		IGNORE,
-		WARN,
-		TERMINATE
+	public static interface InvalidSyntaxPolicy {
+		public static final InvalidSyntaxPolicy
+		IGNORE = new InvalidSyntaxPolicy() {
+			
+			@Override
+			public boolean onInvalidSyntax(UnixArgument<?> arg, String description) {
+				return false;
+			}
+			
+		},
+		WARN = new InvalidSyntaxPolicy() {
+
+			@Override
+			public boolean onInvalidSyntax(UnixArgument<?> arg, String description) {
+				ConsoleIO.write("Invalid use of argument " + arg + ": " + description);
+				return false;
+			}
+			
+		},
+		TERMINATE = new InvalidSyntaxPolicy() {
+			
+			@Override
+			public boolean onInvalidSyntax(UnixArgument<?> arg, String description) {
+				ConsoleIO.write("Invalid use of argument " + arg + ": " + description);
+				return true;
+			}
+			
+		};
+		
+		public boolean onInvalidSyntax(UnixArgument<?> arg, String description);
 	}
 	
 	private final SortedSet<UnixArgument<?>> arguments = Collections.synchronizedSortedSet(new TreeSet<>());
-	
-	private UnknownArgumentPolicy unknownArgumentPolicy = UnknownArgumentPolicy.IGNORE;
-	private InvalidSyntaxPolicy invalidSyntaxPolicy = InvalidSyntaxPolicy.TERMINATE;
-	private boolean skipInputWithoutDashes = true;
 	
 	private String name;
 	private String description;
 	private String usage;
 	private Version version;
 	
-	public UnixArgumentSystem(UnknownArgumentPolicy unknownArgumentPolicy, InvalidSyntaxPolicy invalidSyntaxPolicy,
-			boolean skipInputWithoutDashes, String name, String description, String usage, Version version) {
+	public UnixArgumentSystem(String name, String description, String usage, Version version) {
 		
-		this.unknownArgumentPolicy = unknownArgumentPolicy;
-		this.invalidSyntaxPolicy = invalidSyntaxPolicy;
-		this.skipInputWithoutDashes = skipInputWithoutDashes;
 		this.name = name;
 		this.description = description;
 		this.usage = usage;
@@ -64,134 +109,141 @@ public class UnixArgumentSystem {
 	 * Parses and executes arguments.
 	 * @param args the arguments to parse
 	 * @return true if the application should terminate
+	 * @throws InvocationTargetException 
 	 */
-	public boolean run(String[] input) {
-		Queue<String> queue = new LinkedList<>();
+	public boolean run(String[] input,
+			UnknownArgumentPolicy unknownArgumentPolicy,
+			InvalidSyntaxPolicy invalidSyntaxPolicy,
+			boolean skipInputWithoutDashes)
+					throws InvocationTargetException {
+		
+		Queue<String> queue = new LinkedList<String>();
 		
 		for (String s : input) {
 			queue.add(s);
 		}
 		
-		return run(queue);
+		return run(queue.iterator(), unknownArgumentPolicy, invalidSyntaxPolicy, skipInputWithoutDashes);
 	}
 	
 	/**
 	 * Parses and executes arguments.
 	 * @param args the arguments to parse
 	 * @return true if the application should terminate
+	 * @throws InvocationTargetException 
 	 */
-	public synchronized boolean run(Queue<String> input) {
-		if (!input.isEmpty()) {
-			if (input.peek().equals("--help")) {
+	public synchronized boolean run(Iterator<String> input,
+			UnknownArgumentPolicy unknownArgumentPolicy,
+			InvalidSyntaxPolicy invalidSyntaxPolicy,
+			boolean skipInputWithoutDashes)
+					throws InvocationTargetException {
+		
+		if (!input.hasNext()) {
+			if (checkRequiredArguments()) {
+				ConsoleIO.write("One or more required arguments are missing, the program will terminate");
+				return true;
+			}
+			
+			return false;
+		}
+		
+		do {
+			
+			String next = input.next();
+			
+			if (next.equals("--help") || next.equals("-h")) {
 				showHelp();
 				return true;
 			}
-		}
-		
-		try {
-			argLoop:
-			while (!input.isEmpty()) {
-				if (input.peek().startsWith("--")) {
-					try {
-						synchronized (getArguments()) {
-							for (UnixArgument<?> arg : getArguments()) {
-								if (arg.getName() != null && ("--" + arg.getName()).equals(input.peek())) {
-									if (arg.canRun()) {
-										input.poll();
-										if (arg.parseInputAndRun(input)) {
-											return true;
-										}
-										continue argLoop;
-									} else if (onInvalidSyntax("Invalid use of argument " + arg)) {
-										return true;
-									}
-								}
-							}
-							
-							if (onUnknownArgument(input.poll())) {
-								return true;
-							}
-						}
-					} catch (UnixArgumentInvalidSyntaxException e) {
-						if (onInvalidSyntax("Invalid use of argument " + e.getArgument())) {
+			
+			if (next.equals("--version") || next.equals("-v")) {
+				showVersion();
+				return true;
+			}
+			
+			try {
+				
+				if (next.startsWith("--")) {
+					if (parseLongArgument(next.substring("--".length()), input)) {
+						return true;
+					}
+				} else if (next.startsWith("-")) {
+					for (char c : next.substring("-".length()).toCharArray()) {
+						if (parseShortArgument(c, input)) {
 							return true;
 						}
 					}
-				} else if (input.peek().startsWith("-")) {
-					charLoop:
-					for (char c : input.poll().toCharArray()) {
-						try {
-							synchronized (getArguments()) {
-								for (UnixArgument<?> arg : getArguments()) {
-									if (arg.getLetter() != null && arg.getLetter().charValue() == c) {
-										if (arg.canRun()) {
-											if (arg.parseInputAndRun(input)) {
-												return true;
-											}
-											continue charLoop;
-										} else if (onInvalidSyntax("Invalid use of argument " + arg)) {
-											return true;
-										}
-									}
-								}
-								
-								if (onUnknownArgument("-" + c)) {
-									return true;
-								}
-							}
-						} catch (UnixArgumentInvalidSyntaxException e) {
-							if (onInvalidSyntax("Invalid use of argument " + e.getArgument())) {
-								return true;
-							}
-						}
-					}
-				} else if (!getSkipInputWithoutDashes()) {
-					if (onUnknownArgument(input.poll())) {
-						return true;
-					}
+				} else if (skipInputWithoutDashes) {
+					continue;
 				} else {
-					input.poll();
+					throw new UnixArgumentUnknownException(next);
+				}
+				
+			} catch (UnixArgumentInvalidSyntaxException e) {
+				if (invalidSyntaxPolicy.onInvalidSyntax(e.getArgument(), e.getMessage())) {
+					return true;
+				}
+			} catch (UnixArgumentUnknownException e) {
+				if (unknownArgumentPolicy.onUnknownArgument(e.getMessage())) {
+					return true;
 				}
 			}
-		} catch (InvocationTargetException e) {
-			ConsoleIO.write("Unexpected error while processing arguments, the application will terminate");
-			e.printStackTrace();
+			
+		} while (input.hasNext());
+		
+		if (checkRequiredArguments()) {
+			ConsoleIO.write("One or more required arguments are missing, the program will terminate");
 			return true;
 		}
 		
 		return false;
 	}
 
-	private boolean onUnknownArgument(String arg) {
-		switch (getUnknownArgumentPolicy()) {
-		case IGNORE:
-			// Do nothing
-			break;
-		case TERMINATE:
-			ConsoleIO.write("Unknown argument " + arg);
-			ConsoleIO.write("The prorgam will terminate");
-			return true;
-		case WARN:
-			ConsoleIO.write("Unknown argument " + arg);
-			ConsoleIO.write("The prorgam will terminate");
-			break;
+	private boolean parseShortArgument(char c, Iterator<String> input)
+			throws InvocationTargetException, UnixArgumentInvalidSyntaxException, UnixArgumentUnknownException {
+		synchronized (getArguments()) {
+			for (UnixArgument<?> a : getArguments()) {
+				if (a.getLetter() != null && a.getLetter().charValue() == c) {
+					
+					if (a.canRun()) {
+						return a.parseInputAndRun(input);
+					} else {
+						throw new UnixArgumentInvalidSyntaxException("Invalid use of argument " + a, a);
+					}
+					
+				}
+			}
 		}
 		
-		return false;
+		throw new UnixArgumentUnknownException("-" + c);
 	}
 
-	private boolean onInvalidSyntax(String string) {
-		switch (getInvalidSyntaxPolicy()) {
-		case IGNORE:
-			// Do nothing
-			break;
-		case TERMINATE:
-			ConsoleIO.write(string);
-			ConsoleIO.write("The prorgam will terminate");
-			return true;
-		case WARN:
-			ConsoleIO.write(string);
-			break;
+	private boolean parseLongArgument(String name, Iterator<String> input)
+			throws InvocationTargetException, UnixArgumentInvalidSyntaxException, UnixArgumentUnknownException {
+		synchronized (getArguments()) {
+			for (UnixArgument<?> a : getArguments()) {
+				if (name.equals(a.getName())) { // a.getName() can be null, then evaluates to false
+					
+					if (a.canRun()) {
+						return a.parseInputAndRun(input);
+					} else {
+						throw new UnixArgumentInvalidSyntaxException("Invalid use of argument " + a, a);
+					}
+					
+				}
+			}
+		}
+		
+		throw new UnixArgumentUnknownException("--" + name);
+	}
+
+	private boolean checkRequiredArguments() {
+		synchronized (getArguments()) {
+			for (UnixArgument<?> a : getArguments()) {
+				if (a.isRequired() && !a.hasRun()) {
+					return true;
+				}
+			}
 		}
 		
 		return false;
@@ -200,7 +252,9 @@ public class UnixArgumentSystem {
 	private void showHelp() {
 		ConsoleIO.write(getName());
 		ConsoleIO.write(getDescription());
-		ConsoleIO.write("Usage: " + getUsage());
+		if (getUsage() != null) {
+			ConsoleIO.write("Usage: " + getUsage());
+		}
 		
 		ConsoleIO.write("Options:");
 		
@@ -214,29 +268,17 @@ public class UnixArgumentSystem {
 		
 		ConsoleIO.write(table);
 	}
-
-	public UnknownArgumentPolicy getUnknownArgumentPolicy() {
-		return unknownArgumentPolicy;
+	
+	private void showVersion() {
+		ConsoleIO.write(getName() + " version " + getVersion());
 	}
-
-	public void setUnknownArgumentPolicy(UnknownArgumentPolicy unknownArgumentPolicy) {
-		this.unknownArgumentPolicy = unknownArgumentPolicy;
-	}
-
-	public InvalidSyntaxPolicy getInvalidSyntaxPolicy() {
-		return invalidSyntaxPolicy;
-	}
-
-	public void setInvalidSyntaxPolicy(InvalidSyntaxPolicy invalidSyntaxPolicy) {
-		this.invalidSyntaxPolicy = invalidSyntaxPolicy;
-	}
-
-	public boolean getSkipInputWithoutDashes() {
-		return skipInputWithoutDashes;
-	}
-
-	public void setSkipInputWithoutDashes(boolean skipInputWithoutDashes) {
-		this.skipInputWithoutDashes = skipInputWithoutDashes;
+	
+	public void reset() {
+		synchronized (getArguments()) {
+			for (UnixArgument<?> a : getArguments()) {
+				a.reset();
+			}
+		}
 	}
 
 	public String getName() {

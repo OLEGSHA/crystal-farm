@@ -1,9 +1,10 @@
 package ru.windcorp.tge2.util.unixarg;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Queue;
+import java.util.Iterator;
 
 public abstract class UnixArgument<T> implements Comparable<UnixArgument<?>> {
 	
@@ -80,7 +81,7 @@ public abstract class UnixArgument<T> implements Comparable<UnixArgument<?>> {
 			setHasRun(true);
 			return runImpl(arg);
 		} catch (Exception e) {
-			if (e instanceof UnixArgumentInvalidSyntaxException) {
+			if (e instanceof UnixArgumentInvalidSyntaxException || e instanceof InvocationTargetException) {
 				throw e;
 			}
 			
@@ -88,7 +89,7 @@ public abstract class UnixArgument<T> implements Comparable<UnixArgument<?>> {
 		}
 	}
 	
-	protected abstract boolean runImpl(T arg);
+	protected abstract boolean runImpl(T arg) throws UnixArgumentInvalidSyntaxException, InvocationTargetException;
 	
 	public synchronized void reset() {
 		setHasRun(false);
@@ -142,27 +143,29 @@ public abstract class UnixArgument<T> implements Comparable<UnixArgument<?>> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	boolean parseInputAndRun(Queue<String> input) throws InvocationTargetException, UnixArgumentInvalidSyntaxException {
+	boolean parseInputAndRun(Iterator<String> input) throws InvocationTargetException, UnixArgumentInvalidSyntaxException {
 		if (getArgumentType() == null) {
 			return run(null);
 		}
 		
 		if (getArgumentType() == String[].class) {
-			String[] args = input.toArray(new String[0]);
-			input.clear();
+			ArrayList<String> list = new ArrayList<String>();
+			while (input.hasNext()) {
+				list.add(input.next());
+			}
 			
 			// Since Class<T> is String[].class then T is String[], then run(T) expects String[] as argument.
-			return run((T) args);
+			return run((T) list.toArray(new String[0]));
 		}
 		
-		if (input.isEmpty()) {
+		if (input.hasNext()) {
+			return run(parseSingleInput(input.next()));
+		} else {
 			if (isArgumentRequired()) {
 				throw new UnixArgumentInvalidSyntaxException(this + " is missing required arguments", this);
 			} else {
 				return run(null);
 			}
-		} else {
-			return run(parseSingleInput(input.peek()));
 		}
 	}
 
