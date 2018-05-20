@@ -104,12 +104,17 @@ public class TUITable {
 			}
 			
 			String[] headers = new String[getColumns()];
+			boolean headersExist = false;
 			String[][] data = new String[getRows()][getColumns()];
 			int[] widths = new int[getColumns()];
 			
 			for (int i = 0; i < getColumns(); ++i) {
 				headers[i] = String.valueOf(getHeaders()[i]);
 				widths[i] = headers[i].length();
+				
+				if (widths[i] != 0) {
+					headersExist = true;
+				}
 			}
 			
 			for (int row = 0; row < getRows(); ++row) {
@@ -121,29 +126,34 @@ public class TUITable {
 				}
 			}
 			
-			StringBuilder sb = new StringBuilder(StringUtil.padToLeft(headers[0], widths[0]));
+			StringBuilder sb = new StringBuilder();
 			
-			for (int column = 1; column < getColumns(); ++column) {
-				if (getDrawGrid()) {
-					sb.append(" | ");
-				} else {
-					sb.append(" ");
-				}
-				sb.append(StringUtil.padToLeft(headers[column], widths[column]));
-			}
-			
-			sb.append('\n');
-			sb.append(StringUtil.sequence('-', widths[0]));
-			
-			if (getDrawGrid()) {
+			if (headersExist) {
+				sb.append(StringUtil.padToLeft(headers[0], widths[0]));
+				
 				for (int column = 1; column < getColumns(); ++column) {
-					sb.append("-+-");
-					sb.append(StringUtil.sequence('-', widths[column]));
+					if (getDrawGrid()) {
+						sb.append(" | ");
+					} else {
+						sb.append("  ");
+					}
+					sb.append(StringUtil.padToLeft(headers[column], widths[column]));
+				}
+
+				if (getDrawGrid()) {
+					sb.append('\n');
+					sb.append(StringUtil.sequence('-', widths[0]));
+				
+					for (int column = 1; column < getColumns(); ++column) {
+						sb.append("-+-");
+						sb.append(StringUtil.sequence('-', widths[column]));
+					}
 				}
 			}
 			
 			for (int row = 0; row < data.length; ++row) {
-				sb.append('\n');
+				if (row != 0 || headersExist) sb.append('\n');
+				
 				for (int column = 0; column < data[row].length; ++column) {
 					sb.append(StringUtil.padToLeft(data[row][column], widths[column]));
 					
@@ -151,7 +161,7 @@ public class TUITable {
 						if (getDrawGrid()) {
 							sb.append(" | ");
 						} else {
-							sb.append(" ");
+							sb.append("  ");
 						}
 					}
 				}
