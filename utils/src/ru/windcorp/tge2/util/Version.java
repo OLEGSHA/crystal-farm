@@ -13,6 +13,15 @@ public class Version implements Comparable<Version> {
 		this.subVersions = subVersions;
 	}
 
+	public Version(String string) {
+		String[] parts = StringUtil.split(string, '.');
+		this.subVersions = new int[parts.length];
+		
+		for (int i = 0; i < this.subVersions.length; ++i) {
+			this.subVersions[i] = Integer.parseInt(parts[i]);
+		}
+	}
+	
 	public int[] getSubVersions() {
 		return subVersions;
 	}
