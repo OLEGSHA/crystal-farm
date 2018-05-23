@@ -17,14 +17,47 @@
  */
 package ru.windcorp.crystalfarm.cfg;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import ru.windcorp.tge2.util.Describable;
 
 public abstract class ConfigurationNode extends Describable {
+	
+	public static final String ATTR_DESCRIPTION = "desc";
+	
+	private Element element = null;
 
 	public ConfigurationNode(String name, String description) {
 		super(name, description);
 	}
 	
+	public Element getElement() {
+		return element;
+	}
+
+	public synchronized void load(Element element) throws ConfigurationSyntaxException {
+		this.element = element;
+		
+		if (element != null) {
+			updateElement(getElement());
+		}
+		
+		loadImpl();
+	}
 	
+	protected abstract void loadImpl() throws ConfigurationSyntaxException;
+	
+	public Element createElement(Document doc) {
+		Element element = doc.createElement(getName());
+		
+		updateElement(element);
+		
+		return element;
+	}
+	
+	protected void updateElement(Element element) {
+		element.setAttribute(ATTR_DESCRIPTION, getDescription());
+	}
 
 }

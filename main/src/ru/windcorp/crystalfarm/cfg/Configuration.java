@@ -17,16 +17,80 @@
  */
 package ru.windcorp.crystalfarm.cfg;
 
-import org.w3c.dom.*;
+import java.io.IOException;
 
-public class Configuration {
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
+import ru.windcorp.tge2.util.grh.Resource;
+
+public class Configuration extends Section {
+
+	private Document document;
 	
-	private final Document document;
+	private final DocumentBuilder builder;
+	private final Transformer writer;
 	
-	public Configuration(Document document) {
-		this.document = document;
+	private final Resource resource;
+	
+	public Configuration(Resource resource, Transformer writer, DocumentBuilder builder, String name, String description) {
+		super(name, description);
+		this.resource = resource;
 		
+		this.builder = builder;
+		this.writer = writer;
+	}
+	
+	public DocumentBuilder getBuilder() {
+		return this.builder;
+	}
+	
+	public Transformer getWriter() {
+		return this.writer;
+	}
+	
+	public Resource getResource() {
+		return resource;
+	}
+	
+	public synchronized Document getDocument() {
+		return document;
+	}
+	
+	public synchronized void read() throws SAXException, IOException, ConfigurationSyntaxException {
+		String problem = getResource().canRead();
 		
+		if (problem != null) {
+			throw new IOException(problem);
+		}
+		
+		this.document = getBuilder().parse(getResource().getInputStream());
+		load(getDocument().getDocumentElement());
+	}
+	
+	public synchronized void write() throws IOException, TransformerException {
+		if (getDocument() == null) {
+			throw new IllegalStateException("No " + Document.class.getClass().getName() + " is loaded in " + this);
+		}
+		
+		String problem = getResource().canWrite();
+		
+		if (problem != null) {
+			throw new IOException(problem);
+		}
+		
+		Source source = new DOMSource(getDocument());
+		Result result = new StreamResult(getResource().getOutputStream());
+		
+		getWriter().transform(source, result);
 	}
 
 }

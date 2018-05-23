@@ -19,6 +19,9 @@ package ru.windcorp.crystalfarm.cfg;
 
 import java.util.function.Function;
 
+import ru.windcorp.crystalfarm.cfg.rw.*;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
+
 public class Setting<T> extends ConfigurationNode {
 	
 	private final Class<T> type;
@@ -26,16 +29,38 @@ public class Setting<T> extends ConfigurationNode {
 	private T defaultValue;
 	private T value;
 	
-	private final Function<T, String> reader;
-	private final Function<String, T> writer;
+	private final Function<String, T> reader;
+	private final Function<T, String> writer;
 	
-	public Setting(String name, String description, Class<T> type, T defaultValue, Function<T, String> reader,
-			Function<String, T> writer) {
+	public Setting(String name, String description, Class<T> type, T defaultValue,
+			Function<String, T> reader, Function<T, String> writer) {
 		super(name, description);
 		this.type = type;
+		this.value = defaultValue;
 		this.defaultValue = defaultValue;
 		this.reader = reader;
 		this.writer = writer;
+	}
+	
+	public Setting(String name, String description, Class<T> type, T defaultValue) {
+		super(name, description);
+		
+		SettingRW<T> rw = SettingRWRegistry.get(type);
+		if (rw == null) {
+			ExecutionReport.reportCriticalError(null,
+					ExecutionReport.rscNotSupp(getClass().getName() + " of type " + type.getName(),
+							"No registered %s in %s for class %s",
+							SettingRW.class.getName(), SettingRWRegistry.class.getName(), type.getName()),
+					null);
+			
+			// That should not return
+		}
+		
+		this.type = type;
+		this.value = defaultValue;
+		this.defaultValue = defaultValue;
+		this.reader = rw.getReader();
+		this.writer = rw.getWriter();
 	}
 
 	public synchronized T getDefaultValue() {
@@ -51,6 +76,13 @@ public class Setting<T> extends ConfigurationNode {
 	}
 
 	public synchronized void set(T value) {
+		setRaw(value);
+		if (getElement() != null) {
+			getElement().setTextContent(getWriter().apply(value));
+		}
+	}
+	
+	protected synchronized void setRaw(T value) {
 		this.value = value;
 	}
 
@@ -58,12 +90,21 @@ public class Setting<T> extends ConfigurationNode {
 		return type;
 	}
 
-	public Function<T, String> getReader() {
+	public Function<String, T> getReader() {
 		return reader;
 	}
 
-	public Function<String, T> getWriter() {
+	public Function<T, String> getWriter() {
 		return writer;
+	}
+
+	@Override
+	protected synchronized void loadImpl() {
+		if (getElement() == null) {
+			setRaw(getDefaultValue());
+		} else {
+			setRaw(getReader().apply(getElement().getTextContent()));
+		}
 	}
 
 }
