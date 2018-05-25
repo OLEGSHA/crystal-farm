@@ -60,7 +60,8 @@ public abstract class Job extends Describable implements Runnable {
 		return state == STATE_EXECUTED;
 	}
 	
-	public synchronized void execute(JobManager manager) throws JobException, InvocationTargetException {
+	@SuppressWarnings("unchecked")
+	public synchronized <T extends Job> void execute(JobManager<T> manager) throws JobException, InvocationTargetException {
 		if (getState() != STATE_SCHEDULED) {
 			// This is obviously an error - we can spend time here
 			
@@ -82,7 +83,7 @@ public abstract class Job extends Describable implements Runnable {
 		
 		synchronized (usedObjects) {
 			for (Object o : usedObjects) {
-				manager.occupy(this, o);
+				manager.occupy((T) this, o);
 			}
 		}
 		
@@ -108,7 +109,7 @@ public abstract class Job extends Describable implements Runnable {
 		this.state = STATE_EXECUTED;
 	}
 	
-	public synchronized boolean canRun(JobManager manager) {
+	public synchronized boolean canRun(JobManager<?> manager) {
 		if (getState() != STATE_SCHEDULED) {
 			return false;
 		}
@@ -132,7 +133,7 @@ public abstract class Job extends Describable implements Runnable {
 		return true;
 	}
 	
-	public synchronized String debugCanRun(JobManager manager, String ok) {
+	public synchronized String debugCanRun(JobManager<?> manager, String ok) {
 		if (getState() != STATE_SCHEDULED) {
 			return "Job not scheduled";
 		}

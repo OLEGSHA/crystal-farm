@@ -8,19 +8,19 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class JobManager {
+public class JobManager<T extends Job> {
 	
 	private class JobRunner implements Runnable {
 
 		@Override
 		public void run() {
 			
-			Job job;
+			T job;
 			
 			try {
 				while ((job = nextJob()) != null) {
 					synchronized (getListeners()) {
-						for (JobListener l : getListeners()) {
+						for (JobListener<? super T> l : getListeners()) {
 							l.onJobStarted(JobManager.this, job, Thread.currentThread());
 						}
 					}
@@ -29,7 +29,7 @@ public class JobManager {
 						job.execute(JobManager.this);
 					} catch (Exception e) {
 						synchronized (getListeners()) {
-							for (JobListener l : getListeners()) {
+							for (JobListener<? super T> l : getListeners()) {
 								l.onJobErrored(JobManager.this, Thread.currentThread(), job, e);
 							}
 						}
@@ -37,7 +37,7 @@ public class JobManager {
 					}
 					
 					synchronized (getListeners()) {
-						for (JobListener l : getListeners()) {
+						for (JobListener<? super T> l : getListeners()) {
 							l.onJobDone(JobManager.this, job, Thread.currentThread());
 						}
 					}
@@ -45,7 +45,7 @@ public class JobManager {
 				}
 			} catch (InvalidJobSetException e) {
 				synchronized (getListeners()) {
-					for (JobListener l : getListeners()) {
+					for (JobListener<? super T> l : getListeners()) {
 						l.onJobDependencyProblem(JobManager.this, Thread.currentThread());
 					}
 				}
@@ -57,25 +57,25 @@ public class JobManager {
 	
 	private static int nextRunnerId = 0;
 	
-	private final Collection<Job> jobs = Collections.synchronizedCollection(new ArrayList<Job>());
-	private final Collection<Job> todo = Collections.synchronizedCollection(new LinkedList<Job>());
+	private final Collection<T> jobs = Collections.synchronizedCollection(new ArrayList<T>());
+	private final Collection<T> todo = Collections.synchronizedCollection(new LinkedList<T>());
 	
 	private Boolean isRunning = false;
 	
-	private final Map<Object, Job> usedObjects = Collections.synchronizedMap(new HashMap<Object, Job>());
+	private final Map<Object, T> usedObjects = Collections.synchronizedMap(new HashMap<Object, T>());
 	
-	private final Collection<JobListener> listeners = Collections.synchronizedCollection(new ArrayList<JobListener>());
+	private final Collection<JobListener<? super T>> listeners = Collections.synchronizedCollection(new ArrayList<JobListener<? super T>>());
 	
 	/**
 	 * Object for worker threads to wait() on.
 	 */
 	private final Object hook = new Object();
 	
-	public Collection<Job> getJobs() {
+	public Collection<T> getJobs() {
 		return jobs;
 	}
 	
-	public Collection<Job> getJobsLeft() {
+	public Collection<T> getJobsLeft() {
 		return todo;
 	}
 	
@@ -87,7 +87,7 @@ public class JobManager {
 		return usedObjects.get(object);
 	}
 	
-	public void occupy(Job job, Object object) throws JobException {
+	public void occupy(T job, Object object) throws JobException {
 		synchronized (usedObjects) {
 			if (getOccupant(object) != null) {
 				throw new JobException("Object \"" + object + "\" used by job " + job +
@@ -103,7 +103,7 @@ public class JobManager {
 		usedObjects.remove(object);
 	}
 
-	public Collection<JobListener> getListeners() {
+	public Collection<JobListener<? super T>> getListeners() {
 		return listeners;
 	}
 
@@ -111,18 +111,18 @@ public class JobManager {
 		return hook;
 	}
 
-	public void addJob(Job job) {
+	public void addJob(T job) {
 		getJobs().add(job);
 		getJobsLeft().add(job);
 		
 		synchronized (getListeners()) {
-			for (JobListener l : getListeners()) {
+			for (JobListener<? super T> l : getListeners()) {
 				l.onJobAdded(this, job);
 			}
 		}
 	}
 	
-	public void addJobListener(JobListener listener) {
+	public void addJobListener(JobListener<? super T> listener) {
 		getListeners().add(listener);
 	}
 	
@@ -140,7 +140,7 @@ public class JobManager {
 		}
 		
 		synchronized (getListeners()) {
-			for (JobListener l : getListeners()) {
+			for (JobListener<? super T> l : getListeners()) {
 				l.onJobsBegin(this, threads);
 			}
 		}
@@ -150,14 +150,14 @@ public class JobManager {
 		}
 	}
 	
-	public Job nextJob() throws InvalidJobSetException {
+	public T nextJob() throws InvalidJobSetException {
 		synchronized (getJobsLeft()) {
 			if (getJobsLeft().isEmpty()) {
 				return null;
 			}
 			
-			Iterator<Job> iterator = getJobsLeft().iterator();
-			Job j;
+			Iterator<T> iterator = getJobsLeft().iterator();
+			T j;
 		
 			while (iterator.hasNext()) {
 				j = iterator.next();

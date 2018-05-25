@@ -1,6 +1,6 @@
 package ru.windcorp.tge2.util.jobs;
 
-public interface JobListener {
+public interface JobListener<T extends Job> {
 	
 	/**
 	 * Called whenever a new job has been added (scheduled) to the job manager.
@@ -8,7 +8,7 @@ public interface JobListener {
 	 * @param manager the job manager
 	 * @param job the newly-added job
 	 */
-	public void onJobAdded(JobManager manager, Job job);
+	public void onJobAdded(JobManager<? extends T> manager, T job);
 	
 	/**
 	 * Called whenever a job has begun execution.
@@ -17,7 +17,7 @@ public interface JobListener {
 	 * @param job the job that is now being executed
 	 * @param worker the worker thread executing the job
 	 */
-	public void onJobStarted(JobManager manager, Job job, Thread worker);
+	public void onJobStarted(JobManager<? extends T> manager, T job, Thread worker);
 	
 	/**
 	 * Called when a job has finished executing.
@@ -26,7 +26,7 @@ public interface JobListener {
 	 * @param job the job
 	 * @param worker the worker thread that has executed the job
 	 */
-	public void onJobDone(JobManager manager, Job job, Thread worker);
+	public void onJobDone(JobManager<? extends T> manager, T job, Thread worker);
 	
 	/**
 	 * Called when a job manager has begun executing jobs.
@@ -34,14 +34,14 @@ public interface JobListener {
 	 * @param manager the job manager
 	 * @param threads the amount of worker threads that are going to be used
 	 */
-	public void onJobsBegin(JobManager manager, int threads);
+	public void onJobsBegin(JobManager<? extends T> manager, int threads);
 	
 	/**
 	 * Called when a job manager has ran out of job to execute.
 	 * This method is invoked in one of the worker threads.
 	 * @param manager the job manager
 	 */
-	public void onJobsEnd(JobManager manager);
+	public void onJobsEnd(JobManager<? extends T> manager);
 	
 	/**
 	 * Called when a job dependency problem has been encountered by one of the worker threads.
@@ -50,7 +50,7 @@ public interface JobListener {
 	 * @param manager the job manager
 	 * @param worker the worker thread that has encountered the problem
 	 */
-	public void onJobDependencyProblem(JobManager manager, Thread worker);
+	public void onJobDependencyProblem(JobManager<? extends T> manager, Thread worker);
 	
 	/**
 	 * Called when a job has fail to execute.
@@ -60,6 +60,6 @@ public interface JobListener {
 	 * @param job the job that failed
 	 * @param exception the exception raised
 	 */
-	public void onJobErrored(JobManager manager, Thread worker, Job job, Exception exception);
+	public void onJobErrored(JobManager<? extends T> manager, Thread worker, T job, Exception exception);
 
 }
