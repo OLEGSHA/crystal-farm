@@ -102,16 +102,18 @@ public class ExecutionReport {
 		private final Date date;
 		private final Throwable e;
 		private final String description;
+		private final String problemId;
 		private final ProblemLevel type;
 		
 		public ProblemReport(Throwable e,
 				DamagedResourceReport damagedResource,
-				String description,
+				String description, String problemId,
 				ProblemLevel type) {
 			
 			this.date = new Date();
 			this.e = e;
 			this.description = description;
+			this.problemId = problemId;
 			this.type = type;
 			
 			if (damagedResource == null) {
@@ -132,6 +134,10 @@ public class ExecutionReport {
 
 		public String getDescription() {
 			return description;
+		}
+
+		public String getProblemId() {
+			return problemId;
 		}
 
 		public ProblemLevel getType() {
@@ -289,7 +295,12 @@ public class ExecutionReport {
 			String format,
 			Object... params) {
 		
-		getProblems().add(new ProblemReport(e, damagedResource, String.format(format, params), type));
+		getProblems().add(new ProblemReport(
+				e,
+				damagedResource,
+				String.format(format, params),
+				String.format("%08X", format.hashCode()),
+				type));
 		
 		if (damagedResource != null) {
 			registerDamagedResource(damagedResource);
@@ -808,6 +819,14 @@ public class ExecutionReport {
 		
 		PrintStream ps = new PrintStream(new StringBuilderOutputStream(b));
 		
+		b.append("\nReported problem IDs:");
+		for (ProblemReport report : getProblems()) {
+			b.append(' ');
+			b.append(report.getProblemId());
+		}
+		
+		b.append('\n');
+		
 		for (ProblemReport report : getProblems()) {
 			b.append("\n  ");
 			b.append(report.getType().toString());
@@ -821,6 +840,8 @@ public class ExecutionReport {
 			
 			b.append("\n  at ");
 			b.append(report.getDate().toString());
+			b.append("\n  Problem ID: ");
+			b.append(report.getProblemId());
 			b.append("\n    ");
 			b.append(report.getDescription());
 			
