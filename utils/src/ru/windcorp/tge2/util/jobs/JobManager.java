@@ -112,6 +112,8 @@ public class JobManager<T extends Job> {
 	}
 
 	public void addJob(T job) {
+		job.setScheduled();
+		
 		getJobs().add(job);
 		getJobsLeft().add(job);
 		
