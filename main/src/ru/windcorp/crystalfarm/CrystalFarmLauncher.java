@@ -23,13 +23,24 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import ru.windcorp.crystalfarm.debug.JobReportPart;
+import ru.windcorp.crystalfarm.debug.ModReportPart;
+import ru.windcorp.crystalfarm.debug.ModlistSuggestionProvider;
+import ru.windcorp.crystalfarm.debug.ModuleReportPart;
+import ru.windcorp.crystalfarm.struct.job.LowLevelJobListener;
+import ru.windcorp.crystalfarm.struct.mod.ModRegistry;
+import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
+import ru.windcorp.crystalfarm.struct.modules.ModuleRegistry;
 import ru.windcorp.tge2.util.debug.DebugUnixArgument;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.LogUnixArgument;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
+import ru.windcorp.tge2.util.jobs.JobManager;
 import ru.windcorp.tge2.util.unixarg.UnixArgumentSystem;
 
 public class CrystalFarmLauncher {
+	
+	private static JobManager<ModuleJob> jobManager = null;
 
 	public static void main(String[] args) {
 		CrystalFarm.setLaunchArgs(args);
@@ -50,10 +61,31 @@ public class CrystalFarmLauncher {
 			logWelcome();
 			
 			Log.topic("Init");
-			initializeConfig();
+			Log.info("Initializing");
+			
+			registerInbuiltMod();
+			
+			Log.end("Init");
+			Log.topic("Load");
+			
+			Log.debug("Creating job manager");
+			createJobManager();
+			
+			Log.info("Running load jobs");
+			runJobs();
+			//Log.info("Load jobs done");
+			
+			//jobManager = null;
+			
 		} finally {
 			Log.endAll();
 		}
+	}
+
+	private static void createJobManager() {
+		jobManager = new JobManager<ModuleJob>();
+		
+		jobManager.addJobListener(new LowLevelJobListener());
 	}
 
 	private static void setupBasicArguments() {
@@ -82,6 +114,12 @@ public class CrystalFarmLauncher {
 		ExecutionReport.enableReportAtShutdown();
 		ExecutionReport.enableUnhandledThrowableHandling();
 		ExecutionReport.addDefaults();
+
+		ExecutionReport.addExtraReportPart(new ModReportPart());
+		ExecutionReport.addExtraReportPart(new ModuleReportPart());
+		ExecutionReport.addExtraReportPart(new JobReportPart());
+		
+		ExecutionReport.addSuggestionProvider(new ModlistSuggestionProvider());
 	}
 	
 	private static void setupLog() {
@@ -93,10 +131,38 @@ public class CrystalFarmLauncher {
 		Log.info("Licensed under the terms of " + LICENSE);
 	}
 
-	private static void initializeConfig() {
-		// TODO Auto-generated method stub
-		System.err.println("Called auto-generated method CrystalFarmLauncher.CrystalFarmLauncher");
+	private static void registerInbuiltMod() {
+		InbuiltMod inbuiltMod = InbuiltMod.INST;
 		
+		Log.debug("Registering " + inbuiltMod);
+		ModRegistry.register(inbuiltMod);
+		Log.debug("Done");
+	}
+	
+	private static void runJobs() {
+		Log.topic("Registering first jobs");
+		ModuleRegistry.getModules().forEach((name, module) -> module.registerJobs(getJobManager()));
+		Log.end("Registering first jobs");
+		
+		// TODO: fix JobManager (make threads wait instead of reporting dep problem instantly)
+		Log.critical("TODO: FIX JOBMANAGER");
+		getJobManager().doJobs(1);
+	}
+	
+	public static JobManager<ModuleJob> getJobManager() {
+		if (jobManager == null) {
+			IllegalStateException e = new IllegalStateException("JobManager no longer exists");
+			ExecutionReport.reportError(e, null,
+					"%s.getJobManager() method was invoked after job manager had been destroyed",
+					CrystalFarmLauncher.class.getName());
+			throw e;
+		}
+		
+		return jobManager;
+	}
+	
+	public static boolean doesJobManagerExist() {
+		return jobManager != null;
 	}
 
 }

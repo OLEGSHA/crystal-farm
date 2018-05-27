@@ -43,6 +43,7 @@ public class Section extends ConfigurationNode {
 	
 	public Section add(ConfigurationNode node) {
 		getNodeMap().put(node.getName(), node);
+		fireEvent();
 		
 		return this;
 	}
@@ -57,6 +58,7 @@ public class Section extends ConfigurationNode {
 	
 	public Section remove(ConfigurationNode node) {
 		getNodeMap().remove(node.getName());
+		fireEvent();
 		
 		return this;
 	}

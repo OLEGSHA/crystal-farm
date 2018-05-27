@@ -42,6 +42,7 @@ public class SettingInt extends ConfigurationNode {
 	
 	protected synchronized void setRaw(int value) {
 		this.value = value;
+		fireEvent();
 	}
 	
 	public synchronized int getDefaultValue() {

@@ -17,6 +17,10 @@
  */
 package ru.windcorp.crystalfarm.cfg;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -27,6 +31,8 @@ public abstract class ConfigurationNode extends Describable {
 	public static final String ATTR_DESCRIPTION = "desc";
 	
 	private Element element = null;
+	
+	private final Collection<ConfigurationNodeListener> listeners = Collections.synchronizedCollection(new ArrayList<>());
 
 	public ConfigurationNode(String name, String description) {
 		super(name, description);
@@ -34,6 +40,22 @@ public abstract class ConfigurationNode extends Describable {
 	
 	public Element getElement() {
 		return element;
+	}
+	
+	public Collection<ConfigurationNodeListener> getListeners() {
+		return listeners;
+	}
+	
+	public void addListener(ConfigurationNodeListener listener) {
+		getListeners().add(listener);
+	}
+	
+	public void removeListener(ConfigurationNodeListener listener) {
+		getListeners().remove(listener);
+	}
+	
+	protected void fireEvent() {
+		getListeners().forEach(listener -> listener.onConfigurationNodeChanged(this));
 	}
 
 	public synchronized void load(Element element) throws ConfigurationSyntaxException {
