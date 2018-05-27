@@ -35,7 +35,7 @@ import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.grh.Resource;
 
-import static ru.windcorp.crystalfarm.cfg.ConfigurationModule.*;
+import static ru.windcorp.crystalfarm.cfg.ModuleConfiguration.*;
 
 public class JobLoadConfig extends ModuleJob {
 

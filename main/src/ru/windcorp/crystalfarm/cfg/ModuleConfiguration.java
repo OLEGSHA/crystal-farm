@@ -29,7 +29,7 @@ import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.jobs.JobManager;
 
-public class ConfigurationModule extends Module {
+public class ModuleConfiguration extends Module {
 	
 	static Configuration mainConfig = null;
 	
@@ -42,7 +42,7 @@ public class ConfigurationModule extends Module {
 			
 			ExecutionReport.reportError(e, null,
 					"%s.getMainConfiguration() method was invoked before main configuration has been loaded",
-					ConfigurationModule.class.getName());
+					ModuleConfiguration.class.getName());
 			throw e;
 		}
 		
@@ -55,7 +55,7 @@ public class ConfigurationModule extends Module {
 			
 			ExecutionReport.reportError(e, null,
 					"%s.getDefaultBuilder() method was invoked before default builder has been initialized",
-					ConfigurationModule.class.getName());
+					ModuleConfiguration.class.getName());
 			throw e;
 		}
 		
@@ -68,7 +68,7 @@ public class ConfigurationModule extends Module {
 			
 			ExecutionReport.reportError(e, null,
 					"%s.getDefaultTransformer() method was invoked before default transformer has been initialized",
-					ConfigurationModule.class.getName());
+					ModuleConfiguration.class.getName());
 			throw e;
 		}
 		
@@ -94,7 +94,7 @@ public class ConfigurationModule extends Module {
 		return false;
 	}
 
-	public ConfigurationModule() {
+	public ModuleConfiguration() {
 		super("Configuration", InbuiltMod.INST);
 	}
 
