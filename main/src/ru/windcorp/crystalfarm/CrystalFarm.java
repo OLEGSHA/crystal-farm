@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.windcorp.tge2.util.Version;
+import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.unixarg.UnixArgumentSystem;
 
 public class CrystalFarm {
@@ -65,6 +66,9 @@ public class CrystalFarm {
 	
 	public static void exit(String reason, int status) {
 		// TODO handle exit gracefully
+		
+		Log.topic("Exit");
+		Log.info("Exiting: " + reason + " (exit status " + status + ")");
 		System.exit(status);
 	}
 	

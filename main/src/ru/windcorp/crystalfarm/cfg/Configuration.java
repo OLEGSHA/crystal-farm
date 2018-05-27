@@ -30,6 +30,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.grh.Resource;
 
 public class Configuration extends Section {
@@ -67,18 +68,33 @@ public class Configuration extends Section {
 	
 	public synchronized void read() throws SAXException, IOException, ConfigurationSyntaxException {
 		String problem = getResource().canRead();
+		Element root;
 		
 		if (problem != null) {
-			throw new IOException(problem);
+			Exception e = new IOException(problem);
+			
+			ExecutionReport.reportNotification(e,
+					ExecutionReport.rscUnrch("Main configuration", "Could not read main configuration, loading default instead"),
+					null);
+			
+			this.document = getBuilder().newDocument();
+			getDocument().appendChild(root = getDocument().createElement(getName()));
+			
+		} else {
+			this.document = getBuilder().parse(getResource().getInputStream());
+			root = (Element) getDocument().getElementsByTagName(getName()).item(0);
+			
+			if (root == null) {
+				throw new ConfigurationSyntaxException("Cannot find root element by tag " + getName(), this);
+			}
 		}
 		
-		this.document = getBuilder().parse(getResource().getInputStream());
-		load(getDocument().getDocumentElement());
+		load(root);
 	}
 	
-	public synchronized void write() throws IOException, TransformerException {
+	public synchronized void write() throws IOException, TransformerException, IllegalStateException {
 		if (getDocument() == null) {
-			throw new IllegalStateException("No " + Document.class.getClass().getName() + " is loaded in " + this);
+			throw new IllegalStateException("No " + Document.class.getName() + " is loaded in " + this);
 		}
 		
 		String problem = getResource().canWrite();

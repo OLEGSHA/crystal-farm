@@ -17,6 +17,9 @@
  */
 package ru.windcorp.crystalfarm.cfg;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 public class SettingInt extends ConfigurationNode {
 
 	private int value;
@@ -65,6 +68,13 @@ public class SettingInt extends ConfigurationNode {
 						e, this);
 			}
 		}
+	}
+	
+	@Override
+	public Element createElement(Document doc) {
+		Element result = super.createElement(doc);
+		result.setTextContent(Integer.toString(getDefaultValue()));
+		return result;
 	}
 
 }

@@ -19,6 +19,9 @@ package ru.windcorp.crystalfarm.cfg;
 
 import java.util.function.Function;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import ru.windcorp.crystalfarm.cfg.rw.*;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
@@ -106,6 +109,13 @@ public class Setting<T> extends ConfigurationNode {
 		} else {
 			setRaw(getReader().apply(getElement().getTextContent()));
 		}
+	}
+	
+	@Override
+	public Element createElement(Document doc) {
+		Element result = super.createElement(doc);
+		result.setTextContent(getWriter().apply(getDefaultValue()));
+		return result;
 	}
 
 }

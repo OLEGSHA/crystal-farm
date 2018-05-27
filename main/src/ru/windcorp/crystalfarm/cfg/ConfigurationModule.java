@@ -20,30 +20,21 @@ package ru.windcorp.crystalfarm.cfg;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerException;
 
-import org.xml.sax.SAXException;
-
-import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
-import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
-import ru.windcorp.tge2.util.grh.Resource;
 import ru.windcorp.tge2.util.jobs.JobManager;
 
 public class ConfigurationModule extends Module {
 	
-	private static Configuration mainConfig = null;
+	static Configuration mainConfig = null;
 	
-	private static DocumentBuilder defaultBuilder = null;
-	private static Transformer defaultTransformer = null;
+	static DocumentBuilder defaultBuilder = null;
+	static Transformer defaultTransformer = null;
 	
 	public static Configuration getMainConfiguration() {
 		if (mainConfig == null) {
@@ -83,6 +74,25 @@ public class ConfigurationModule extends Module {
 		
 		return defaultTransformer;
 	}
+	
+	public static boolean save() {
+		try {
+			getMainConfiguration().write();
+			return true;
+			
+		} catch (IllegalStateException e) {
+			ExecutionReport.reportError(e, null,
+					"Could not save configuration because it is in an invalid state");
+		} catch (IOException e) {
+			ExecutionReport.reportError(e,
+					ExecutionReport.rscUnrch("Main configuration", "Could not save main configuration to file"),
+					null);
+		} catch (TransformerException e) {
+			ExecutionReport.reportError(e, null, "Could not output main configuration as XML");
+		}
+		
+		return false;
+	}
 
 	public ConfigurationModule() {
 		super("Configuration", InbuiltMod.INST);
@@ -90,60 +100,17 @@ public class ConfigurationModule extends Module {
 
 	@Override
 	public void registerJobs(JobManager<ModuleJob> manager) {
-		manager.addJob(new ModuleJob("Load Config", "Loads main configuration", this) {
-
+		manager.addJob(new JobLoadConfig(this));
+		
+		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
-			protected void runImpl() {
-				Resource resource = CrystalFarmResourceManagers.RM_FILE_WD.getResource("config.xml");
-				
-				Log.info("Initializing XML");
-				DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-				try {
-					defaultBuilder = documentBuilderFactory.newDocumentBuilder();
-				} catch (ParserConfigurationException e) {
-					ExecutionReport.reportCriticalError(e, null,
-							"Could not get XML DocumentBuilder");
-					return;
-				}
-				
-				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-				Transformer transformer;
-				try {
-					transformer = transformerFactory.newTransformer();
-				} catch (TransformerConfigurationException e) {
-					ExecutionReport.reportCriticalError(e, null,
-							"Could not get (XML) Transformer");
-					return;
-				}
-				
-				transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-				
-				defaultTransformer = transformer;
-				
-				mainConfig = new Configuration(resource, getDefaultTransformer(), getDefaultBuilder(),
-						"MainConfig", "Main configuration root");
-				
-				Log.info("Loading configuration");
-				try {
-					getMainConfiguration().read();
-				} catch (ConfigurationSyntaxException e) {
-					ExecutionReport.reportCriticalError(e,
-							ExecutionReport.rscCorrupt("Main configuration", "Could not parse main configuration; XML OK"),
-							null);
-					return;
-				} catch (SAXException e) {
-					ExecutionReport.reportCriticalError(e,
-							ExecutionReport.rscCorrupt("Main configuration", "Could not parse main configuration; XML damaged"),
-							null);
-					return;
-				} catch (IOException e) {
-					ExecutionReport.reportCriticalError(e,
-							ExecutionReport.rscUnrch("Main configuration", "Could not read main configuration"),
-							null);
-					return;
+			public void run() {
+				if (mainConfig != null) {
+					
+					save();
+					
 				}
 			}
-			
 		});
 	}
 

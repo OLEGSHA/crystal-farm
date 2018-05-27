@@ -52,7 +52,7 @@ public abstract class Job extends Describable implements Runnable {
 		super(name, description);
 	}
 	
-	public synchronized int getState() {
+	public int getState() {
 		return state;
 	}
 	

@@ -43,6 +43,8 @@ public class Section extends ConfigurationNode {
 	
 	public Section add(ConfigurationNode node) {
 		getNodeMap().put(node.getName(), node);
+		loadNode(node);
+		
 		fireEvent();
 		
 		return this;
@@ -92,19 +94,21 @@ public class Section extends ConfigurationNode {
 		if (getElement() == null) {
 			getNodes().forEach(node -> node.load(null));
 		} else {
-			getNodes().forEach(node -> {
-				
-				for (Node next = getElement().getFirstChild(); next != null; next = next.getNextSibling()) {
-					if (next instanceof Element && ((Element) next).getTagName().equals(node.getName())) {
-						node.load((Element) next);
-						break;
-					}
-				}
-				
-				node.load(node.createElement(getElement().getOwnerDocument()));
-				
-			});
+			getNodes().forEach(node -> loadNode(node));
 		}
+	}
+	
+	protected void loadNode(ConfigurationNode node) {
+		for (Node next = getElement().getFirstChild(); next != null; next = next.getNextSibling()) {
+			if (next instanceof Element && ((Element) next).getTagName().equals(node.getName())) {
+				node.load((Element) next);
+				break;
+			}
+		}
+		
+		Element element = node.createElement(getElement().getOwnerDocument());
+		getElement().appendChild(element);
+		node.load(element);
 	}
 
 }
