@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerFactory;
 import org.xml.sax.SAXException;
 
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
+import ru.windcorp.crystalfarm.struct.mod.ModRegistry;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.debug.Log;
@@ -75,6 +76,12 @@ public class JobLoadConfig extends ModuleJob {
 		
 		mainConfig = new Configuration(resource, getDefaultTransformer(), getDefaultBuilder(),
 				"MainConfig", "Main configuration root");
+		
+		Log.topic("Register");
+		Log.info("Registering inbuilt settings");
+		ModRegistry.getMods().values().forEach(mod -> registerConfiguration(mod));
+		Log.end("Register");
+			
 		
 		Log.info("Loading configuration");
 		try {

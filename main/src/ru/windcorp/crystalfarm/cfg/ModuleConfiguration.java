@@ -24,8 +24,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
+import ru.windcorp.crystalfarm.struct.modules.ModuleRegistry;
+import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.jobs.JobManager;
 
@@ -73,6 +76,22 @@ public class ModuleConfiguration extends Module {
 		}
 		
 		return defaultTransformer;
+	}
+	
+	public static void registerConfiguration(Mod mod) {
+		Log.debug("Registering configuration for mod " + mod);
+		
+		final Section modSection = new Section(mod.getName(), "Configuration related to mod " + mod.getMetadata().userFriendlyName);
+		
+		ModuleRegistry.getModulesByMod(mod).forEach(module -> {
+			Log.debug("Registering configuration for module " + module);
+			
+			Section moduleSection = new Section(module.getName(), "Configuration related to module " + module.toString());
+			module.registerConfiguration(moduleSection);
+			modSection.add(moduleSection);
+		});
+
+		getMainConfiguration().add(modSection);
 	}
 	
 	public static boolean save() {
