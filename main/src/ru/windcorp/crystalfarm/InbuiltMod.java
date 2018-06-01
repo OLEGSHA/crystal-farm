@@ -20,6 +20,7 @@ package ru.windcorp.crystalfarm;
 import ru.windcorp.crystalfarm.cfg.ModuleConfiguration;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.struct.mod.ModMeta;
+import ru.windcorp.crystalfarm.struct.mod.ModuleModLoader;
 import ru.windcorp.crystalfarm.struct.modules.ModuleRegistry;
 
 public class InbuiltMod extends Mod {
@@ -31,12 +32,14 @@ public class InbuiltMod extends Mod {
 				"Inbuilt", "Inbuilt", CrystalFarm.VERSION,
 				CrystalFarm.DEVELOPERS,
 				CrystalFarm.LICENSE, true,
-				null));
+				null,
+				InbuiltMod.class));
 	}
 
 	@Override
 	public void registerModules() {
 		ModuleRegistry.register(new ModuleConfiguration());
+		ModuleRegistry.register(new ModuleModLoader());
 	}
 
 }

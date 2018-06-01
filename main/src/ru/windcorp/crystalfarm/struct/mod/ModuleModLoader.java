@@ -18,7 +18,7 @@
 package ru.windcorp.crystalfarm.struct.mod;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.cfg.Setting;
+import ru.windcorp.crystalfarm.cfg.*;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.jobs.JobManager;
@@ -26,16 +26,26 @@ import ru.windcorp.tge2.util.jobs.JobManager;
 public class ModuleModLoader extends Module {
 	
 	private static final Setting<String> PATH = new Setting<>("Path", "Path to mod directory", String.class, "./mods/");
+	private static final SettingBoolean LOAD_NONFREE = new SettingBoolean("LoadNonFree", "Load mods that are not free", false);
 
 	public ModuleModLoader() {
 		super("ModLoader", InbuiltMod.INST);
 		
 		addConfig(PATH);
+		addConfig(LOAD_NONFREE);
 	}
 
 	@Override
 	public void registerJobs(JobManager<ModuleJob> manager) {
-		
+		manager.addJob(new JobLoadMods(this));
+	}
+	
+	public static String getPath() {
+		return PATH.get();
+	}
+	
+	public static boolean getLoadNonFree() {
+		return LOAD_NONFREE.get();
 	}
 
 }

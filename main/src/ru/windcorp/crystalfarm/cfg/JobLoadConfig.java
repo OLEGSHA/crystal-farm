@@ -44,6 +44,7 @@ public class JobLoadConfig extends ModuleJob {
 	
 	public JobLoadConfig(Module module) {
 		super("LoadConfig", "Loads main configuration", module);
+		inst = this;
 	}
 
 	@Override
