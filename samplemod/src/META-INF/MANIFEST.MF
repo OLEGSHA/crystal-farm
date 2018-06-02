@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+
+Name: crystal-farm
+Internal-Name: SampleMod
+UF-Name: Sample Mod
+Mod-Version: 1.0
+Authors: Twilight Sparkle; Starlight Glimmer
+Copyright: GNU General Public License version 3 or any later version
+Is-Free: true
+Url: http://windcorp.ru/
+Mod-Class: cf.example.mod.SampleMod
