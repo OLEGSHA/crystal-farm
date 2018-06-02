@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm;
 
+import ru.windcorp.crystalfarm.audio.ModuleAudioInterface;
 import ru.windcorp.crystalfarm.cfg.ModuleConfiguration;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.struct.mod.ModMeta;
@@ -37,6 +38,7 @@ public class InbuiltMod extends Mod {
 	@Override
 	public void registerModules() {
 		ModuleRegistry.register(new ModuleConfiguration());
+		ModuleRegistry.register(new ModuleAudioInterface());
 	}
 
 }
