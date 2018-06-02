@@ -43,7 +43,7 @@ public class Section extends ConfigurationNode {
 	
 	public Section add(ConfigurationNode node) {
 		getNodeMap().put(node.getName(), node);
-		loadNode(node);
+		if (getElement() != null) loadNode(node);
 		
 		fireEvent();
 		

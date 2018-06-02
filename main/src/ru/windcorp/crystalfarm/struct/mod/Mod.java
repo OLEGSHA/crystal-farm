@@ -31,7 +31,16 @@ public abstract class Mod extends Nameable {
 	public ModMeta getMetadata() {
 		return metadata;
 	}
+	
+	public String getUserFriendlyName() {
+		return getMetadata().userFriendlyName;
+	}
 
 	public abstract void registerModules();
+	
+	@Override
+	public String toString() {
+		return getUserFriendlyName() + " (" + getName() + ":" + getMetadata().version + ")";
+	}
 
 }

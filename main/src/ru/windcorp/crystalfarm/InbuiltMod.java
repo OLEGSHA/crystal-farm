@@ -38,6 +38,7 @@ public class InbuiltMod extends Mod {
 	@Override
 	public void registerModules() {
 		ModuleRegistry.register(new ModuleConfiguration());
+		
 		ModuleRegistry.register(new ModuleAudioInterface());
 	}
 
