@@ -98,9 +98,9 @@ public class JobLoadMods extends ModuleJob {
 		AtomicBoolean candidatesExist = new AtomicBoolean(false);
 		
 		Arrays.stream(
-				directory.listFiles((file, name) ->
+				directory.listFiles(file ->
 								file.isFile() &&
-								name.endsWith(".jar")
+								file.getName().endsWith(".jar")
 						)
 				).forEach(file -> {
 					candidatesExist.set(true);
@@ -184,7 +184,7 @@ public class JobLoadMods extends ModuleJob {
 				}
 			}
 			
-			String urlRepresentation = "jar:" + file.getAbsolutePath() + "!/";
+			String urlRepresentation = "jar:file:" + file.getAbsolutePath() + "!/";
 			URL url = null;
 			try {
 				url = new URL(urlRepresentation);
@@ -195,46 +195,47 @@ public class JobLoadMods extends ModuleJob {
 				return;
 			}
 			
-			URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { url });
+			URLClassLoader urlClassLoader = new URLClassLoader(new URL[] { url }, getClass().getClassLoader());
 			
 			Class<? extends Mod> modClass = null;
-			
+			Class<?> uncastModClass = null;
 			try {
+				uncastModClass = Class.forName(meta.modClass, false, urlClassLoader);
+			} catch (ClassNotFoundException e) {
+				ExecutionReport.reportError(null,
+						ExecutionReport.rscCorrupt(
+								"Manifest of mod " + meta.userFriendlyName + " in " + file.getAbsolutePath(),
+								"Could not find mod class %s", meta.modClass),
+						null);
 				
-				Class<?> uncastModClass = null;
-				try {
-					uncastModClass = Class.forName(meta.modClass, false, urlClassLoader);
-				} catch (ClassNotFoundException e) {
-					ExecutionReport.reportError(null,
-							ExecutionReport.rscCorrupt(
-									"Manifest of mod " + meta.userFriendlyName + " in " + file.getAbsolutePath(),
-									"Could not find mod class %s", meta.modClass),
-							null);
-					return;
-				}
-				
-				try {
-					modClass = uncastModClass.asSubclass(Mod.class);
-				} catch (ClassCastException e) {
-					ExecutionReport.reportError(e,
-							ExecutionReport.rscCorrupt(
-									"Mod class " + uncastModClass.getName() + " (" + meta.userFriendlyName + " in " + file.getAbsolutePath() + ")",
-									"Declared mod class %s is not a subclass of %s",
-									uncastModClass.getName(),
-									Mod.class.getName()),
-							null);
-					return;
-				}
-				
-				Log.debug("Mod class found: " + modClass.getName());
-				
-			} finally {
 				try {
 					urlClassLoader.close();
-				} catch (IOException e) {
-					ExecutionReport.reportCriticalError(e, null, "Could not close URLClassLoader %s", urlClassLoader.toString());
+				} catch (IOException e1) {
+					ExecutionReport.reportCriticalError(e1, null, "Could not close URLClassLoader %s", urlClassLoader.toString());
 				}
+				return;
 			}
+			
+			try {
+				modClass = uncastModClass.asSubclass(Mod.class);
+			} catch (ClassCastException e) {
+				ExecutionReport.reportError(e,
+						ExecutionReport.rscCorrupt(
+								"Mod class " + uncastModClass.getName() + " (" + meta.userFriendlyName + " in " + file.getAbsolutePath() + ")",
+								"Declared mod class %s is not a subclass of %s",
+								uncastModClass.getName(),
+								Mod.class.getName()),
+						null);
+				
+				try {
+					urlClassLoader.close();
+				} catch (IOException e1) {
+					ExecutionReport.reportCriticalError(e1, null, "Could not close URLClassLoader %s", urlClassLoader.toString());
+				}
+				return;
+			}
+			
+			Log.debug("Mod class found: " + modClass.getName());
 			
 			Constructor<? extends Mod> modConstructor = null;
 			try {
