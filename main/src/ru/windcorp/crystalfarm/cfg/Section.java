@@ -102,7 +102,7 @@ public class Section extends ConfigurationNode {
 		for (Node next = getElement().getFirstChild(); next != null; next = next.getNextSibling()) {
 			if (next instanceof Element && ((Element) next).getTagName().equals(node.getName())) {
 				node.load((Element) next);
-				break;
+				return;
 			}
 		}
 		
