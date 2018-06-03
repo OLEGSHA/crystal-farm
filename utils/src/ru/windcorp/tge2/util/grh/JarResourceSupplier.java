@@ -69,7 +69,7 @@ public class JarResourceSupplier implements ResourceSupplier {
 	public String canRead(String path) {
 		InputStream is = getLoader().getResourceAsStream(getLocalPath() + path);
 		if (is == null) {
-			return "resource " + path + "not found";
+			return "resource " + path + " not found";
 		}
 		
 		return null;

@@ -23,6 +23,7 @@ import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.struct.mod.ModMeta;
 import ru.windcorp.crystalfarm.struct.mod.ModuleModLoader;
 import ru.windcorp.crystalfarm.struct.modules.ModuleRegistry;
+import ru.windcorp.crystalfarm.translation.ModuleTranslation;
 
 public class InbuiltMod extends Mod {
 	
@@ -42,6 +43,7 @@ public class InbuiltMod extends Mod {
 		ModuleRegistry.register(new ModuleConfiguration());
 		ModuleRegistry.register(new ModuleModLoader());
 		ModuleRegistry.register(new ModuleAudioInterface());
+		ModuleRegistry.register(new ModuleTranslation());
 	}
 
 }

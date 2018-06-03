@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm.cfg;
 
+@FunctionalInterface
 public interface ConfigurationNodeListener {
 	
 	public void onConfigurationNodeChanged(ConfigurationNode node);

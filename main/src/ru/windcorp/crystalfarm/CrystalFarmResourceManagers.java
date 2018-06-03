@@ -22,6 +22,7 @@ import java.io.File;
 import ru.windcorp.tge2.util.grh.FileResourceSupplier;
 import ru.windcorp.tge2.util.grh.JarResourceSupplier;
 import ru.windcorp.tge2.util.grh.ResourceManager;
+import ru.windcorp.tge2.util.grh.SubResourceSupplier;
 
 public class CrystalFarmResourceManagers {
 	
@@ -29,6 +30,9 @@ public class CrystalFarmResourceManagers {
 			"FS WD", new FileResourceSupplier(new File("./")));
 	
 	public static final ResourceManager RM_JAR_ROOT = new ResourceManager(
-			"JAR root", new JarResourceSupplier(ClassLoader.getSystemClassLoader()));
+			"JAR root", new JarResourceSupplier());
+	
+	public static final ResourceManager RM_ASSETS = new ResourceManager(
+			"Assets", new SubResourceSupplier(RM_JAR_ROOT, "assets"));
 
 }
