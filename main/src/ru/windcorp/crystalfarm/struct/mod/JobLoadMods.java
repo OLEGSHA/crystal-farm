@@ -31,23 +31,22 @@ import java.util.jar.Manifest;
 
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.CrystalFarmLauncher;
-import ru.windcorp.crystalfarm.cfg.JobLoadConfig;
+import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.cfg.ModuleConfiguration;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.crystalfarm.struct.modules.ModuleRegistry;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
+import ru.windcorp.tge2.util.grh.JarResourceSupplier;
+import ru.windcorp.tge2.util.grh.ResourceManager;
 
 public class JobLoadMods extends ModuleJob {
-	
-	public static JobLoadMods inst = null;
 
 	public JobLoadMods(Module module) {
 		super("LoadMods", "Loads external mods from disk", module);
-		inst = this;
 		
-		addDependency(JobLoadConfig.inst);
+		addDependency("Inbuilt:Configuration:LoadConfig");
 	}
 
 	@Override
@@ -292,6 +291,9 @@ public class JobLoadMods extends ModuleJob {
 			Log.debug("Mod instantiated successfully");
 			
 			ModRegistry.register(mod);
+			CrystalFarmResourceManagers.RM_ASSETS.addBackup(
+					new ResourceManager(mod.getName() + ":Assets", new JarResourceSupplier(urlClassLoader, "assets"))
+					);
 			ModuleConfiguration.registerConfiguration(mod);
 			ModuleRegistry.getModulesByMod(mod).forEach(module -> module.registerJobs(CrystalFarmLauncher.getJobManager()));
 			

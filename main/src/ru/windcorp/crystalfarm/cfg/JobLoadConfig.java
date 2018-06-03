@@ -39,12 +39,9 @@ import ru.windcorp.tge2.util.grh.Resource;
 import static ru.windcorp.crystalfarm.cfg.ModuleConfiguration.*;
 
 public class JobLoadConfig extends ModuleJob {
-
-	public static JobLoadConfig inst;
 	
 	public JobLoadConfig(Module module) {
 		super("LoadConfig", "Loads main configuration", module);
-		inst = this;
 	}
 
 	@Override

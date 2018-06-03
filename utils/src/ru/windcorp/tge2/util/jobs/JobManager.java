@@ -57,7 +57,7 @@ public class JobManager<T extends Job> {
 	
 	private static int nextRunnerId = 0;
 	
-	private final Collection<T> jobs = Collections.synchronizedCollection(new ArrayList<T>());
+	private final Map<String, T> jobs = Collections.synchronizedMap(new HashMap<String, T>());
 	private final Collection<T> todo = Collections.synchronizedCollection(new LinkedList<T>());
 	
 	private Boolean isRunning = false;
@@ -72,7 +72,7 @@ public class JobManager<T extends Job> {
 	private final Object hook = new Object();
 	
 	public Collection<T> getJobs() {
-		return jobs;
+		return jobs.values();
 	}
 	
 	public Collection<T> getJobsLeft() {
@@ -114,7 +114,7 @@ public class JobManager<T extends Job> {
 	public void addJob(T job) {
 		job.setScheduled();
 		
-		getJobs().add(job);
+		jobs.put(job.toString(), job);
 		getJobsLeft().add(job);
 		
 		synchronized (getListeners()) {
@@ -122,6 +122,10 @@ public class JobManager<T extends Job> {
 				l.onJobAdded(this, job);
 			}
 		}
+	}
+	
+	public T getJob(String name) {
+		return jobs.get(name);
 	}
 	
 	public void addJobListener(JobListener<? super T> listener) {

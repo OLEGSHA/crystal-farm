@@ -39,7 +39,7 @@ public abstract class Job extends Describable implements Runnable {
 	/**
 	 * Jobs that need to be executed before this job.
 	 */
-	private final Collection<Job> dependencies = Collections.synchronizedCollection(new ArrayList<Job>());
+	private final Collection<String> dependencies = Collections.synchronizedCollection(new ArrayList<String>());
 	
 	/**
 	 * Objects that this job <i>uses</i>. These objects are needed for synchronization. If a one job is using
@@ -115,8 +115,10 @@ public abstract class Job extends Describable implements Runnable {
 		}
 
 		synchronized (dependencies) {
-			for (Job j : dependencies) {
-				if (!j.isExecuted()) {
+			for (String name : dependencies) {
+				Job j = manager.getJob(name);
+				
+				if (j == null || !j.isExecuted()) {
 					return false;
 				}
 			}
@@ -139,7 +141,12 @@ public abstract class Job extends Describable implements Runnable {
 		}
 		
 		synchronized (dependencies) {
-			for (Job j : dependencies) {
+			for (String name : dependencies) {
+				Job j = manager.getJob(name);
+				if (j == null) {
+					return "Dependency " + name + " not found";
+				}
+				
 				if (!j.isExecuted()) {
 					return "Dependency " + j + " not executed";
 				}
@@ -161,11 +168,11 @@ public abstract class Job extends Describable implements Runnable {
 		return ok;
 	}
 	
-	public Collection<Job> getDependencies() {
+	public Collection<String> getDependencies() {
 		return dependencies;
 	}
 	
-	public synchronized void addDependency(Job dependent) {
+	public synchronized void addDependency(String dependent) {
 		this.dependencies.add(dependent);
 	}
 	
