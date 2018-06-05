@@ -30,6 +30,10 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 
 import ru.windcorp.crystalfarm.gui.Size;
+import ru.windcorp.crystalfarm.input.CursorMoveInput;
+import ru.windcorp.crystalfarm.input.Input;
+import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.input.MouseButtonInput;
 import ru.windcorp.tge2.util.collections.ReverseListView;
 
 public class GraphicsInterface {
@@ -50,6 +54,8 @@ public class GraphicsInterface {
 				LAYERS_REVERSE.stream().filter(layer -> layer instanceof InputListener),
 				LISTENERS_INPUT.stream());
 	}
+	
+	private static int cursorX = 0, cursorY = 0;
 	
 	private static final Color CURRENT_COLOR = new Color(0, 0, 0, 0);
 	
@@ -97,6 +103,25 @@ public class GraphicsInterface {
 		getWindowResizeListeners().forEach(l -> l.onWindowResize(width, height));
 	}
 	
+	static void handleCursorMove(long window, double x, double y) {
+		if (window != ModuleGraphicsInterface.getGLWFWindow()) {
+			return;
+		}
+		
+		GraphicsInterface.cursorX = (int) x;
+		GraphicsInterface.cursorY = (int) y;
+		
+		dispatchInput(new CursorMoveInput());
+	}
+	
+	static void handleMouseButton(long window, int button, int action, int mods) {
+		if (window != ModuleGraphicsInterface.getGLWFWindow()) {
+			return;
+		}
+		
+		dispatchInput(new MouseButtonInput(button, action, mods));
+	}
+	
 	/*
 	 * GLFW window operations
 	 */
@@ -110,6 +135,14 @@ public class GraphicsInterface {
 			
 			return new Size(width.get(), height.get());
 		}
+	}
+	
+	public static int getCursorX() {
+		return cursorX;
+	}
+	
+	public static int getCursorY() {
+		return cursorY;
 	}
 	
 	/*

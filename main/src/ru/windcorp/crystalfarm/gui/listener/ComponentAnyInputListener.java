@@ -17,7 +17,7 @@
  */
 package ru.windcorp.crystalfarm.gui.listener;
 
-import ru.windcorp.crystalfarm.graphics.Input;
+import ru.windcorp.crystalfarm.input.Input;
 
 @FunctionalInterface
 public interface ComponentAnyInputListener extends ComponentInputListener<Input> {

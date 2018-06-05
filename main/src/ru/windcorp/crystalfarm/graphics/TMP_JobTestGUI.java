@@ -43,6 +43,11 @@ public class TMP_JobTestGUI extends ModuleJob {
 		protected void renderSelf() {
 			GraphicsInterface.applyColor(isFocused() ? FOCUSED_COLOR : color);
 			GraphicsInterface.fillRectangle(getX(), getY(), getWidth(), getHeight());
+			
+			if (isHovered()) {
+				GraphicsInterface.applyColor(Color.WHITE);
+				GraphicsInterface.fillRectangle(getX() + 1, getY() + 1, getWidth() - 2, getHeight() - 2);
+			}
 		}
 		
 		@Override
@@ -62,7 +67,7 @@ public class TMP_JobTestGUI extends ModuleJob {
 		
 		GuiLayer layer = new GuiLayer("GUI test");
 		
-		ColorfulComponent root = new ColorfulComponent("Root", Color.WHITE, new LayoutVertical());
+		ColorfulComponent root = new ColorfulComponent("Root", Color.BLACK, new LayoutVertical());
 		
 		ColorfulComponent sub1 = new ColorfulComponent("1", Color.RED, new LayoutVertical());
 		sub1.addChild(new ColorfulComponent("1.1", Color.BLACK, new LayoutVertical()));

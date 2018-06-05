@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.gui;
 
 import ru.windcorp.crystalfarm.graphics.*;
+import ru.windcorp.crystalfarm.input.Input;
 
 public class GuiLayer extends Layer implements InputListener, WindowResizeListener {
 	

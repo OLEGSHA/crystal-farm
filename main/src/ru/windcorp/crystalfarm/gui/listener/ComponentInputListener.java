@@ -17,8 +17,8 @@
  */
 package ru.windcorp.crystalfarm.gui.listener;
 
-import ru.windcorp.crystalfarm.graphics.Input;
 import ru.windcorp.crystalfarm.gui.Component;
+import ru.windcorp.crystalfarm.input.Input;
 
 public interface ComponentInputListener<I extends Input> {
 	

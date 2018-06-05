@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.graphics;
+package ru.windcorp.crystalfarm.input;
 
-import ru.windcorp.crystalfarm.input.Input;
+public class CursorMoveInput extends Input {
 
-@FunctionalInterface
-public interface InputListener {
+	@Override
+	public InputTarget getTarget() {
+		return InputTarget.HOVERED;
+	}
 
-	public void onInput(Input input);
-	
 }

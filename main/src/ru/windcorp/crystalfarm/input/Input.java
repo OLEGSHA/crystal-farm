@@ -15,11 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.graphics;
+package ru.windcorp.crystalfarm.input;
+
+import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 
 public abstract class Input {
 	
+	public static enum InputTarget {
+		ALL, FOCUSED, HOVERED;
+	}
+	
 	private boolean isConsumed = false;
+	
+	private final int cursorX, cursorY;
+	
+	public Input() {
+		cursorX = GraphicsInterface.getCursorX();
+		cursorY = GraphicsInterface.getCursorY();
+	}
 	
 	public void consume() {
 		this.isConsumed = true;
@@ -27,6 +40,16 @@ public abstract class Input {
 
 	public boolean isConsumed() {
 		return isConsumed;
+	}
+	
+	public abstract InputTarget getTarget();
+
+	public int getCursorX() {
+		return cursorX;
+	}
+
+	public int getCursorY() {
+		return cursorY;
 	}
 
 }

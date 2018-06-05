@@ -25,11 +25,11 @@ import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
-import ru.windcorp.crystalfarm.graphics.Input;
-import ru.windcorp.crystalfarm.graphics.KeyInput;
 import ru.windcorp.crystalfarm.gui.listener.ComponentFocusListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentHierarchyListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentInputListener;
+import ru.windcorp.crystalfarm.input.Input;
+import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.tge2.util.Nameable;
 
 public class Component extends Nameable {
@@ -52,6 +52,8 @@ public class Component extends Nameable {
 	
 	private boolean isFocusable = false;
 	private boolean isFocused = false;
+	
+	private boolean isHovered = false;
 
 	public Component(String name) {
 		super(name);
@@ -357,6 +359,28 @@ public class Component extends Nameable {
 		return null;
 	}
 	
+	public boolean isHovered() {
+		return isHovered;
+	}
+
+	protected void setHovered(boolean isHovered) {
+		if (this.isHovered != isHovered) {
+			this.isHovered = isHovered;
+			
+			if (!isHovered && !getChildren().isEmpty()) {
+				
+				synchronized (getChildren()) {
+					for (Component child : getChildren()) {
+						if (child.isHovered()) {
+							child.setHovered(false);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+
 	public Collection<ComponentHierarchyListener> getHierarchyListeners() {
 		return hierarchyListeners;
 	}
@@ -410,21 +434,16 @@ public class Component extends Nameable {
 	}
 	
 	public boolean onInput(Input input) {
-		if (input instanceof KeyInput) {
-			KeyInput keyInput = (KeyInput) input;
+		switch (input.getTarget()) {
+		
+		case FOCUSED:
 			Component c = findFocused();
 			
 			if (c == null) {
 				return false;
 			}
 			
-			if (keyInput.getKey() == GLFW.GLFW_KEY_TAB && !keyInput.isReleased()) {
-				input.consume();
-				if (keyInput.hasShift()) {
-					c.focusPrevious();
-				} else {
-					c.focusNext();
-				}
+			if (attemptFocusTransfer(input, c)) {
 				return false;
 			}
 			
@@ -432,7 +451,31 @@ public class Component extends Nameable {
 				c = c.getParent();
 			}
 			
-		} else {
+			break;
+			
+		case HOVERED:
+			
+			synchronized (getChildren()) {
+				for (Component child : getChildren()) {
+					if (child.contains(input.getCursorX(), input.getCursorY())) {
+						
+						child.setHovered(true);
+						
+						if (!child.onInput(input)) {
+							return false;
+						}
+					} else {
+						child.setHovered(false);
+					}
+				}
+			}
+
+			dispatchInput(input);
+			
+			break;
+			
+		case ALL:
+		default:
 			synchronized (getChildren()) {
 				for (Component child : getChildren()) {
 					if (!child.onInput(input)) {
@@ -442,11 +485,39 @@ public class Component extends Nameable {
 			}
 
 			dispatchInput(input);
+			
+			break;
+			
 		}
 
 		return input.isConsumed();
 	}
 	
+	private boolean attemptFocusTransfer(Input input, Component focused) {
+		if (!(input instanceof KeyInput)) {
+			return false;
+		}
+		
+		KeyInput keyInput = (KeyInput) input;
+		
+		if (keyInput.getKey() == GLFW.GLFW_KEY_TAB && !keyInput.isReleased()) {
+			input.consume();
+			if (keyInput.hasShift()) {
+				focused.focusPrevious();
+			} else {
+				focused.focusNext();
+			}
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public synchronized boolean contains(int x, int y) {
+		return x >= getX() && x < getX() + getWidth() &&
+				y >= getY() && y < getY() + getHeight();
+	}
+
 	public synchronized void render() {
 		if (width == 0 || height == 0) {
 			return;

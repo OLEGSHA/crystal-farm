@@ -103,7 +103,8 @@ public class WindowHandler implements Runnable {
 				);
 		
 		glfwSetKeyCallback(getGLWFWindow(), GraphicsInterface::handleKeyInput);
-		
+		glfwSetCursorPosCallback(getGLWFWindow(), GraphicsInterface::handleCursorMove);
+		glfwSetMouseButtonCallback(getGLWFWindow(), GraphicsInterface::handleMouseButton);
 		glfwSetWindowSizeCallback(getGLWFWindow(), GraphicsInterface::handleWindowResize);
 		
 		if (ModuleGraphicsInterface.getGLWFWindow() == NULL) {

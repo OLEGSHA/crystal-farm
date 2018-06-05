@@ -17,7 +17,7 @@
  */
 package ru.windcorp.crystalfarm.gui.listener;
 
-import ru.windcorp.crystalfarm.graphics.KeyInput;
+import ru.windcorp.crystalfarm.input.KeyInput;
 
 @FunctionalInterface
 public interface ComponentKeyInputListener extends ComponentInputListener<KeyInput> {
