@@ -38,6 +38,7 @@ public class ModuleGraphicsInterface extends Module {
 	@Override
 	public void registerJobs(JobManager<ModuleJob> manager) {
 		manager.addJob(new JobGraphicsInterfaceInit(this));
+		manager.addJob(new TMP_JobTestGUI(this));
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() ->  {
 			// Free the window callbacks and destroy the window

@@ -1,6 +1,8 @@
 package ru.windcorp.tge2.util.debug;
 
 import java.io.PrintStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 import ru.windcorp.tge2.util.NumberUtil;
 import ru.windcorp.tge2.util.StringUtil;
@@ -224,6 +226,32 @@ public class Debug {
 	
 	public static PrintStream getDebugPrintStream() {
 		return debugPrintStream;
+	}
+	
+	public static <T> String getConstantName(Class<?> clazz, String prefix, Class<T> type, T value) {
+		for (Field f : clazz.getFields()) {
+			try {
+				if ((f.getModifiers() & (Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL)) == (Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL)
+						&& f.getType() == type
+						&& f.getName().startsWith(prefix)) {
+					
+					Object fieldValue = f.get(null);
+					
+					if (type.isPrimitive() ?
+							(
+									(fieldValue == null && value == null) ||
+									(fieldValue.equals(value))
+							)
+							: fieldValue == value) {
+						return f.getName().substring(prefix.length());
+					}
+				}
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		
+		return null;
 	}
 
 }

@@ -19,9 +19,102 @@ package ru.windcorp.crystalfarm.graphics;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
+
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.MemoryStack;
+
+import ru.windcorp.crystalfarm.gui.Size;
+import ru.windcorp.tge2.util.collections.ReverseListView;
+
 public class GraphicsInterface {
 	
+	private static final List<Layer> LAYERS = Collections.synchronizedList(new ArrayList<>());
+	private static final List<Layer> LAYERS_REVERSE = new ReverseListView<>(LAYERS);
+	
+	private static final Collection<WindowResizeListener> LISTENERS_WINDOW_RESIZE = Collections.synchronizedCollection(new ArrayList<>());
+	static Stream<WindowResizeListener> getWindowResizeListeners() {
+		return Stream.concat(
+				LAYERS.stream().filter(layer -> layer instanceof WindowResizeListener),
+				LISTENERS_WINDOW_RESIZE.stream());
+	}
+	
+	private static final Collection<InputListener> LISTENERS_INPUT = Collections.synchronizedCollection(new ArrayList<>());
+	static Stream<InputListener> getInputListeners() {
+		return Stream.concat(
+				LAYERS_REVERSE.stream().filter(layer -> layer instanceof InputListener),
+				LISTENERS_INPUT.stream());
+	}
+	
 	private static final Color CURRENT_COLOR = new Color(0, 0, 0, 0);
+	
+	/*
+	 * Layers
+	 */
+	
+	public static void addLayer(Layer layer) {
+		getLayers().add(layer);
+	}
+	
+	public static void removeLayer(Layer layer) {
+		getLayers().remove(layer);
+	}
+	
+	public static void removeAllLayers() {
+		getLayers().clear();
+	}
+	
+	public static List<Layer> getLayers() {
+		return LAYERS;
+	}
+	
+	/*
+	 * GLFW event handling
+	 */
+	
+	static void handleKeyInput(long window, int key, int scancode, int action, int mods) {
+		if (window != ModuleGraphicsInterface.getGLWFWindow()) {
+			return;
+		}
+		
+		dispatchInput(new KeyInput(key, action, mods));
+	}
+	
+	static void dispatchInput(Input input) {
+		getInputListeners().forEach(l -> l.onInput(input));
+	}
+	
+	static void handleWindowResize(long window, int width, int height) {
+		if (window != ModuleGraphicsInterface.getGLWFWindow()) {
+			return;
+		}
+		
+		getWindowResizeListeners().forEach(l -> l.onWindowResize(width, height));
+	}
+	
+	/*
+	 * GLFW window operations
+	 */
+	
+	public static Size getWindowSize() {
+		try (MemoryStack stack = MemoryStack.stackPush()) {
+			IntBuffer width = stack.mallocInt(1),
+					height = stack.mallocInt(1);
+			GLFW.glfwGetWindowSize(ModuleGraphicsInterface.getGLWFWindow(),
+					width, height);
+			
+			return new Size(width.get(), height.get());
+		}
+	}
+	
+	/*
+	 * Drawing
+	 */
 	
 	public static void applyColor(Color color) {
 		CURRENT_COLOR.copyFrom(color);

@@ -29,6 +29,7 @@ import org.lwjgl.system.MemoryStack;
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
+import ru.windcorp.tge2.util.synch.Lock;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -36,6 +37,8 @@ import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class WindowHandler implements Runnable {
+	
+	private final Lock lock = new Lock();
 
 	@Override
 	public void run() {
@@ -56,6 +59,8 @@ public class WindowHandler implements Runnable {
 		Log.debug("Entering render loop");
 		Log.end("Graphics Init");
 		
+		lock.unlock();
+		
 		while (!glfwWindowShouldClose(getGLWFWindow())) {
 			glClear(GL_COLOR_BUFFER_BIT);
 			glBegin(GL_TRIANGLES);
@@ -68,13 +73,14 @@ public class WindowHandler implements Runnable {
 		}
 		
 	}
-	
-	private Color color = new Color(1, 1, 1, 1);
 
 	private void doRender() {
 		
-		GraphicsInterface.applyColor(color);
-		GraphicsInterface.fillRectangle(10, 10, 100, 200);
+		synchronized (GraphicsInterface.getLayers()) {
+			for (Layer l : GraphicsInterface.getLayers()) {
+				l.render();
+			}
+		}
 		
 	}
 	
@@ -90,10 +96,15 @@ public class WindowHandler implements Runnable {
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		
-		ModuleGraphicsInterface.setGLFWWindow(
+		setGLFWWindow(
 				glfwCreateWindow(640, 480,
 						CrystalFarm.FULL_NAME + " " + CrystalFarm.VERSION_CODENAME + "/" + CrystalFarm.VERSION,
-						NULL, NULL));
+						NULL, NULL)
+				);
+		
+		glfwSetKeyCallback(getGLWFWindow(), GraphicsInterface::handleKeyInput);
+		
+		glfwSetWindowSizeCallback(getGLWFWindow(), GraphicsInterface::handleWindowResize);
 		
 		if (ModuleGraphicsInterface.getGLWFWindow() == NULL) {
 			ExecutionReport.reportCriticalError(null, ExecutionReport.rscCorrupt("GLFW", "GLFW failed to initialize window"), null);
@@ -133,6 +144,11 @@ public class WindowHandler implements Runnable {
 		glLoadIdentity(); // Resets any previous projection matrices
 		glOrtho(0, 640, 480, 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
+	}
+	
+	public void waitForInit() {
+		lock.raiseFlag();
+		lock.lock();
 	}
 
 }

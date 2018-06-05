@@ -19,6 +19,14 @@ package ru.windcorp.crystalfarm.graphics;
 
 public class Color {
 	
+	public static final Color
+			BLACK				= new Color(0, 0, 0, 0),
+			WHITE				= new Color(1, 1, 1, 0),
+			TRANSPARENT			= new Color(0, 0, 0, 1),
+			RED					= new Color(1, 0, 0, 0),
+			GREEN				= new Color(0, 1, 0, 0),
+			BLUE				= new Color(0, 0, 1, 0);
+	
 	public double r, g, b, a;
 	
 	public Color(double r, double g, double b, double a) {
