@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.graphics;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.Callbacks.*;
+import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.struct.modules.Module;
@@ -28,8 +29,6 @@ import ru.windcorp.tge2.util.jobs.JobManager;
 public class ModuleGraphicsInterface extends Module {
 	
 	public static final String OBJECT_OPENGL = "OpenGL";
-
-	private static long window;
 	
 	public ModuleGraphicsInterface() {
 		super("GraphicsInterface", InbuiltMod.INST);
@@ -41,22 +40,16 @@ public class ModuleGraphicsInterface extends Module {
 		manager.addJob(new TMP_JobTestGUI(this));
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() ->  {
-			// Free the window callbacks and destroy the window
-			glfwFreeCallbacks(window);
-			glfwDestroyWindow(window);
-
-			// Terminate GLFW and free the error callback
-			glfwTerminate();
-			glfwSetErrorCallback(null).free();
+			if (getWindow() != 0) {
+				// Free the window callbacks and destroy the window
+				glfwFreeCallbacks(getWindow());
+				glfwDestroyWindow(getWindow());
+				
+				// Terminate GLFW and free the error callback
+				glfwTerminate();
+				glfwSetErrorCallback(null).free();
+			}
 		}));
-	}
-
-	public static long getGLWFWindow() {
-		return window;
-	}
-
-	static void setGLFWWindow(long window) {
-		ModuleGraphicsInterface.window = window;
 	}
 
 }

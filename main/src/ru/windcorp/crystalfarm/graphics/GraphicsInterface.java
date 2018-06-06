@@ -29,14 +29,19 @@ import java.util.stream.Stream;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 
+import ru.windcorp.crystalfarm.graphics.texture.Texture;
 import ru.windcorp.crystalfarm.gui.Size;
 import ru.windcorp.crystalfarm.input.CursorMoveInput;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.input.MouseButtonInput;
+import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.collections.ReverseListView;
 
 public class GraphicsInterface {
+	
+	private static long window = 0;
+	private static Thread renderThread = null;
 	
 	private static final List<Layer> LAYERS = Collections.synchronizedList(new ArrayList<>());
 	private static final List<Layer> LAYERS_REVERSE = new ReverseListView<>(LAYERS);
@@ -56,8 +61,6 @@ public class GraphicsInterface {
 	}
 	
 	private static int cursorX = 0, cursorY = 0;
-	
-	private static final Color CURRENT_COLOR = new Color(0, 0, 0, 0);
 	
 	/*
 	 * Layers
@@ -84,7 +87,7 @@ public class GraphicsInterface {
 	 */
 	
 	static void handleKeyInput(long window, int key, int scancode, int action, int mods) {
-		if (window != ModuleGraphicsInterface.getGLWFWindow()) {
+		if (window != getWindow()) {
 			return;
 		}
 		
@@ -96,7 +99,7 @@ public class GraphicsInterface {
 	}
 	
 	static void handleWindowResize(long window, int width, int height) {
-		if (window != ModuleGraphicsInterface.getGLWFWindow()) {
+		if (window != getWindow()) {
 			return;
 		}
 		
@@ -104,7 +107,7 @@ public class GraphicsInterface {
 	}
 	
 	static void handleCursorMove(long window, double x, double y) {
-		if (window != ModuleGraphicsInterface.getGLWFWindow()) {
+		if (window != getWindow()) {
 			return;
 		}
 		
@@ -115,7 +118,7 @@ public class GraphicsInterface {
 	}
 	
 	static void handleMouseButton(long window, int button, int action, int mods) {
-		if (window != ModuleGraphicsInterface.getGLWFWindow()) {
+		if (window != getWindow()) {
 			return;
 		}
 		
@@ -126,11 +129,19 @@ public class GraphicsInterface {
 	 * GLFW window operations
 	 */
 	
+	public static long getWindow() {
+		return window;
+	}
+	
+	static void setWindow(long window) {
+		GraphicsInterface.window = window;
+	}
+	
 	public static Size getWindowSize() {
 		try (MemoryStack stack = MemoryStack.stackPush()) {
 			IntBuffer width = stack.mallocInt(1),
 					height = stack.mallocInt(1);
-			GLFW.glfwGetWindowSize(ModuleGraphicsInterface.getGLWFWindow(),
+			GLFW.glfwGetWindowSize(getWindow(),
 					width, height);
 			
 			return new Size(width.get(), height.get());
@@ -149,26 +160,70 @@ public class GraphicsInterface {
 	 * Drawing
 	 */
 	
-	public static void applyColor(Color color) {
-		CURRENT_COLOR.copyFrom(color);
+	private static void applyColor(Color color) {
 		glColor4d(color.r, color.g, color.b, color.a);
 	}
 	
-	public static Color getColor() {
-		return CURRENT_COLOR;
-	}
-	
-	public static void fillRectangle(int x, int y, int width, int height) {
+	public static void fillRectangle(int x, int y, int width, int height, Color color) {
 		width += x;
 		height += y;
 		
-		glVertex2i(x, y);
-		glVertex2i(width, height);
-		glVertex2i(width, y);
+		glBegin(GL_QUADS);
 		
-		glVertex2i(x, y);
-		glVertex2i(x, height);
-		glVertex2i(width, height);
+			applyColor(color);
+			
+			glVertex2i(x, y);
+			glVertex2i(x, height);
+			glVertex2i(width, height);
+			glVertex2i(width, y);
+		
+		glEnd();
+	}
+	
+	private static final int UL_X = 0, UL_Y = 1, LR_X = 2, LR_Y = 3;
+	
+	public static void drawTexture(int x, int y, Texture texture, int tileX, int tileY, Direction direction) {
+		double[] coords = new double[4];
+		int endX = texture.getWidth() + x,
+				endY = texture.getHeight() + y;
+		
+		if (texture.getTileSize() == 0) {
+			coords[UL_X] = 0;
+			coords[UL_Y] = 0;
+			coords[LR_X] = 1;
+			coords[LR_Y] = 1;
+		} else {
+			// TODO
+		}
+		
+		direction.turnCoordiates(coords);
+
+		glBindTexture(GL_TEXTURE_2D, texture.getTextureId());
+		
+		glBegin(GL_QUADS);
+		
+			glColor3d(1, 1, 1);
+			
+			glTexCoord2d(coords[UL_X], coords[UL_Y]); glVertex2i(x, y);
+			glTexCoord2d(coords[UL_X], coords[LR_Y]); glVertex2i(x, endY);
+			glTexCoord2d(coords[LR_X], coords[LR_Y]); glVertex2i(endX, endY);
+			glTexCoord2d(coords[LR_X], coords[UL_Y]); glVertex2i(endX, y);
+			
+		glEnd();
+		
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
+	/*
+	 * Misc
+	 */
+	
+	public static boolean isRenderThread() {
+		return Thread.currentThread() == renderThread;
+	}
+	
+	static void setRenderThread(Thread thread) {
+		GraphicsInterface.renderThread = thread;
 	}
 
 }

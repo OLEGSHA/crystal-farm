@@ -13,7 +13,7 @@ public class JarResourceSupplier implements ResourceSupplier {
 		this.loader = loader;
 		
 		if (localPath == null || localPath.isEmpty() || localPath.equals("/")) {
-			this.localPath = "/";
+			this.localPath = "";
 		} else {
 			if (localPath.startsWith("/")) {
 				localPath = localPath.substring("/".length());

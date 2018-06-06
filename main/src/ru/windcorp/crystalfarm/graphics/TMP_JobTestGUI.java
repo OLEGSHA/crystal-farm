@@ -17,6 +17,8 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
+import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
+import ru.windcorp.crystalfarm.graphics.texture.Texture;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.GuiLayer;
 import ru.windcorp.crystalfarm.gui.Layout;
@@ -24,6 +26,7 @@ import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
 import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
+import ru.windcorp.crystalfarm.util.Direction;
 
 public class TMP_JobTestGUI extends ModuleJob {
 	
@@ -41,18 +44,31 @@ public class TMP_JobTestGUI extends ModuleJob {
 		
 		@Override
 		protected void renderSelf() {
-			GraphicsInterface.applyColor(isFocused() ? FOCUSED_COLOR : color);
-			GraphicsInterface.fillRectangle(getX(), getY(), getWidth(), getHeight());
+			GraphicsInterface.fillRectangle(getX(), getY(), getWidth(), getHeight(), isFocused() ? FOCUSED_COLOR : color);
 			
 			if (isHovered()) {
-				GraphicsInterface.applyColor(Color.WHITE);
-				GraphicsInterface.fillRectangle(getX() + 1, getY() + 1, getWidth() - 2, getHeight() - 2);
+				GraphicsInterface.fillRectangle(getX() + 1, getY() + 1, getWidth() - 2, getHeight() - 2, Color.WHITE);
 			}
 		}
 		
 		@Override
 		public boolean isFocusable() {
 			return color == Color.BLACK;
+		}
+	}
+	
+	static class PictureComponent extends Component {
+		private final Texture texture;
+		
+		public PictureComponent(String name, String texture) {
+			super(name);
+			this.texture = SimpleTexture.get(texture);
+			setPreferredSize(this.texture.getWidth(), this.texture.getHeight());
+		}
+		
+		@Override
+		protected void renderSelf() {
+			GraphicsInterface.drawTexture(getX(), getY(), texture, 0, 0, Direction.UP);
 		}
 	}
 
@@ -82,6 +98,8 @@ public class TMP_JobTestGUI extends ModuleJob {
 		root.addChild(sub1);
 		root.addChild(sub2);
 		root.addChild(new ColorfulComponent("3", Color.BLUE, new LayoutVertical()));
+		
+		root.addChild(new PictureComponent("4", "test"));
 		
 		ColorfulComponent bg = new ColorfulComponent("BG", Color.BLUE, new LayoutCenter());
 		bg.addChild(root);

@@ -17,7 +17,7 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
-import static ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface.*;
+import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
 import java.nio.IntBuffer;
 
@@ -27,6 +27,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import ru.windcorp.crystalfarm.CrystalFarm;
+import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.synch.Lock;
@@ -36,14 +37,15 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
-public class WindowHandler implements Runnable {
+public class RenderThread implements Runnable {
 	
 	private final Lock lock = new Lock();
 
 	@Override
 	public void run() {
 		
-		Thread.currentThread().setName("Window Handler");
+		Thread.currentThread().setName("Render");
+		setRenderThread(Thread.currentThread());
 		
 		Log.topic("Graphics Init");
 		Log.info("Initializing GLFW (window toolkit)");
@@ -61,14 +63,14 @@ public class WindowHandler implements Runnable {
 		
 		lock.unlock();
 		
-		while (!glfwWindowShouldClose(getGLWFWindow())) {
+		while (!glfwWindowShouldClose(getWindow())) {
+			TextureManager.processLoadQueue();
+			
 			glClear(GL_COLOR_BUFFER_BIT);
-			glBegin(GL_TRIANGLES);
 
 			doRender();
 
-			glEnd();
-			glfwSwapBuffers(getGLWFWindow());
+			glfwSwapBuffers(getWindow());
 			glfwPollEvents();
 		}
 		
@@ -96,26 +98,26 @@ public class WindowHandler implements Runnable {
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 		
-		setGLFWWindow(
+		setWindow(
 				glfwCreateWindow(640, 480,
 						CrystalFarm.FULL_NAME + " " + CrystalFarm.VERSION_CODENAME + "/" + CrystalFarm.VERSION,
 						NULL, NULL)
 				);
 		
-		glfwSetKeyCallback(getGLWFWindow(), GraphicsInterface::handleKeyInput);
-		glfwSetCursorPosCallback(getGLWFWindow(), GraphicsInterface::handleCursorMove);
-		glfwSetMouseButtonCallback(getGLWFWindow(), GraphicsInterface::handleMouseButton);
-		glfwSetWindowSizeCallback(getGLWFWindow(), GraphicsInterface::handleWindowResize);
-		
-		if (ModuleGraphicsInterface.getGLWFWindow() == NULL) {
+		if (getWindow() == NULL) {
 			ExecutionReport.reportCriticalError(null, ExecutionReport.rscCorrupt("GLFW", "GLFW failed to initialize window"), null);
 		}
+		
+		glfwSetKeyCallback(getWindow(), GraphicsInterface::handleKeyInput);
+		glfwSetCursorPosCallback(getWindow(), GraphicsInterface::handleCursorMove);
+		glfwSetMouseButtonCallback(getWindow(), GraphicsInterface::handleMouseButton);
+		glfwSetWindowSizeCallback(getWindow(), GraphicsInterface::handleWindowResize);
 	}
 
 	private void showWindow() {
-		glfwMakeContextCurrent(ModuleGraphicsInterface.getGLWFWindow());
+		glfwMakeContextCurrent(getWindow());
 		glfwSwapInterval(1);
-		glfwShowWindow(ModuleGraphicsInterface.getGLWFWindow());
+		glfwShowWindow(getWindow());
 	}
 
 	private void centerWindow() {
@@ -123,12 +125,12 @@ public class WindowHandler implements Runnable {
 			IntBuffer pWidth = stack.mallocInt(1); // int*
 			IntBuffer pHeight = stack.mallocInt(1); // int*
 
-			glfwGetWindowSize(getGLWFWindow(), pWidth, pHeight);
+			glfwGetWindowSize(getWindow(), pWidth, pHeight);
 
 			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
 			glfwSetWindowPos(
-				getGLWFWindow(),
+				getWindow(),
 				(vidmode.width() - pWidth.get(0)) / 2,
 				(vidmode.height() - pHeight.get(0)) / 2
 			);
@@ -138,6 +140,10 @@ public class WindowHandler implements Runnable {
 	private void initializeOpenGL() {
 		Log.info("Initializing OpenGL");
 		GL.createCapabilities();
+		
+		glEnable(GL_TEXTURE_2D);
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
 
 		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 		

@@ -33,7 +33,7 @@ public class JobGraphicsInterfaceInit extends ModuleJob {
 	protected void runImpl() {
 		Log.debug("Launching render thread");
 		
-		WindowHandler handler = new WindowHandler();
+		RenderThread handler = new RenderThread();
 		new Thread(handler).start();
 		
 		Log.debug("Waiting for graphics to initiate...");
