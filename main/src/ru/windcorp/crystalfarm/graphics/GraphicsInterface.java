@@ -190,8 +190,8 @@ public class GraphicsInterface {
 		if (texture.getTileSize() == 0) {
 			coords[UL_X] = 0;
 			coords[UL_Y] = 0;
-			coords[LR_X] = 1;
-			coords[LR_Y] = 1;
+			coords[LR_X] = texture.getWidth() / (float) texture.getTextureWidth();
+			coords[LR_Y] = texture.getHeight() / (float) texture.getTextureHeight();
 		} else {
 			// TODO
 		}

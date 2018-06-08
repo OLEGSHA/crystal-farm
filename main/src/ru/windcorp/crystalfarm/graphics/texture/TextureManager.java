@@ -91,10 +91,13 @@ public class TextureManager {
 			return null;
 		}
 		
+		int textureWidth = toPowerOf2(source.getWidth()),
+				textureHeight = toPowerOf2(source.getHeight());
+		
 		WritableRaster raster = Raster.createInterleavedRaster(
 				DataBuffer.TYPE_BYTE,
-				source.getWidth(),
-				source.getHeight(),
+				textureWidth,
+				textureHeight,
 				4,						// RGBA
 				null);
 		
@@ -113,14 +116,17 @@ public class TextureManager {
 		buffer.put(data);
 		buffer.flip();
 		
-		TexturePrimitive result = new TexturePrimitive(textureName, canvas.getWidth(), canvas.getHeight());
+		TexturePrimitive result = new TexturePrimitive(textureName, source.getWidth(), source.getHeight(), textureWidth, textureHeight);
+		addToLoadQueue(result, buffer);
 		
-		if (GraphicsInterface.isRenderThread()) {
-			loadInGL(result, buffer);
-		} else {
-			addToLoadQueue(result, buffer);
-		}
-		
+		return result;
+	}
+	
+	private static int toPowerOf2(int i) {
+		int result = 1;
+		do {
+			result *= 2;
+		} while (result < i);
 		return result;
 	}
 	
@@ -134,23 +140,27 @@ public class TextureManager {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		
 		glTexImage2D(
-				GL_TEXTURE_2D,			// Load 2D image
-				0,						// Not mipmapped
-				GL_RGBA,				// Use RGBA
-				image.getWidth(),		// Width
-				image.getHeight(),		// Height
-				0,						// No border
-				GL_RGBA,				// Use RGBA (req.)
-				GL_UNSIGNED_BYTE,		// Use unsigned bytes
-				data);					// Data buffer
+				GL_TEXTURE_2D,				// Load 2D image
+				0,							// Not mipmapped
+				GL_RGBA,					// Use RGBA
+				image.getTextureWidth(),	// Width
+				image.getTextureHeight(),	// Height
+				0,							// No border
+				GL_RGBA,					// Use RGBA (req.)
+				GL_UNSIGNED_BYTE,			// Use unsigned bytes
+				data);						// Data buffer
 		
 		glBindTexture(GL_TEXTURE_2D, 0);
 		
 		image.setTextureId(textureId);
 	}
 	
-	private static void addToLoadQueue(TexturePrimitive image, ByteBuffer data) {
-		LOAD_QUEUE.add(new Vector2<>(image, data));
+	public static void addToLoadQueue(TexturePrimitive image, ByteBuffer data) {
+		if (GraphicsInterface.isRenderThread()) {
+			loadInGL(image, data);
+		} else {
+			LOAD_QUEUE.add(new Vector2<>(image, data));
+		}
 	}
 	
 	public static void processLoadQueue() {

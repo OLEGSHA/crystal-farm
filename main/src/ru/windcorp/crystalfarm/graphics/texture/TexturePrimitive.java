@@ -22,12 +22,15 @@ import ru.windcorp.tge2.util.Nameable;
 public class TexturePrimitive extends Nameable {
 	
 	private int textureId;
-	private final int width, height;
-	
-	public TexturePrimitive(String name, int width, int height) {
+	private final int width, height,
+			textureWidth, textureHeight;
+
+	public TexturePrimitive(String name, int width, int height, int textureWidth, int textureHeight) {
 		super(name);
 		this.width = width;
 		this.height = height;
+		this.textureWidth = textureWidth;
+		this.textureHeight = textureHeight;
 	}
 
 	public int getTextureId() {
@@ -44,6 +47,14 @@ public class TexturePrimitive extends Nameable {
 
 	public int getHeight() {
 		return height;
+	}
+
+	public int getTextureWidth() {
+		return textureWidth;
+	}
+
+	public int getTextureHeight() {
+		return textureHeight;
 	}
 
 }

@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.graphics.texture;
+package ru.windcorp.crystalfarm.graphics.fonts;
 
-public interface Texture {
+import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
+import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
+import ru.windcorp.crystalfarm.graphics.texture.TexturePrimitive;
+
+public class FontSymbol extends SimpleTexture {
+
+	private char c;
 	
-	public String getName();
+	protected FontSymbol(TexturePrimitive texture, char c) {
+		super(texture);
+		this.c = c;
+	}
 	
-	public int getTextureId();
-	
-	public int getX();
-	public int getY();
-	public int getWidth();
-	public int getHeight();
-	public int getTextureWidth();
-	public int getTextureHeight();
-	
-	public int getTileSize();
+	public char getChar() {
+		return c;
+	}
 
 }

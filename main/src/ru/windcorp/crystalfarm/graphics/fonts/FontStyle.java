@@ -15,21 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.graphics.texture;
+package ru.windcorp.crystalfarm.graphics.fonts;
 
-public interface Texture {
+public enum FontStyle {
 	
-	public String getName();
-	
-	public int getTextureId();
-	
-	public int getX();
-	public int getY();
-	public int getWidth();
-	public int getHeight();
-	public int getTextureWidth();
-	public int getTextureHeight();
-	
-	public int getTileSize();
+	PLAIN, SHADOW, ENGRAVED;
 
 }

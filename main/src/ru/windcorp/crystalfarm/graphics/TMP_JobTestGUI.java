@@ -17,6 +17,9 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
+import ru.windcorp.crystalfarm.graphics.fonts.Font;
+import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
+import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
 import ru.windcorp.crystalfarm.gui.Component;
@@ -32,7 +35,7 @@ public class TMP_JobTestGUI extends ModuleJob {
 	
 	static class ColorfulComponent extends Component {
 		
-		public static final Color FOCUSED_COLOR = new Color(1, 1, 0, 0);
+		public static final Color FOCUSED_COLOR = new Color(1, 1, 0, 1);
 		
 		private final Color color;
 		
@@ -54,6 +57,23 @@ public class TMP_JobTestGUI extends ModuleJob {
 		@Override
 		public boolean isFocusable() {
 			return color == Color.BLACK;
+		}
+	}
+	
+	static class WordyComponent extends Component {
+		
+		private static final Font FONT = FontManager.getFont("DejaVu-Serif_16");
+		private final char[] chars;
+		
+		public WordyComponent(String name) {
+			super(name);
+			this.chars = name.toCharArray();
+			setPreferredSize(FONT.getSize(chars, false));
+		}
+		
+		@Override
+		protected void renderSelf() {
+			FONT.render(chars, getX(), getY(), false, FontStyle.PLAIN, Color.WHITE);
 		}
 	}
 	
@@ -98,6 +118,7 @@ public class TMP_JobTestGUI extends ModuleJob {
 		root.addChild(sub1);
 		root.addChild(sub2);
 		root.addChild(new ColorfulComponent("3", Color.BLUE, new LayoutVertical()));
+		root.addChild(new WordyComponent("0123456789!?"));
 		
 		root.addChild(new PictureComponent("4", "test"));
 		

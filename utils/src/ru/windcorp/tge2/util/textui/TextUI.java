@@ -169,11 +169,11 @@ public class TextUI {
 		}
 		
 		if (formattedTooLittle == null) {
-			formattedTooLittle = "%d is greater than %d";
+			formattedTooLittle = "%d is less than %d";
 		}
 		
 		if (formattedTooMuch == null) {
-			formattedTooMuch = "%d is less than %d";
+			formattedTooMuch = "%d is greater than %d";
 		}
 		
 		if (prompt != null) {
