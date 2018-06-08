@@ -120,7 +120,7 @@ public class TMP_JobTestGUI extends ModuleJob {
 		root.addChild(new ColorfulComponent("3", Color.BLUE, new LayoutVertical()));
 		root.addChild(new WordyComponent("0123456789!?"));
 		
-		root.addChild(new PictureComponent("4", "test"));
+		root.addChild(new PictureComponent("4", "logo"));
 		
 		ColorfulComponent bg = new ColorfulComponent("BG", Color.BLUE, new LayoutCenter());
 		bg.addChild(root);
