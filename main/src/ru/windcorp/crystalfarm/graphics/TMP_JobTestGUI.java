@@ -124,8 +124,7 @@ public class TMP_JobTestGUI extends ModuleJob {
 		root.addChild(new ColorfulComponent("3", Color.BLUE, new LayoutVertical()));
 		root.addChild(new WordyComponent("Hello, World!\nCan we go for multiline?"));
 		
-		root.addChild(new PictureComponent("4", "logo"));
-		root.addChild(new PictureComponent("5", "transparent"));
+		root.addChild(new PictureComponent("4", "window/icon64"));
 		
 		ColorfulComponent bg = new ColorfulComponent("BG", Color.BLUE, new LayoutCenter());
 		bg.addChild(root);

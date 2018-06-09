@@ -69,9 +69,8 @@ public class TextureManager {
 		return CrystalFarmResourceManagers.RM_ASSETS.getResource("texture/" + textureName + ".png");
 	}
 	
-	public static TexturePrimitive loadTexture(String textureName) {
+	public static Vector2<TexturePrimitive, ByteBuffer> loadToByteBuffer(String textureName) {
 		Log.debug("Loading texture " + textureName + " into memory");
-		
 		Resource resource = getResource(textureName);
 		
 		String problem = resource.canRead();
@@ -117,9 +116,14 @@ public class TextureManager {
 		buffer.flip();
 		
 		TexturePrimitive result = new TexturePrimitive(textureName, source.getWidth(), source.getHeight(), textureWidth, textureHeight);
-		addToLoadQueue(result, buffer);
 		
-		return result;
+		return new Vector2<>(result, buffer);
+	}
+	
+	public static TexturePrimitive loadTexture(String textureName) {
+		Vector2<TexturePrimitive, ByteBuffer> vec = loadToByteBuffer(textureName);
+		addToLoadQueue(vec);
+		return vec.a;
 	}
 	
 	private static int toPowerOf2(int i) {
@@ -155,11 +159,11 @@ public class TextureManager {
 		image.setTextureId(textureId);
 	}
 	
-	public static void addToLoadQueue(TexturePrimitive image, ByteBuffer data) {
+	public static void addToLoadQueue(Vector2<TexturePrimitive, ByteBuffer> vec) {
 		if (GraphicsInterface.isRenderThread()) {
-			loadInGL(image, data);
+			loadInGL(vec.a, vec.b);
 		} else {
-			LOAD_QUEUE.add(new Vector2<>(image, data));
+			LOAD_QUEUE.add(vec);
 		}
 	}
 	

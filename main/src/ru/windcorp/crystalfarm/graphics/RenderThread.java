@@ -19,23 +19,22 @@ package ru.windcorp.crystalfarm.graphics;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
-import java.nio.IntBuffer;
+import java.nio.ByteBuffer;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
-import org.lwjgl.system.MemoryStack;
-
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
 import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
+import ru.windcorp.crystalfarm.graphics.texture.TexturePrimitive;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.synch.Lock;
+import ru.windcorp.tge2.util.vectors.Vector2;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class RenderThread implements Runnable {
@@ -55,14 +54,17 @@ public class RenderThread implements Runnable {
 		
 		initializeGlfw();
 		createWindow();
-		centerWindow();
-		showWindow();
+		positionWindow();
+		createWindowIcons();
 		initializeOpenGL();
+		setupWindowCallbacks();
 		loadFonts();
+		showWindow();
 		
 		Log.debug("Entering render loop");
 		Log.end("Graphics Init");
 		
+		setGraphicsReady();
 		lock.unlock();
 		
 		while (!glfwWindowShouldClose(getWindow())) {
@@ -89,6 +91,8 @@ public class RenderThread implements Runnable {
 	}
 	
 	private void initializeGlfw() {
+		Log.debug("About to initialize GLFW version " + glfwGetVersionString());
+		
 		if (!glfwInit()) {
 			ExecutionReport.reportCriticalError(null, ExecutionReport.rscCorrupt("GLFW", "GLFW failed to initialize"), null);
 		}
@@ -99,9 +103,11 @@ public class RenderThread implements Runnable {
 		
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+		glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
+		glfwWindowHint(GLFW_MAXIMIZED, ModuleGraphicsInterface.WINDOW_MAXIMIZED.get() ? GLFW_TRUE : GLFW_FALSE);
 		
 		setWindow(
-				glfwCreateWindow(640, 480,
+				glfwCreateWindow(GraphicsInterface.getWindowWidth(), GraphicsInterface.getWindowHeight(),
 						CrystalFarm.FULL_NAME + " " + CrystalFarm.VERSION_CODENAME + "/" + CrystalFarm.VERSION,
 						NULL, NULL)
 				);
@@ -110,38 +116,58 @@ public class RenderThread implements Runnable {
 			ExecutionReport.reportCriticalError(null, ExecutionReport.rscCorrupt("GLFW", "GLFW failed to initialize window"), null);
 		}
 		
+		glfwMakeContextCurrent(getWindow());
+		glfwSwapInterval(1);
+	}
+
+	private void showWindow() {
+		glfwShowWindow(getWindow());
+		glfwFocusWindow(getWindow());
+	}
+
+	private void positionWindow() {
+		setFullscreen(isFullscreen());
+	}
+
+	private void createWindowIcons() {
+		Vector2<TexturePrimitive, ByteBuffer> icon16 = TextureManager.loadToByteBuffer("window/icon16");
+		Vector2<TexturePrimitive, ByteBuffer> icon32 = TextureManager.loadToByteBuffer("window/icon32");
+		Vector2<TexturePrimitive, ByteBuffer> icon64 = TextureManager.loadToByteBuffer("window/icon64");
+		
+		try (GLFWImage.Buffer buffer = GLFWImage.malloc(3)) {
+			buffer
+				.position(0)
+				.width(icon16.a.getWidth())
+				.height(icon16.a.getHeight())
+				.pixels(icon16.b);
+			
+			buffer
+				.position(1)
+				.width(icon32.a.getWidth())
+				.height(icon32.a.getHeight())
+				.pixels(icon32.b);
+			
+			buffer
+				.position(2)
+				.width(icon64.a.getWidth())
+				.height(icon64.a.getHeight())
+				.pixels(icon64.b);
+			
+			glfwSetWindowIcon(getWindow(), buffer);
+		}
+	}
+
+	private void setupWindowCallbacks() {
+		Log.info("Registering window callbacks");
 		glfwSetKeyCallback(getWindow(), GraphicsInterface::handleKeyInput);
 		glfwSetCursorPosCallback(getWindow(), GraphicsInterface::handleCursorMove);
 		glfwSetMouseButtonCallback(getWindow(), GraphicsInterface::handleMouseButton);
 		glfwSetWindowSizeCallback(getWindow(), GraphicsInterface::handleWindowResize);
 	}
-
-	private void showWindow() {
-		glfwMakeContextCurrent(getWindow());
-		glfwSwapInterval(1);
-		glfwShowWindow(getWindow());
-	}
-
-	private void centerWindow() {
-		try ( MemoryStack stack = stackPush() ) {
-			IntBuffer pWidth = stack.mallocInt(1); // int*
-			IntBuffer pHeight = stack.mallocInt(1); // int*
-
-			glfwGetWindowSize(getWindow(), pWidth, pHeight);
-
-			GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-			glfwSetWindowPos(
-				getWindow(),
-				(vidmode.width() - pWidth.get(0)) / 2,
-				(vidmode.height() - pHeight.get(0)) / 2
-			);
-		}
-	}
-
+	
 	private void initializeOpenGL() {
 		Log.info("Initializing OpenGL");
-		GL.createCapabilities();
+		setGlCapabilities(GL.createCapabilities());
 		
 		glEnable(GL_TEXTURE_2D);
 		glDisable(GL_DEPTH_TEST);
@@ -150,11 +176,7 @@ public class RenderThread implements Runnable {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-		
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity(); // Resets any previous projection matrices
-		glOrtho(0, 640, 480, 0, 1, -1);
-		glMatrixMode(GL_MODELVIEW);
+		handleWindowResize(getWindow(), getWindowWidth(), getWindowHeight());
 	}
 
 	private void loadFonts() {

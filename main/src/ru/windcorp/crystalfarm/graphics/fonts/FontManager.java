@@ -32,6 +32,7 @@ import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.grh.Resource;
+import ru.windcorp.tge2.util.vectors.Vector2;
 
 public class FontManager {
 	
@@ -157,7 +158,7 @@ public class FontManager {
 		buffer.flip();
 		
 		TexturePrimitive texture = new TexturePrimitive("Font:" + name + ":" + Integer.toHexString(character), charWidth, height, textureWidth, height);
-		TextureManager.addToLoadQueue(texture, buffer);
+		TextureManager.addToLoadQueue(new Vector2<>(texture, buffer));
 		return new FontSymbol(texture, character);
 	}
 

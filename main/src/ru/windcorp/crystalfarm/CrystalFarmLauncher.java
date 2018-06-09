@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import ru.windcorp.crystalfarm.debug.JobReportPart;
+import ru.windcorp.crystalfarm.debug.LWJGLValueSection;
 import ru.windcorp.crystalfarm.debug.ModReportPart;
 import ru.windcorp.crystalfarm.debug.ModlistSuggestionProvider;
 import ru.windcorp.crystalfarm.debug.ModuleReportPart;
@@ -31,6 +32,7 @@ import ru.windcorp.crystalfarm.struct.job.LowLevelJobListener;
 import ru.windcorp.crystalfarm.struct.mod.ModRegistry;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.crystalfarm.struct.modules.ModuleRegistry;
+import ru.windcorp.tge2.util.debug.Debug;
 import ru.windcorp.tge2.util.debug.DebugUnixArgument;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.LogUnixArgument;
@@ -114,6 +116,12 @@ public class CrystalFarmLauncher {
 		ExecutionReport.enableReportAtShutdown();
 		ExecutionReport.enableUnhandledThrowableHandling();
 		ExecutionReport.addDefaults();
+		
+		if (Debug.allowDebug) {
+			ExecutionReport.setForcedReport(true);
+		}
+		
+		ExecutionReport.addDebugValueSection(new LWJGLValueSection());
 
 		ExecutionReport.addExtraReportPart(new ModReportPart());
 		ExecutionReport.addExtraReportPart(new ModuleReportPart());

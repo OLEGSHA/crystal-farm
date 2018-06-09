@@ -34,7 +34,7 @@ public class GuiLayer extends Layer implements InputListener, WindowResizeListen
 	
 	public void setRoot(Component root) {
 		this.root = root;
-		root.setBounds(0, 0, GraphicsInterface.getWindowSize());
+		root.setBounds(0, 0, GraphicsInterface.getWindowWidth(), GraphicsInterface.getWindowHeight());
 		root.focusNext();
 	}
 
