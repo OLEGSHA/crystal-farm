@@ -182,7 +182,7 @@ public class GraphicsInterface {
 	
 	private static final int UL_X = 0, UL_Y = 1, LR_X = 2, LR_Y = 3;
 	
-	public static void drawTexture(int x, int y, Texture texture, int tileX, int tileY, Direction direction) {
+	public static void drawTexture(int x, int y, Texture texture, int tileX, int tileY, Color filter, Direction direction) {
 		double[] coords = new double[4];
 		int endX = texture.getWidth() + x,
 				endY = texture.getHeight() + y;
@@ -202,7 +202,11 @@ public class GraphicsInterface {
 		
 		glBegin(GL_QUADS);
 		
-			glColor3d(1, 1, 1);
+			if (filter == null) {
+				glColor3d(1, 1, 1);
+			} else {
+				applyColor(filter);
+			}
 			
 			glTexCoord2d(coords[UL_X], coords[UL_Y]); glVertex2i(x, y);
 			glTexCoord2d(coords[UL_X], coords[LR_Y]); glVertex2i(x, endY);

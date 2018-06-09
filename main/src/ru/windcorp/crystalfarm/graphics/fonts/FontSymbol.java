@@ -18,7 +18,6 @@
 package ru.windcorp.crystalfarm.graphics.fonts;
 
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
-import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
 import ru.windcorp.crystalfarm.graphics.texture.TexturePrimitive;
 
 public class FontSymbol extends SimpleTexture {
@@ -32,6 +31,11 @@ public class FontSymbol extends SimpleTexture {
 	
 	public char getChar() {
 		return c;
+	}
+	
+	@Override
+	public String toString() {
+		return String.valueOf(getChar());
 	}
 
 }

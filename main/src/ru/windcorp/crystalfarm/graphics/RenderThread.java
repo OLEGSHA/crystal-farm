@@ -27,6 +27,7 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import ru.windcorp.crystalfarm.CrystalFarm;
+import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
 import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
@@ -57,6 +58,7 @@ public class RenderThread implements Runnable {
 		centerWindow();
 		showWindow();
 		initializeOpenGL();
+		loadFonts();
 		
 		Log.debug("Entering render loop");
 		Log.end("Graphics Init");
@@ -153,6 +155,11 @@ public class RenderThread implements Runnable {
 		glLoadIdentity(); // Resets any previous projection matrices
 		glOrtho(0, 640, 480, 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
+	}
+
+	private void loadFonts() {
+		Log.info("Loading default fonts");
+		FontManager.setDefaultFont(FontManager.getFont("DejaVu-Serif_16"));
 	}
 	
 	public void waitForInit() {

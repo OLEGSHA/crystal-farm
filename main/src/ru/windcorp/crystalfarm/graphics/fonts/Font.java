@@ -52,8 +52,8 @@ public class Font extends Nameable {
 	public FontSymbol getSymbol(char c) {
 		FontSymbol result = null;
 		
-		if (getSymbols()[c / 0xFF] != null) {
-				result = (getSymbols()[c / 0xFF])[c % 0xFF];
+		if (getSymbols()[c / 0x100] != null) {
+				result = (getSymbols()[c / 0x100])[c % 0x100];
 		}
 		
 		return result == null ? getUnknownSymbol() : result;
@@ -100,15 +100,16 @@ public class Font extends Nameable {
 		}
 		
 		result.width = maxWidth + 2;
+		if (bold) result.width += chars.length;
 		result.height += 2;
 		return result;
 	}
 	
 	protected int render(FontSymbol symbol, int x, int y, boolean bold, Color color) {
-		GraphicsInterface.drawTexture(x, y, symbol, 0, 0, Direction.UP);
+		GraphicsInterface.drawTexture(x, y, symbol, 0, 0, color, Direction.UP);
 		
 		if (bold) {
-			GraphicsInterface.drawTexture(x + 1, y, symbol, 0, 0, Direction.UP);
+			GraphicsInterface.drawTexture(x + 1, y, symbol, 0, 0, color, Direction.UP);
 			return symbol.getWidth() + 1;
 		} else {
 			return symbol.getWidth();
@@ -130,8 +131,12 @@ public class Font extends Nameable {
 	}
 	
 	public void render(char[] chars, int x, int y, boolean bold, FontStyle style, Color color) {
+		if (color == null) color = Color.WHITE;
+		
 		switch (style) {
 		case ENGRAVED:
+			color.save();
+			color.multiply(0.75);
 			color.save();
 			renderUnstyled(chars, x - 1, y - 1, bold, color.multiply(2));
 			color.revert();
@@ -139,7 +144,7 @@ public class Font extends Nameable {
 			
 		case SHADOW:
 			color.save();
-			renderUnstyled(chars, x + 1, y + 1, bold, color.multiply(0.5));
+			renderUnstyled(chars, x + 1, y + 1, bold, color.multiply(0.25));
 			color.revert();
 			break;
 			
@@ -148,6 +153,7 @@ public class Font extends Nameable {
 		}
 		
 		renderUnstyled(chars, x, y, bold, color);
+		color.reset();
 	}
 
 }

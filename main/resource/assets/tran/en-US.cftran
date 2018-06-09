@@ -2,3 +2,9 @@
 
 # Welcome message
 Inbuilt:Translation_welcome = I can now speak English just as they speak it in the US!
+
+# Test
+Inbuilt:GraphicsInterface_TMP_1.1 = Play!
+Inbuilt:GraphicsInterface_TMP_1.2 = Settings
+Inbuilt:GraphicsInterface_TMP_1.3 = About
+Inbuilt:GraphicsInterface_TMP_1.4 = Exit

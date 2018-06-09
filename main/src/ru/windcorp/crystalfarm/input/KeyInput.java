@@ -23,10 +23,6 @@ import ru.windcorp.tge2.util.debug.Debug;
 
 public class KeyInput extends ButtonInput {
 	
-	public static final int PRESSED = GLFW.GLFW_PRESS;
-	public static final int RELEASED = GLFW.GLFW_RELEASE;
-	public static final int REPEATED = GLFW.GLFW_REPEAT;
-	
 	private final int key;
 	
 	public KeyInput(int key, int action, int mods) {
@@ -40,6 +36,10 @@ public class KeyInput extends ButtonInput {
 
 	public int getKey() {
 		return key;
+	}
+	
+	public boolean is(int key, int action) {
+		return getKey() == key && getAction() == action;
 	}
 	
 	@Override

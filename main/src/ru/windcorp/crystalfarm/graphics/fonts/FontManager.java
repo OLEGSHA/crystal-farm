@@ -30,14 +30,13 @@ import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
 import ru.windcorp.crystalfarm.graphics.texture.TexturePrimitive;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
+import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.grh.Resource;
 
-/**
- * CFFont syntax:
- */
 public class FontManager {
 	
 	private static final Map<String, Font> FONTS = Collections.synchronizedMap(new HashMap<>());
+	private static Font defaultFont = null;
 	
 	public static Font getFont(String name) {
 		if (!FONTS.containsKey(name)) {
@@ -65,31 +64,48 @@ public class FontManager {
 					ExecutionReport.rscUnrch(resource.toString(), "Could not read font file"),
 					null);
 			return null;
+		} catch (SyntaxException e) {
+			ExecutionReport.reportCriticalError(null,
+					ExecutionReport.rscNotSupp(resource.toString(), "Font file has unknown version " + e.getMessage() + ", 1 supported"),
+					null);
+			return null;
 		}
 	}
 	
-	private static Font loadFont(String name, DataInput input) throws IOException {
+	private static Font loadFont(String name, DataInput input) throws IOException, SyntaxException {
+		Log.debug("Loading font " + name);
+		
+		int version = input.readUnsignedByte();
+		if (version != 1) {
+			throw new SyntaxException(version + "");
+		}
+		
 		int height = input.readByte();
 		int banks = input.readUnsignedByte();
 		
-		Log.debugObj(banks, height);
-		
-		FontSymbol[][] data = new FontSymbol[0xFF][];
+		FontSymbol[][] data = new FontSymbol[0x100][];
 		FontSymbol unknown = readSymbol(input, name, height);
 		
 		for (int bank = 0; bank < banks; ++bank) {
 			
 			int bankMSB = input.readUnsignedByte();
 			int symbols = input.readUnsignedByte();
+			if (symbols == 0) {
+				symbols = 0x100;
+			}
 			
-			Log.debug("In bank " + Integer.toHexString(bankMSB) + " symbols " + symbols);
-			
-			data[bankMSB] = new FontSymbol[0xFF];
+			data[bankMSB] = new FontSymbol[0x100];
 			
 			for (int symbol = 0; symbol < symbols; ++symbol) {
 				FontSymbol current = readSymbol(input, name, height);
-				data[bankMSB][current.getChar() % 0xFF] = current;
+				data[bankMSB][current.getChar() % 0x100] = current;
 			}
+			
+//			int check = input.readInt();
+//			if (check != 0xDEADBEEF) {
+//				System.out.println("ERROR (bank): " + Integer.toHexString(check));
+//				return null;
+//			}
 			
 		}
 		
@@ -101,14 +117,19 @@ public class FontManager {
 
 	private static FontSymbol readSymbol(DataInput input, String name, int height) throws IOException {
 		char character = input.readChar();
-		int width = input.readUnsignedByte();
+		int charWidth = input.readUnsignedByte();
 		
-		Log.debugObj(character, width);
+		int textureWidth;
+		if (charWidth > height) {
+			textureWidth = 2 * height;
+		} else {
+			textureWidth = height;
+		}
 		
-		ByteBuffer buffer = ByteBuffer.allocateDirect(height * height * 4);
+		ByteBuffer buffer = ByteBuffer.allocateDirect(textureWidth * height * 4);
 		
-		for (int i = 0; i < height * height; ++i) {
-			if (i % height < width) {
+		for (int i = 0; i < textureWidth * height; ++i) {
+			if (i % textureWidth < charWidth) {
 				buffer.put(WHITE_ARRAY3);
 				buffer.put(input.readByte());
 			} else {
@@ -116,11 +137,36 @@ public class FontManager {
 			}
 		}
 		
+//		if (character == 0x0152) {
+//			System.out.println();
+//			System.out.print(Integer.toHexString(input.readByte() & 0xFF) + " ");
+//			System.out.print(Integer.toHexString(input.readByte() & 0xFF) + " ");
+//			System.out.print(Integer.toHexString(input.readByte() & 0xFF) + " ");
+//			System.out.print(Integer.toHexString(input.readByte() & 0xFF) + " ");
+//			System.out.println();
+//		}
+		
+		
+//		int check = input.readInt();
+//
+//		if (check != 0xCAFEBABE) {
+//			System.out.println("ERROR (char): " + Integer.toHexString(check));
+//			return null;
+//		}
+		
 		buffer.flip();
 		
-		TexturePrimitive texture = new TexturePrimitive("Font:" + name + ":" + character, width, height, height, height);
+		TexturePrimitive texture = new TexturePrimitive("Font:" + name + ":" + Integer.toHexString(character), charWidth, height, textureWidth, height);
 		TextureManager.addToLoadQueue(texture, buffer);
 		return new FontSymbol(texture, character);
+	}
+
+	public static Font getDefaultFont() {
+		return defaultFont;
+	}
+
+	public static void setDefaultFont(Font defaultFont) {
+		FontManager.defaultFont = defaultFont;
 	}
 
 }

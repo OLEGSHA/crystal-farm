@@ -34,7 +34,8 @@ import static ru.windcorp.tge2.util.debug.ConsoleIO.*;
 
 public class CFDTCreateCFFont {
 	
-	public static final Version VERSION = new Version(1, 0);
+	public static final Version VERSION = new Version(1, 1);
+	public static final byte FONT_VERSION = 1;
 	
 	private static Graphics2D graphics;
 	private static FontMetrics metrics;
@@ -58,19 +59,6 @@ public class CFDTCreateCFFont {
 		write("Licensed under the terms of " + CrystalFarm.LICENSE);
 		write("");
 		
-		File file = new File(prompt("Output file:"));
-		if (file.exists()) {
-			write("File " + file.getAbsolutePath() + " exists");
-			if (ask("Delete file?", "Delete and continue", "Cancel")) {
-				if (!file.delete()) {
-					write("Could not delete");
-					return;
-				}
-			} else {
-				return;
-			}
-		}
-		
 		Font base = Font.decode(prompt("Font:"));
 		if (base == null) {
 			write("Font not found");
@@ -83,8 +71,28 @@ public class CFDTCreateCFFont {
 			return;
 		}
 		
-		height = (int) (long) readInteger("Height:", null, false, 8, 256, null, null);
+		height = (int) (long) readInteger("Height:", null, false, 8, 0xFF, null, null);
 		width = height * 2;
+
+		String filePath = prompt("Output file (empty to generate for CF development environment):");
+		
+		if (filePath.isEmpty()) {
+			filePath = "./resource/assets/fonts/" + base.getName().replace(' ', '-') + "_" + height + ".cffont";
+			write("Assuming file " + filePath);
+		}
+		
+		File file = new File(filePath);
+		if (file.exists()) {
+			write("File " + file.getAbsolutePath() + " exists");
+			if (ask("Delete file?", "Delete and continue", "Cancel")) {
+				if (!file.delete()) {
+					write("Could not delete");
+					return;
+				}
+			} else {
+				return;
+			}
+		}
 		
 		String unknownCharResponse = prompt("Unknown character:");
 		if (unknownCharResponse.length() != 1) {
@@ -94,11 +102,16 @@ public class CFDTCreateCFFont {
 		char unknownChar = unknownCharResponse.charAt(0);
 		
 		String maxCharResponse = prompt("Max character (empty for all):");
-		if (maxCharResponse.length() > 1) {
-			write("Invalid response length (1 character expected)");
-			return;
+		char maxChar;
+		try {
+			maxChar = (char) (int) Integer.decode(maxCharResponse);
+		} catch (NumberFormatException e) {
+			if (maxCharResponse.length() > 1) {
+				write("Invalid response length (1 character expected)");
+				return;
+			}
+			maxChar = maxCharResponse.isEmpty() ? Character.MAX_SURROGATE : maxCharResponse.charAt(0);
 		}
-		char maxChar = maxCharResponse.isEmpty() ? Character.MAX_SURROGATE : maxCharResponse.charAt(0);
 		
 		thickLine();
 		
@@ -108,7 +121,7 @@ public class CFDTCreateCFFont {
 		graphics = canvas.createGraphics();
 		graphics.setRenderingHint(
 				RenderingHints.KEY_TEXT_ANTIALIASING,
-				RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+				RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		
 		write("Setting up font...");
 		
@@ -119,24 +132,26 @@ public class CFDTCreateCFFont {
 		descend = metrics.getDescent();
 		write("Using font size " + height);
 		
+		long startTime = System.currentTimeMillis();
+		
 		write("Preparing chartable...");
 		
 		int banks = 0;
-		int[] symbolsPerBank = new int[0xFF];
-		char[][] chartable = new char[0xFF][];
+		int[] symbolsPerBank = new int[0x100];
+		char[][] chartable = new char[0x100][];
 		int totalSymbols = 0;
 		int writtenSymbols = 0;
 		
-		for (char c = 1; c < maxChar; ++c) {
+		for (char c = ' '; c <= maxChar; ++c) {
 			if (font.canDisplay(c)) {
-				int bank = c / 0xFF;
+				int bank = c / 0x100;
 				
 				if (chartable[bank] == null) {
-					chartable[bank] = new char[0xFF];
+					chartable[bank] = new char[0x100];
 					banks++;
 				}
 				
-				chartable[bank][c % 0xFF] = c;
+				chartable[bank][c % 0x100] = c;
 				symbolsPerBank[bank]++;
 				totalSymbols++;
 			}
@@ -146,30 +161,35 @@ public class CFDTCreateCFFont {
 			try (DataOutputStream output = new DataOutputStream(new FileOutputStream(file, false))) {
 				
 				write("Writing header");
-				output.write(height);
-				output.write(banks);
+				output.writeByte(FONT_VERSION);
+				output.writeByte(height);
+				output.writeByte(banks);
 				
 				write("Writing unknown character");
 				writeChar(output, unknownChar);
 				
-				for (int bank = 0; bank < 0xFF; ++bank) {
+				for (int bank = 0; bank < 0x100 && writtenSymbols < totalSymbols; ++bank) {
 					write("Writing bank " + bank);
 					if (chartable[bank] == null) {
 						write("  Skipped");
 						continue;
 					}
 					
-					output.write(bank);
-					output.write(symbolsPerBank[bank]);
+					output.writeByte(bank);
+					output.writeByte(symbolsPerBank[bank]);
 					
-					for (int symbol = 0; symbol < 0xFF; ++symbol) {
+					write(symbolsPerBank[bank] + " characters");
+					
+					for (int symbol = 0; symbol < 0x100; ++symbol) {
 						if (chartable[bank][symbol] == 0) {
 							continue;
 						}
 						
-						write("  '" + chartable[bank][symbol] + "': " + writtenSymbols++ + "/" + totalSymbols);
+						write("  '" + chartable[bank][symbol] + "': " + ++writtenSymbols + "/" + totalSymbols);
 						writeChar(output, chartable[bank][symbol]);
 					}
+					
+//					output.writeInt(0xDEADBEEF);
 				}
 				
 			}
@@ -183,9 +203,19 @@ public class CFDTCreateCFFont {
 			return;
 		}
 		
+		thickLine();
+		
+		write("Done!");
+		write("  took " + (System.currentTimeMillis() - startTime)/1000.0 + " s");
+		write("  written " + totalSymbols + " characters in " + banks + " banks");
+		write("  output file: " + file.getAbsolutePath());
+		write("    size: " + file.length()/1024.0 + " KiB");
+		
 	}
 	
 	private static void writeChar(DataOutputStream output, char c) throws IOException {
+		int charWidth = metrics.charWidth(c);
+		
 		CHAR_INPUT[0] = c;
 		
 		graphics.setComposite(ALPHA_OVERWRITE);
@@ -196,16 +226,23 @@ public class CFDTCreateCFFont {
 		graphics.setColor(FG);
 		graphics.drawChars(CHAR_INPUT, 0, 1, 0, height - descend);
 		
-		int charWidth = metrics.charWidth(c);
+//		// Test source
+//		if (c == '?') {
+//			File out = new File("test.png");
+//			out.delete();
+//			javax.imageio.ImageIO.write(canvas, "png", out);
+//		}
 		
 		output.writeChar(c);
 		output.writeByte(charWidth);
 		
 		for (int y = 0; y < height; ++y) {
 			for (int x = 0; x < charWidth; ++x) {
-				output.writeByte(canvas.getRGB(x, y) & 0xFF);
+				output.writeByte((canvas.getRGB(x, y) >>> (3*Byte.SIZE)) & 0xFF);
 			}
 		}
+		
+//		output.writeInt(0xCAFEBABE);
 	}
 
 }

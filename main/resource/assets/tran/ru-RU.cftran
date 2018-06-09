@@ -2,3 +2,9 @@
 
 # Приветствие
 Inbuilt:Translation_welcome = Теперь я могу говорить по-русски ну прям как в России!
+
+# Тест
+Inbuilt:GraphicsInterface_TMP_1.1 = Играть!
+Inbuilt:GraphicsInterface_TMP_1.2 = Настройки
+Inbuilt:GraphicsInterface_TMP_1.3 = Об игре
+Inbuilt:GraphicsInterface_TMP_1.4 = Выход

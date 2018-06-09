@@ -20,12 +20,18 @@ package ru.windcorp.crystalfarm.graphics;
 public class Color implements Cloneable {
 	
 	public static final Color
-			BLACK				= new Color(0, 0, 0, 1),
-			WHITE				= new Color(1, 1, 1, 1),
-			TRANSPARENT			= new Color(0, 0, 0, 0),
-			RED					= new Color(1, 0, 0, 1),
-			GREEN				= new Color(0, 1, 0, 1),
-			BLUE				= new Color(0, 0, 1, 1);
+			BLACK				= new Color(  0,   0,   0,   1),
+			WHITE				= new Color(  1,   1,   1,   1),
+			TRANSPARENT			= new Color(  0,   0,   0,   0),
+			RED					= new Color(  1,   0,   0,   1),
+			GREEN				= new Color(  0,   1,   0,   1),
+			BLUE				= new Color(  0,   0,   1,   1),
+			BRIGHT_YELLOW		= new Color(  1,   1,   0,   1),
+			BRIGHT_CYAN			= new Color(  0,   1,   1,   1),
+			BRIGHT_MAGENTA		= new Color(  1,   0,   1,   1),
+			GRAY				= new Color(0.5, 0.5, 0.5,   1),
+			LIGHT_GRAY			= new Color(.75, .75, .75,   1),
+			DARK_GRAY			= new Color(.25, .25, .25,   1);
 	
 	public static final int STACK_SIZE = 4;
 	private static final int STACK_R = 0, STACK_G = 1, STACK_B = 2, STACK_A = 3;
@@ -40,6 +46,14 @@ public class Color implements Cloneable {
 		this.g = g;
 		this.b = b;
 		this.a = a;
+	}
+	
+	public Color(int rgba) {
+		this(
+				(rgba >>> (3*Byte.SIZE) & 0xFF) / 256.0,
+				(rgba >>> (2*Byte.SIZE) & 0xFF) / 256.0,
+				(rgba >>> (1*Byte.SIZE) & 0xFF) / 256.0,
+				(rgba 					& 0xFF) / 256.0);
 	}
 
 	public void copyFrom(Color other) {

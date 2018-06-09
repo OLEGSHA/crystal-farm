@@ -17,11 +17,14 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
+import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.graphics.fonts.Font;
 import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
 import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
+import ru.windcorp.crystalfarm.graphics.fonts.GString;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
+import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.GuiLayer;
 import ru.windcorp.crystalfarm.gui.Layout;
@@ -30,6 +33,7 @@ import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.crystalfarm.util.Direction;
+import ru.windcorp.tge2.util.debug.Log;
 
 public class TMP_JobTestGUI extends ModuleJob {
 	
@@ -68,12 +72,12 @@ public class TMP_JobTestGUI extends ModuleJob {
 		public WordyComponent(String name) {
 			super(name);
 			this.chars = name.toCharArray();
-			setPreferredSize(FONT.getSize(chars, false));
+			setPreferredSize(FONT.getSize(chars, true));
 		}
 		
 		@Override
 		protected void renderSelf() {
-			FONT.render(chars, getX(), getY(), false, FontStyle.PLAIN, Color.WHITE);
+			FONT.render(chars, getX(), getY(), true, FontStyle.PLAIN, Color.BRIGHT_MAGENTA);
 		}
 	}
 	
@@ -88,7 +92,7 @@ public class TMP_JobTestGUI extends ModuleJob {
 		
 		@Override
 		protected void renderSelf() {
-			GraphicsInterface.drawTexture(getX(), getY(), texture, 0, 0, Direction.UP);
+			GraphicsInterface.drawTexture(getX(), getY(), texture, 0, 0, null, Direction.UP);
 		}
 	}
 
@@ -106,10 +110,10 @@ public class TMP_JobTestGUI extends ModuleJob {
 		ColorfulComponent root = new ColorfulComponent("Root", Color.BLACK, new LayoutVertical());
 		
 		ColorfulComponent sub1 = new ColorfulComponent("1", Color.RED, new LayoutVertical());
-		sub1.addChild(new ColorfulComponent("1.1", Color.BLACK, new LayoutVertical()));
-		sub1.addChild(new ColorfulComponent("1.2", Color.BLACK, new LayoutVertical()));
-		sub1.addChild(new ColorfulComponent("1.3", Color.BLACK, new LayoutVertical()));
-		sub1.addChild(new ColorfulComponent("1.4", Color.BLACK, new LayoutVertical()));
+		sub1.addChild(new Button("1.1", new GString(getModule(), "TMP_1.1").setStyle(FontStyle.SHADOW), button -> Log.info(button + " activated")));
+		sub1.addChild(new Button("1.2", new GString(getModule(), "TMP_1.2").setStyle(FontStyle.ENGRAVED), button -> Log.info(button + " activated")));
+		sub1.addChild(new Button("1.3", new GString(getModule(), "TMP_1.3").setColor(Color.BLUE), button -> Log.info(button + " activated")));
+		sub1.addChild(new Button("1.4", new GString(getModule(), "TMP_1.4").setBold(true), button -> CrystalFarm.exit("user request", 0)));
 		
 		ColorfulComponent sub2 = new ColorfulComponent("2", Color.GREEN, new LayoutVertical());
 		sub2.addChild(new ColorfulComponent("2.1", Color.BLACK, new LayoutVertical()));
@@ -118,9 +122,10 @@ public class TMP_JobTestGUI extends ModuleJob {
 		root.addChild(sub1);
 		root.addChild(sub2);
 		root.addChild(new ColorfulComponent("3", Color.BLUE, new LayoutVertical()));
-		root.addChild(new WordyComponent("0123456789!?"));
+		root.addChild(new WordyComponent("Hello, World!\nCan we go for multiline?"));
 		
 		root.addChild(new PictureComponent("4", "logo"));
+		root.addChild(new PictureComponent("5", "transparent"));
 		
 		ColorfulComponent bg = new ColorfulComponent("BG", Color.BLUE, new LayoutCenter());
 		bg.addChild(root);
