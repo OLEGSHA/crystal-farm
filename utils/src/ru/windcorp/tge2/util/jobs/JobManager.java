@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import ru.windcorp.tge2.util.synch.Waiter;
+
 public class JobManager<T extends Job> {
 	
 	private class JobRunner implements Runnable {
@@ -36,6 +38,10 @@ public class JobManager<T extends Job> {
 						break;
 					}
 					
+					synchronized (getWaiter()) {
+						getWaiter().notifyAll();
+					}
+					
 					synchronized (getListeners()) {
 						for (JobListener<? super T> l : getListeners()) {
 							l.onJobDone(JobManager.this, job, Thread.currentThread());
@@ -49,6 +55,19 @@ public class JobManager<T extends Job> {
 						l.onJobsEnd(JobManager.this);
 					}
 				}
+
+				synchronized (isRunning) {
+					if (!isRunning()) {
+						return;
+					}
+					
+					isRunning = Boolean.FALSE;
+				}
+				
+				synchronized (getWaiter()) {
+					getWaiter().notifyAll();
+				}
+				
 			} catch (InvalidJobSetException e) {
 				synchronized (getListeners()) {
 					for (JobListener<? super T> l : getListeners()) {
@@ -67,15 +86,13 @@ public class JobManager<T extends Job> {
 	private final Collection<T> todo = Collections.synchronizedCollection(new LinkedList<T>());
 	
 	private Boolean isRunning = false;
+	private int workers = 0;
 	
 	private final Map<Object, T> usedObjects = Collections.synchronizedMap(new HashMap<Object, T>());
 	
 	private final Collection<JobListener<? super T>> listeners = Collections.synchronizedCollection(new ArrayList<JobListener<? super T>>());
 	
-	/**
-	 * Object for worker threads to wait() on.
-	 */
-	private final Object hook = new Object();
+	private final Waiter waiter = new Waiter();
 	
 	public Collection<T> getJobs() {
 		return jobs.values();
@@ -113,8 +130,12 @@ public class JobManager<T extends Job> {
 		return listeners;
 	}
 
-	public Object getHook() {
-		return hook;
+	public Waiter getWaiter() {
+		return waiter;
+	}
+	
+	public int getWorkers() {
+		return workers;
 	}
 
 	public void addJob(T job) {
@@ -122,6 +143,10 @@ public class JobManager<T extends Job> {
 		
 		jobs.put(job.toString(), job);
 		getJobsLeft().add(job);
+		
+		synchronized (getWaiter()) {
+			getWaiter().notifyAll();
+		}
 		
 		synchronized (getListeners()) {
 			for (JobListener<? super T> l : getListeners()) {
@@ -151,6 +176,8 @@ public class JobManager<T extends Job> {
 			isRunning = Boolean.TRUE;
 		}
 		
+		this.workers = threads;
+		
 		synchronized (getListeners()) {
 			for (JobListener<? super T> l : getListeners()) {
 				l.onJobsBegin(this, threads);
@@ -163,26 +190,46 @@ public class JobManager<T extends Job> {
 	}
 	
 	public T nextJob() throws InvalidJobSetException {
-		synchronized (getJobsLeft()) {
-			if (getJobsLeft().isEmpty()) {
-				return null;
-			}
-			
-			Iterator<T> iterator = getJobsLeft().iterator();
-			T j;
-		
-			while (iterator.hasNext()) {
-				j = iterator.next();
-				
-				if (j.canRun(this)) {
-					iterator.remove();
-					return j;
+		do {
+			synchronized (getJobsLeft()) {
+				if (getJobsLeft().isEmpty()) {
+					return null;
 				}
 				
+				Iterator<T> iterator = getJobsLeft().iterator();
+				T j;
+			
+				while (iterator.hasNext()) {
+					j = iterator.next();
+					
+					if (j.canRun(this)) {
+						iterator.remove();
+						return j;
+					}
+				}
 			}
 			
-			throw new InvalidJobSetException("Failed to resolve next job", this);
-		}
+			synchronized (getWaiter()) {
+				if (getWaiter().getWaiting() == getWorkers() - 1) {
+					synchronized (isRunning) {
+						isRunning = Boolean.FALSE;
+					}
+					getWaiter().notifyAll();
+					throw new InvalidJobSetException("Failed to resolve next job", this);
+				}
+				
+				while (true) {
+					try {
+						getWaiter().wait2();
+						break;
+					} catch (InterruptedException e) {
+						// Re-enter waiter loop
+					}
+				}
+			}
+		} while (isRunning());
+		
+		return null;
 	}
 
 }

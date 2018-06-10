@@ -26,16 +26,16 @@ public class TMP_JobDelayLoad extends ModuleJob {
 	public TMP_JobDelayLoad(int i, Module module) {
 		super("TMP_JobDelayLoad_" + i, "Debug job to simulate lengthy load", module);
 		
-		if (i == 0) {
+		if (i < 2) {
 			addDependency("Inbuilt:GraphicsInterface:TMP_JobTestGUI");
 		} else {
-			addDependency("Inbuilt:GraphicsInterface:TMP_JobDelayLoad_" + (i - 1));
+			addDependency("Inbuilt:GraphicsInterface:TMP_JobDelayLoad_" + (i - 2));
 		}
 	}
 
 	@Override
 	protected void runImpl() {
-		SynchUtil.pause(1000);
+		SynchUtil.pause((long) (500 + 500 * Math.random()));
 	}
 
 }

@@ -43,7 +43,6 @@ import ru.windcorp.tge2.util.unixarg.UnixArgumentSystem;
 public class CrystalFarmLauncher {
 	
 	private static JobManager<ModuleJob> jobManager = null;
-	private static int threads;
 
 	public static void main(String[] args) {
 		CrystalFarm.setLaunchArgs(args);
@@ -68,17 +67,11 @@ public class CrystalFarmLauncher {
 			
 			registerInbuiltMod();
 			
-			Log.end("Init");
-			Log.topic("Load");
-			
 			Log.debug("Creating job manager");
 			createJobManager();
 			
 			Log.info("Running load jobs");
 			runJobs();
-			//Log.info("Load jobs done");
-			
-			//jobManager = null;
 			
 		} finally {
 			Log.endAll();
@@ -153,9 +146,7 @@ public class CrystalFarmLauncher {
 		ModuleRegistry.getModules().forEach((name, module) -> module.registerJobs(getJobManager()));
 		Log.end("Registering first jobs");
 		
-		// TODO: fix JobManager (make threads wait instead of reporting dep problem instantly)
-		Log.critical("TODO: FIX JOBMANAGER");
-		getJobManager().doJobs(threads = 1);
+		getJobManager().doJobs();
 	}
 	
 	public static JobManager<ModuleJob> getJobManager() {
@@ -175,7 +166,7 @@ public class CrystalFarmLauncher {
 	}
 
 	public static int getLoadThreads() {
-		return threads;
+		return getJobManager().getWorkers();
 	}
 
 }
