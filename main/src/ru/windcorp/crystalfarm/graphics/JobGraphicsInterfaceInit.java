@@ -31,7 +31,6 @@ public class JobGraphicsInterfaceInit extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
-		System.exit(0);
 		Log.debug("Launching render thread");
 		
 		RenderThread handler = new RenderThread();
