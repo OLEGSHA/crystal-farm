@@ -96,6 +96,7 @@ public class Component extends Nameable {
 		
 		if (getChildren().remove(child)) {
 			getChildren().add(newIndex, child);
+			invalidate();
 		}
 	}
 	
@@ -108,10 +109,10 @@ public class Component extends Nameable {
 	
 	public void addChild(Component child, int index) {
 		if (index == -1) index = getChildren().size();
-		
+
+		invalidate();
 		getChildren().add(index, child);
 		child.setParent(this);
-		
 		getHierarchyListeners().forEach(listener -> listener.onChildAdded(this, child));
 	}
 	
@@ -120,10 +121,18 @@ public class Component extends Nameable {
 	}
 	
 	public void removeChild(Component child) {
-		if (getChildren().remove(child)) {
-			child.setParent(null);
-			getHierarchyListeners().forEach(listener -> listener.onChildRemoved(this, child));
+		if (!getChildren().contains(child)) {
+			return;
 		}
+		
+		if (child.isFocused()) {
+			child.focusNext();
+		}
+
+		invalidate();
+		getChildren().remove(child);
+		child.setParent(null);
+		getHierarchyListeners().forEach(listener -> listener.onChildRemoved(this, child));
 	}
 	
 	public synchronized int getX() {
@@ -224,6 +233,7 @@ public class Component extends Nameable {
 	}
 	
 	public synchronized void setLayout(Layout layout) {
+		invalidate();
 		this.layout = layout;
 	}
 	

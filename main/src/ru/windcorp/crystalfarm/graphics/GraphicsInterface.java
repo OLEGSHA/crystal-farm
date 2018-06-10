@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
 import org.lwjgl.glfw.GLFWVidMode;
@@ -35,6 +38,7 @@ import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.input.MouseButtonInput;
 import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.collections.ReverseListView;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
 public class GraphicsInterface {
 	
@@ -269,6 +273,149 @@ public class GraphicsInterface {
 	/*
 	 * Misc
 	 */
+	
+	private static class Request<V> {
+		
+		private final Callable<V> callable;
+		private boolean executed = false;
+		private final Thread scheduler;
+		private final boolean complain;
+		
+		private V result = null;
+		private Exception exception = null;
+		
+		public Request(Callable<V> callable, boolean complain) {
+			this.callable = callable;
+			this.scheduler = Thread.currentThread();
+			this.complain = complain;
+		}
+
+		public void call() {
+			try {
+				result = callable.call();
+			} catch (Exception e) {
+				if (complain) {
+					handleCallableException(callable, e, scheduler);
+					return;
+				}
+				exception = e;
+			}
+			executed = true;
+			notifyAll();
+		}
+		
+		public V get() throws Exception {
+			if (exception == null) {
+				return result;
+			}
+			
+			throw exception;
+		}
+		
+	}
+	
+	private static final Queue<Request<?>> RUN_QUEUE = new ConcurrentLinkedQueue<>();
+	
+	static void processRunQueue() {
+		while (!RUN_QUEUE.isEmpty()) {
+			RUN_QUEUE.poll().call();
+		}
+	}
+	
+	/**
+	 * Schedules the callable to be called in the render thread as soon as possible.
+	 * If invoked from the render thread, executes the callable right now.
+	 * <p>Returned value is discarded. All exceptions are treated as critical errors and reported.
+	 * 
+	 * @param callable the routine to execute
+	 */
+	public static void run(Callable<?> callable) {
+		if (isRenderThread()) {
+			try {
+				callable.call();
+			} catch (Exception e) {
+				handleCallableException(callable, e, Thread.currentThread());
+			}
+		}
+		
+		runLater(callable);
+	}
+	
+	/**
+	 * Schedules the callable to be called in the render thread as soon as possible.
+	 * If invoked from the render thread, executes the callable outside the render routine.
+	 * <p>Returned value is discarded. All exceptions are treated as critical errors and reported.
+	 * 
+	 * @param callable the routine to execute
+	 */
+	public static void runLater(Callable<?> callable) {
+		RUN_QUEUE.add(new Request<>(callable, true));
+	}
+	
+	/**
+	 * Schedules the callable to be called in the render thread as soon as possible and waits for it to execute.
+	 * If invoked from the render thread, executes the callable right now.
+	 * 
+	 * <p>All exceptions are propagated to invoker.
+	 * 
+	 * @param callable the routine to execute
+	 * @return the valued returned by the callable
+	 */
+	public static <V> V runNow(Callable<V> callable) throws Exception {
+		if (isRenderThread()) {
+			return callable.call();
+		}
+		
+		Request<V> request = new Request<V>(callable, false);
+		RUN_QUEUE.add(request);
+		
+		while (!request.executed) {
+			try {
+				request.wait();
+			} catch (InterruptedException e) {
+				// Do nothing and wait again
+			}
+		}
+		
+		return request.get();
+	}
+	
+	/**
+	 * Schedules the runnable to be called in the render thread as soon as possible and waits for it to execute.
+	 * If invoked from the render thread, executes the runnable right now.
+	 * 
+	 * <p>All uncaught exceptions are propagated to invoker.
+	 * 
+	 * @param runnable the routine to execute
+	 */
+	public static void runNow(Runnable runnable) {
+		if (isRenderThread()) {
+			runnable.run();
+		}
+		
+		Request<Void> request = new Request<>(() -> {
+			runnable.run();
+			return null;
+		}, false);
+		RUN_QUEUE.add(request);
+		
+		while (!request.executed) {
+			try {
+				request.wait();
+			} catch (InterruptedException e) {
+				// Do nothing and wait again
+			}
+		}
+		
+		if (request.exception != null) {
+			handleCallableException(runnable, request.exception, request.scheduler);
+		}
+	}
+	
+	private static void handleCallableException(Object callable, Exception e, Thread scheduler) {
+		ExecutionReport.reportCriticalError(e, null, "Callable %s (%s) scheduled by thread %s failed to execute",
+				callable.toString(), callable.getClass().toString(), scheduler.getName());
+	}
 	
 	public static boolean isRenderThread() {
 		return Thread.currentThread() == renderThread;

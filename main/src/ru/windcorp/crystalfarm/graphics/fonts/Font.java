@@ -72,6 +72,9 @@ public class Font extends Nameable {
 				sum += getSymbol(c).getWidth();
 			}
 		}
+		if (maxSum < sum) {
+			maxSum = sum;
+		}
 		
 		if (bold) {
 			maxSum += chars.length;
@@ -154,6 +157,10 @@ public class Font extends Nameable {
 		
 		renderUnstyled(chars, x, y, bold, color);
 		color.reset();
+	}
+	
+	public void render(String str, int x, int y, boolean bold, FontStyle style, Color color) {
+		render(str.toCharArray(), x, y, bold, style, color);
 	}
 
 }

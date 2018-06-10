@@ -112,7 +112,13 @@ public class TMP_JobTestGUI extends ModuleJob {
 		ColorfulComponent sub1 = new ColorfulComponent("1", Color.RED, new LayoutVertical());
 		sub1.addChild(new Button("1.1", new GString(getModule(), "TMP_1.1").setStyle(FontStyle.SHADOW), button -> Log.info(button + " activated")));
 		sub1.addChild(new Button("1.2", new GString(getModule(), "TMP_1.2").setStyle(FontStyle.ENGRAVED), button -> Log.info(button + " activated")));
-		sub1.addChild(new Button("1.3", new GString(getModule(), "TMP_1.3").setColor(Color.BLUE), button -> Log.info(button + " activated")));
+		
+		Button button1 = new Button("1.3", new GString(getModule(), "TMP_1.3").setColor(Color.BLUE), null);
+		button1.addAction(button -> {
+			sub1.removeChild(button1);
+		});
+		sub1.addChild(button1);
+		
 		sub1.addChild(new Button("1.4", new GString(getModule(), "TMP_1.4").setBold(true), button -> CrystalFarm.exit("user request", 0)));
 		
 		ColorfulComponent sub2 = new ColorfulComponent("2", Color.GREEN, new LayoutVertical());

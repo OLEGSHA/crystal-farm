@@ -43,6 +43,7 @@ import ru.windcorp.tge2.util.unixarg.UnixArgumentSystem;
 public class CrystalFarmLauncher {
 	
 	private static JobManager<ModuleJob> jobManager = null;
+	private static int threads;
 
 	public static void main(String[] args) {
 		CrystalFarm.setLaunchArgs(args);
@@ -154,7 +155,7 @@ public class CrystalFarmLauncher {
 		
 		// TODO: fix JobManager (make threads wait instead of reporting dep problem instantly)
 		Log.critical("TODO: FIX JOBMANAGER");
-		getJobManager().doJobs(1);
+		getJobManager().doJobs(threads = 1);
 	}
 	
 	public static JobManager<ModuleJob> getJobManager() {
@@ -171,6 +172,10 @@ public class CrystalFarmLauncher {
 	
 	public static boolean doesJobManagerExist() {
 		return jobManager != null;
+	}
+
+	public static int getLoadThreads() {
+		return threads;
 	}
 
 }

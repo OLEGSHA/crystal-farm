@@ -43,6 +43,12 @@ public class JobManager<T extends Job> {
 					}
 					
 				}
+				
+				synchronized (getListeners()) {
+					for (JobListener<? super T> l : getListeners()) {
+						l.onJobsEnd(JobManager.this);
+					}
+				}
 			} catch (InvalidJobSetException e) {
 				synchronized (getListeners()) {
 					for (JobListener<? super T> l : getListeners()) {

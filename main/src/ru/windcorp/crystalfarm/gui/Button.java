@@ -74,7 +74,7 @@ public class Button extends Component implements Consumer<Object> {
 	}
 	
 	public void addAction(Consumer<? super Button> action) {
-		getActions().add(action);
+		if (action != null) getActions().add(action);
 	}
 	
 	public void removeAction(Consumer<? super Button> action) {

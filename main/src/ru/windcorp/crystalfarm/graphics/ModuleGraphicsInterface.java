@@ -48,6 +48,9 @@ public class ModuleGraphicsInterface extends Module {
 	public void registerJobs(JobManager<ModuleJob> manager) {
 		manager.addJob(new JobGraphicsInterfaceInit(this));
 		manager.addJob(new TMP_JobTestGUI(this));
+		manager.addJob(new JobShowGameLoadLayer(this));
+		
+		for (int i = 0; i < 10; ++i) manager.addJob(new TMP_JobDelayLoad(i, this));
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() ->  {
 			if (getWindow() != 0) {
