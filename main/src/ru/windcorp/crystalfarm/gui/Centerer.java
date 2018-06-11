@@ -15,27 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.graphics;
+package ru.windcorp.crystalfarm.gui;
 
-import ru.windcorp.crystalfarm.struct.modules.Module;
-import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
-import ru.windcorp.tge2.util.synch.SynchUtil;
+import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
 
-public class TMP_JobDelayLoad extends ModuleJob {
+public class Centerer extends Component {
 
-	public TMP_JobDelayLoad(int i, Module module) {
-		super("TMP_JobDelayLoad_" + i, "Debug job to simulate lengthy load", module);
+	public Centerer(Component target) {
+		super(target.getName() + "Centerer");
 		
-		if (i < 2) {
-			addDependency("Inbuilt:GraphicsInterface:TMP_JobTestGUI");
-		} else {
-			addDependency("Inbuilt:GraphicsInterface:TMP_JobDelayLoad_" + (i - 2));
-		}
-	}
-
-	@Override
-	protected void runImpl() {
-		SynchUtil.pause((long) (1500 + 500 * Math.random()));
+		setLayout(new LayoutCenter());
+		addChild(target);
 	}
 
 }

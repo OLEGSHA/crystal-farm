@@ -17,6 +17,8 @@
  */
 package ru.windcorp.crystalfarm.gui;
 
+import java.util.Map;
+
 import ru.windcorp.crystalfarm.graphics.fonts.GString;
 
 public class Label extends Component {
@@ -66,6 +68,19 @@ public class Label extends Component {
 	protected void renderSelf() {
 		if (getText() != null)
 			getText().render(getX() + getMargin(), getY() + getMargin());
+	}
+	
+	@Override
+	protected void getDumpCharacteristics(Map<String, String> map) {
+		super.getDumpCharacteristics(map);
+		map.put("key", text == null ? "null" : text.getKey());
+		if (text != null) {
+			map.put("text", text.get());
+			map.put("font", text.getFont().getName());
+			map.put("color", String.valueOf(text.getColor()));
+			map.put("style", String.valueOf(text.getStyle()));
+			map.put("bold", String.valueOf(text.isBold()));
+		}
 	}
 
 }

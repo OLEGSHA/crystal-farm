@@ -37,6 +37,7 @@ import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.input.MouseButtonInput;
 import ru.windcorp.crystalfarm.util.Direction;
+import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.collections.ReverseListView;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
@@ -76,6 +77,10 @@ public class GraphicsInterface {
 	
 	public static void addLayer(Layer layer) {
 		getLayers().add(layer);
+	}
+	
+	public static void addLayerToBottom(Layer layer) {
+		getLayers().add(0, layer);
 	}
 	
 	public static void removeLayer(Layer layer) {
@@ -232,6 +237,16 @@ public class GraphicsInterface {
 		glEnd();
 	}
 	
+	public static void fillRectangle(int x, int y, int width, int height, Color color, Color border, int borderThinkness) {
+		fillRectangle(x, y, width, height, border);
+		fillRectangle(
+				x + borderThinkness,
+				y + borderThinkness,
+				width - 2*borderThinkness,
+				height - 2*borderThinkness,
+				color);
+	}
+	
 	private static final int UL_X = 0, UL_Y = 1, LR_X = 2, LR_Y = 3;
 	
 	public static void drawTexture(int x, int y, Texture texture, int tileX, int tileY, Color filter, Direction direction) {
@@ -270,6 +285,10 @@ public class GraphicsInterface {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
+	public static void drawTexture(int x, int y, Texture texture) {
+		drawTexture(x, y, texture, 0, 0, null, Direction.UP);
+	}
+	
 	/*
 	 * Misc
 	 */
@@ -301,7 +320,10 @@ public class GraphicsInterface {
 				exception = e;
 			}
 			executed = true;
-			notifyAll();
+			
+			synchronized (this) {
+				notifyAll();
+			}
 		}
 		
 		public V get() throws Exception {
@@ -415,6 +437,20 @@ public class GraphicsInterface {
 	private static void handleCallableException(Object callable, Exception e, Thread scheduler) {
 		ExecutionReport.reportCriticalError(e, null, "Callable %s (%s) scheduled by thread %s failed to execute",
 				callable.toString(), callable.getClass().toString(), scheduler.getName());
+	}
+	
+	public static String dumpLayers() {
+		IndentedStringBuilder sb = new IndentedStringBuilder('\t', 1);
+		getLayers().forEach(layer -> layer.dump(sb));
+		return sb.toString();
+	}
+	
+	public static void addInputListener(InputListener l) {
+		LISTENERS_INPUT.add(l);
+	}
+	
+	public static void addWindowResizeListener(WindowResizeListener l) {
+		LISTENERS_WINDOW_RESIZE.add(l);
 	}
 	
 	public static boolean isRenderThread() {

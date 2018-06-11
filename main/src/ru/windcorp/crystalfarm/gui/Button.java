@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 import org.lwjgl.glfw.GLFW;
 
-import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.fonts.GString;
 import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
 import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
@@ -33,22 +33,18 @@ import ru.windcorp.crystalfarm.input.KeyInput;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
-public class Button extends Component implements Consumer<Object> {
-	
-	public static final Color FILL_COLOR = new Color(0xBF_8D_6E_FF);
-	public static final Color FILL_COLOR_HOVERED = FILL_COLOR.clone().multiply(1.5);
-	public static final Color BORDER_COLOR = new Color(0x7F_5D_49_FF);
-	public static final Color BORDER_COLOR_FOCUSED = BORDER_COLOR.clone().multiply(0.5);
-	public static final int BORDER_SIZE = 5;
+public class Button extends Component implements Consumer<Object>, GraphicsDesign {
 
-	private Label label = new Label("Label", null);
+	private Label label = null;
 	
 	private final Collection<Consumer<? super Button>> actions = Collections.synchronizedCollection(new ArrayList<>());
 	
 	public Button(String name, GString label, Consumer<? super Button> action) {
 		super(name);
 		setFocusable(true);
-		setLayout(new LayoutCenter(BORDER_SIZE));
+		setLayout(new LayoutCenter());
+		
+		this.label = new Label(name + ".label", label);
 		
 		addInputListener((ComponentKeyInputListener) (comp, input) -> {
 			if (input.is(GLFW.GLFW_KEY_ENTER, KeyInput.RELEASED)) {
@@ -76,16 +72,19 @@ public class Button extends Component implements Consumer<Object> {
 		return getLabel().getText();
 	}
 
-	public void setText(GString text) {
+	public Button setText(GString text) {
 		getLabel().setText(text);
+		return this;
 	}
 	
-	public void addAction(Consumer<? super Button> action) {
+	public Button addAction(Consumer<? super Button> action) {
 		if (action != null) getActions().add(action);
+		return this;
 	}
 	
-	public void removeAction(Consumer<? super Button> action) {
+	public Button removeAction(Consumer<? super Button> action) {
 		getActions().remove(action);
+		return this;
 	}
 	
 	public Collection<Consumer<? super Button>> getActions() {
@@ -108,14 +107,9 @@ public class Button extends Component implements Consumer<Object> {
 				getY(),
 				getWidth(),
 				getHeight(),
-				isFocused() ? BORDER_COLOR_FOCUSED : BORDER_COLOR);
-		
-		fillRectangle(
-				getX() + BORDER_SIZE,
-				getY() + BORDER_SIZE,
-				getWidth() - BORDER_SIZE * 2,
-				getHeight() - BORDER_SIZE * 2,
-				isHovered() ? FILL_COLOR_HOVERED : FILL_COLOR);
+				isHovered() ? FOREGROUND_COLOR_LIGHTER : FOREGROUND_COLOR,
+				isFocused() ? BORDER_COLOR_DARKER : BORDER_COLOR,
+				LINE_THICKNESS);
 	}
 
 }

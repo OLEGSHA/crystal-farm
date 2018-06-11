@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
+import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.Nameable;
 
 public abstract class Layer extends Nameable {
@@ -26,5 +27,10 @@ public abstract class Layer extends Nameable {
 	}
 	
 	public abstract void render();
+	
+	public void dump(IndentedStringBuilder sb) {
+		sb.append("Layer " + toString() + " (" + this.getClass() + ")");
+		sb.breakLine();
+	}
 
 }

@@ -3,6 +3,10 @@
 # Приветствие
 Inbuilt:Translation_welcome = Теперь я могу говорить по-русски ну прям как в России!
 
+# Меню
+	# Главное меню
+		Inbuilt:GraphicsInterface_MainMenu.title = Главное меню
+
 # Тест
 Inbuilt:GraphicsInterface_TMP_1.1 = Играть!
 Inbuilt:GraphicsInterface_TMP_1.2 = Настройки

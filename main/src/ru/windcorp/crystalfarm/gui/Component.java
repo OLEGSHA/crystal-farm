@@ -21,18 +21,22 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
 
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.gui.listener.ComponentFocusListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentHierarchyListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentInputListener;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.Nameable;
 
-public class Component extends Nameable {
+public class Component extends Nameable implements GraphicsDesign {
 
 	private final List<Component> children = Collections.synchronizedList(new ArrayList<>());
 	private WeakReference<Component> parent = new WeakReference<>(null);
@@ -107,22 +111,24 @@ public class Component extends Nameable {
 		}
 	}
 	
-	public void addChild(Component child, int index) {
+	public Component addChild(Component child, int index) {
 		if (index == -1) index = getChildren().size();
 
 		invalidate();
 		getChildren().add(index, child);
 		child.setParent(this);
 		getHierarchyListeners().forEach(listener -> listener.onChildAdded(this, child));
+		
+		return this;
 	}
 	
-	public void addChild(Component child) {
-		addChild(child, -1);
+	public Component addChild(Component child) {
+		return addChild(child, -1);
 	}
 	
-	public void removeChild(Component child) {
+	public Component removeChild(Component child) {
 		if (!getChildren().contains(child)) {
-			return;
+			return this;
 		}
 		
 		if (child.isFocused()) {
@@ -133,6 +139,8 @@ public class Component extends Nameable {
 		getChildren().remove(child);
 		child.setParent(null);
 		getHierarchyListeners().forEach(listener -> listener.onChildRemoved(this, child));
+		
+		return this;
 	}
 	
 	public synchronized int getX() {
@@ -143,10 +151,11 @@ public class Component extends Nameable {
 		return y;
 	}
 	
-	public synchronized void setPosition(int x, int y) {
+	public synchronized Component setPosition(int x, int y) {
 		invalidate();
 		this.x = x;
 		this.y = y;
+		return this;
 	}
 	
 	public synchronized int getWidth() {
@@ -157,23 +166,25 @@ public class Component extends Nameable {
 		return height;
 	}
 	
-	public synchronized void setSize(int width, int height) {
+	public synchronized Component setSize(int width, int height) {
 		invalidate();
 		this.width = width;
 		this.height = height;
+		return this;
 	}
 	
-	public void setSize(Size size) {
-		setSize(size.width, size.height);
+	public Component setSize(Size size) {
+		return setSize(size.width, size.height);
 	}
 	
-	public synchronized void setBounds(int x, int y, int width, int height) {
+	public synchronized Component setBounds(int x, int y, int width, int height) {
 		setPosition(x, y);
 		setSize(width, height);
+		return this;
 	}
 	
-	public void setBounds(int x, int y, Size size) {
-		setBounds(x, y, size.width, size.height);
+	public Component setBounds(int x, int y, Size size) {
+		return setBounds(x, y, size.width, size.height);
 	}
 	
 	public boolean isValid() {
@@ -196,7 +207,7 @@ public class Component extends Nameable {
 		}
 	}
 	
-	public synchronized void layoutSelf() {
+	protected synchronized void layoutSelf() {
 		if (getLayout() != null) {
 			getLayout().layout(this);
 		}
@@ -217,40 +228,44 @@ public class Component extends Nameable {
 			return getLayout().calculatePreferredSize(this);
 		}
 		
-		return null;
+		return new Size(0, 0);
 	}
 	
-	public synchronized void setPreferredSize(Size preferredSize) {
+	public synchronized Component setPreferredSize(Size preferredSize) {
 		this.preferredSize = preferredSize;
+		return this;
 	}
 	
-	public void setPreferredSize(int width, int height) {
-		setPreferredSize(new Size(width, height));
+	public Component setPreferredSize(int width, int height) {
+		return setPreferredSize(new Size(width, height));
 	}
 	
 	public Layout getLayout() {
 		return layout;
 	}
 	
-	public synchronized void setLayout(Layout layout) {
+	public synchronized Component setLayout(Layout layout) {
 		invalidate();
 		this.layout = layout;
+		return this;
 	}
 	
 	public Object getLayoutHint() {
 		return layoutHint;
 	}
 	
-	public void setLayoutHint(Object hint) {
+	public Component setLayoutHint(Object hint) {
 		this.layoutHint = hint;
+		return this;
 	}
 	
 	public boolean isFocusable() {
 		return isFocusable;
 	}
 	
-	public void setFocusable(boolean focusable) {
+	public Component setFocusable(boolean focusable) {
 		this.isFocusable = focusable;
+		return this;
 	}
 	
 	public boolean isFocused() {
@@ -395,36 +410,42 @@ public class Component extends Nameable {
 		return hierarchyListeners;
 	}
 	
-	public void addHierarchyListener(ComponentHierarchyListener listener) {
+	public Component addHierarchyListener(ComponentHierarchyListener listener) {
 		getHierarchyListeners().add(listener);
+		return this;
 	}
 	
-	public void removeHierarchyListener(ComponentHierarchyListener listener) {
+	public Component removeHierarchyListener(ComponentHierarchyListener listener) {
 		getHierarchyListeners().remove(listener);
+		return this;
 	}
 	
 	public Collection<ComponentFocusListener> getFocusListeners() {
 		return focusListeners;
 	}
 	
-	public void addFocusListener(ComponentFocusListener listener) {
+	public Component addFocusListener(ComponentFocusListener listener) {
 		getFocusListeners().add(listener);
+		return this;
 	}
 	
-	public void removeFocusListener(ComponentFocusListener listener) {
+	public Component removeFocusListener(ComponentFocusListener listener) {
 		getFocusListeners().remove(listener);
+		return this;
 	}
 	
 	public Collection<ComponentInputListener<?>> getInputListeners() {
 		return inputListeners;
 	}
 	
-	public void addInputListener(ComponentInputListener<?> listener) {
+	public Component addInputListener(ComponentInputListener<?> listener) {
 		getInputListeners().add(listener);
+		return this;
 	}
 	
-	public void removeInputListener(ComponentInputListener<?> listener) {
+	public Component removeInputListener(ComponentInputListener<?> listener) {
 		getInputListeners().remove(listener);
+		return this;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -547,6 +568,55 @@ public class Component extends Nameable {
 	
 	protected void renderChildren() {
 		getChildren().forEach(child -> child.render());
+	}
+	
+	public void dump(IndentedStringBuilder sb) {
+		sb.append(getClass().getSimpleName());
+		sb.append(" ");
+		sb.append(getName());
+		
+		Map<String, String> chars = new HashMap<>();
+		getDumpCharacteristics(chars);
+		chars.forEach((name, value) -> {
+			sb.append(" ");
+			sb.append(name);
+			sb.append("=");
+			sb.append(value);
+			sb.append(";");
+		});
+		
+		if (getChildren().isEmpty()) {
+			return;
+		}
+		
+		sb.append(" {");
+		sb.breakLine();
+		getChildren().forEach(child -> {
+			sb.indent();
+			child.dump(sb);
+			sb.unindent();
+			sb.breakLine();
+		});
+		
+		sb.append("} " + getClass().getSimpleName());
+	}
+	
+	protected void getDumpCharacteristics(Map<String, String> map) {
+		map.put("bounds", getX() + ":" + getY() + ">" + getWidth() + ":" + getHeight());
+		map.put("valid", String.valueOf(isValid()));
+		map.put("layout", String.valueOf(getLayout()));
+		map.put("hint", String.valueOf(getLayoutHint()));
+		map.put("focusable", String.valueOf(isFocusable()));
+		if (isFocusable()) map.put("focused", String.valueOf(isFocused()));
+		map.put("hovered", String.valueOf(isHovered()));
+	}
+	
+	/**
+	 * Returns a component that displays this component in its center.
+	 * @return a {@link Centerer} initialized with this component
+	 */
+	public Component center() {
+		return new Centerer(this);
 	}
 
 }

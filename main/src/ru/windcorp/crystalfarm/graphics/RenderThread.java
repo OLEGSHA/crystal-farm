@@ -25,7 +25,6 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import ru.windcorp.crystalfarm.CrystalFarm;
-import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
 import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
 import ru.windcorp.crystalfarm.graphics.texture.TexturePrimitive;
 import ru.windcorp.tge2.util.debug.Log;
@@ -58,8 +57,6 @@ public class RenderThread implements Runnable {
 		createWindowIcons();
 		initializeOpenGL();
 		setupWindowCallbacks();
-		loadFonts();
-		showWindow();
 		
 		Log.debug("Entering render loop");
 		Log.end("Graphics Init");
@@ -69,6 +66,7 @@ public class RenderThread implements Runnable {
 		
 		while (!glfwWindowShouldClose(getWindow())) {
 			TextureManager.processLoadQueue();
+			processRunQueue();
 			
 			glClear(GL_COLOR_BUFFER_BIT);
 
@@ -118,11 +116,6 @@ public class RenderThread implements Runnable {
 		
 		glfwMakeContextCurrent(getWindow());
 		glfwSwapInterval(1);
-	}
-
-	private void showWindow() {
-		glfwShowWindow(getWindow());
-		glfwFocusWindow(getWindow());
 	}
 
 	private void positionWindow() {
@@ -175,13 +168,8 @@ public class RenderThread implements Runnable {
 		
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 		handleWindowResize(getWindow(), getWindowWidth(), getWindowHeight());
-	}
-
-	private void loadFonts() {
-		Log.info("Loading default fonts");
-		FontManager.setDefaultFont(FontManager.getFont("DejaVu-Serif_16"));
 	}
 	
 	public void waitForInit() {

@@ -43,10 +43,14 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 	
 	private static final int TABLE_MARGIN_X = 50;
 	
-	private static final Color MAIN_COLOR = new Color(0xBF4C00FF);
+	private static final Color MAIN_COLOR = Color.fromHsba((float) Math.random(), 1.0f, 0.75f, 0xFF);//new Color(0xBF4C00FF);
 	
 	private final SimpleTexture logo = SimpleTexture.get("load/logo");
-	private final Font font = FontManager.getDefaultFont();
+	private final SimpleTexture iconThreadLoadWork = SimpleTexture.get("load/loadThread.work");
+	private final SimpleTexture iconThreadLoadSleep = SimpleTexture.get("load/loadThread.sleep");
+	
+	private Font font = null;
+	private int maxThreadHeight = iconThreadLoadSleep.getHeight();
 	
 	private final Map<Thread, ModuleJob> current = Collections.synchronizedMap(new HashMap<>());
 
@@ -60,26 +64,52 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 		
 		if (!CrystalFarmLauncher.doesJobManagerExist()) {
 			removeLayer(this);
+			return;
 		}
 		
-		fillRectangle(0, 0, getWindowWidth(), getWindowHeight(), Color.WHITE);
+		renderBackground();
+		renderLogo();
 		
+		if (font == null && FontManager.getDefaultFont() != null) {
+			font = FontManager.getDefaultFont();
+			maxThreadHeight = Math.max(maxThreadHeight, font.getHeight());
+		}
+		
+		JobManager<ModuleJob> manager = CrystalFarmLauncher.getJobManager();
+		int total = manager.getJobs().size();
+		int left = manager.getJobsLeft().size();
+		
+		renderProgress(left, total);
+		renderBar(left, total);
+		renderExecutingJobs();
+		
+	}
+
+	private void renderBackground() {
+		fillRectangle(0, 0, getWindowWidth(), getWindowHeight(), GraphicsDesign.BACKGROUND_COLOR);
+	}
+
+	private void renderLogo() {
 		drawTexture(
 				(getWindowWidth() - logo.getWidth()) / 2,
 				(getWindowHeight()/2 - logo.getHeight()) / 2,
 				logo, 0, 0,
 				null, Direction.UP);
-		
-		JobManager<ModuleJob> manager = CrystalFarmLauncher.getJobManager();
-		int total = manager.getJobs().size();
-		int left = manager.getJobsLeft().size();
+	}
+
+	private void renderProgress(int left, int total) {
+		if (font == null) {
+			return;
+		}
 		
 		char[] chars = ((total - left) + " / " + total).toCharArray();
 		font.render(chars,
 				(getWindowWidth() - font.getLength(chars, true)) / 2,
 				(getWindowHeight()/2 + BAR_MARGIN_Y) - font.getHeight(),
 				true, FontStyle.PLAIN, MAIN_COLOR);
-		
+	}
+
+	private void renderBar(int left, int total) {
 		fillRectangle(
 				BAR_MARGIN_X,
 				getWindowHeight()/2 + BAR_MARGIN_Y,
@@ -95,19 +125,33 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 				BAR_HEIGHT - 2*BAR_THICKNESS,
 				Color.WHITE);
 		
-		int y = getWindowHeight()/2 + BAR_HEIGHT + BAR_MARGIN_Y*2;
+	}
+
+	private void renderExecutingJobs() {
+		int y = getWindowHeight()/2 + BAR_HEIGHT + BAR_MARGIN_Y*2; 
 		
-		for (ModuleJob job : current.values()) {
-			font.render(job == null ? "Idling" : job.getName(),
-					TABLE_MARGIN_X, y += font.getHeight(),
-					true, FontStyle.PLAIN,
-					MAIN_COLOR);
-			font.render(job == null ? "Waiting for available jobs" : job.getDescription(),
-					TABLE_MARGIN_X*2, y += font.getHeight(),
-					false, FontStyle.PLAIN,
-					MAIN_COLOR);
+		synchronized (current) {
+			for (ModuleJob job : current.values()) {
+				drawTexture(TABLE_MARGIN_X, y,
+						job == null ? iconThreadLoadSleep : iconThreadLoadWork,
+								0, 0,
+								Color.WHITE,
+								Direction.UP);
+				
+				if (font != null) {
+					font.render(job == null ? "Idling" : job.getName(),
+							TABLE_MARGIN_X + iconThreadLoadSleep.getWidth(), y,
+							true, FontStyle.PLAIN,
+							MAIN_COLOR);
+					font.render(job == null ? "Waiting for available jobs" : job.getDescription(),
+							TABLE_MARGIN_X*2 +  + iconThreadLoadSleep.getWidth(), y + font.getHeight(),
+							false, FontStyle.PLAIN,
+							MAIN_COLOR);
+				}
+	
+				y += maxThreadHeight;
+			}
 		}
-		
 	}
 
 	@Override

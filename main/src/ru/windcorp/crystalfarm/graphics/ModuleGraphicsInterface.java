@@ -60,6 +60,8 @@ public class ModuleGraphicsInterface extends Module {
 			}
 			
 		});
+		
+		GraphicsInterface.addInputListener(new DebugInputListener());
 	}
 
 	@Override
@@ -67,6 +69,8 @@ public class ModuleGraphicsInterface extends Module {
 		manager.addJob(new JobGraphicsInterfaceInit(this));
 		manager.addJob(new TMP_JobTestGUI(this));
 		manager.addJob(new JobShowGameLoadLayer(this));
+		manager.addJob(new JobLoadDefaultFonts(this));
+		manager.addJob(new JobOpenMainMenu(this));
 		
 		for (int i = 0; i < 10; ++i) manager.addJob(new TMP_JobDelayLoad(i, this));
 		

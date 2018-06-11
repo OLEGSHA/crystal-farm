@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm.gui.layout;
 
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Layout;
 import ru.windcorp.crystalfarm.gui.Size;
@@ -30,7 +31,7 @@ public class LayoutCenter implements Layout {
 	}
 	
 	public LayoutCenter() {
-		this(5);
+		this(GraphicsDesign.LINE_THICKNESS);
 	}
 
 	@Override
@@ -62,6 +63,11 @@ public class LayoutCenter implements Layout {
 		result.height += 2 * margin;
 		
 		return result;
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "(" + margin + ")";
 	}
 
 }

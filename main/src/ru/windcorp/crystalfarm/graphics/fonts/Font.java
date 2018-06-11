@@ -69,15 +69,11 @@ public class Font extends Nameable {
 				}
 				sum = 0;
 			} else {
-				sum += getSymbol(c).getWidth();
+				sum += getSymbol(c).getWidth() + (bold ? 0 : 1);
 			}
 		}
 		if (maxSum < sum) {
 			maxSum = sum;
-		}
-		
-		if (bold) {
-			maxSum += chars.length;
 		}
 		
 		return maxSum + 2;
@@ -95,7 +91,7 @@ public class Font extends Nameable {
 				result.width = 0;
 				result.height += getHeight();
 			} else {
-				result.width += getSymbol(c).getWidth();
+				result.width += getSymbol(c).getWidth() + (bold ? 0 : 1);
 			}
 		}
 		if (maxWidth < result.width) {
@@ -103,7 +99,6 @@ public class Font extends Nameable {
 		}
 		
 		result.width = maxWidth + 2;
-		if (bold) result.width += chars.length;
 		result.height += 2;
 		return result;
 	}

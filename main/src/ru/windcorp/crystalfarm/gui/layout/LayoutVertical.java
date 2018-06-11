@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm.gui.layout;
 
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Layout;
 import ru.windcorp.crystalfarm.gui.Size;
@@ -35,7 +36,7 @@ public class LayoutVertical implements Layout {
 	}
 	
 	public LayoutVertical() {
-		this(5);
+		this(GraphicsDesign.LINE_THICKNESS);
 	}
 
 	@Override
@@ -78,6 +79,11 @@ public class LayoutVertical implements Layout {
 		size.height += 2 * margin;
 		
 		return size;
+	}
+	
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "(" + gap + ", " + margin + ")";
 	}
 
 }

@@ -17,30 +17,21 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
-import static org.lwjgl.glfw.GLFW.glfwFocusWindow;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.getWindow;
-
+import ru.windcorp.crystalfarm.gui.menu.MainMenu;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 
-public class JobShowGameLoadLayer extends ModuleJob {
+public class JobOpenMainMenu extends ModuleJob {
 
-	public JobShowGameLoadLayer(Module module) {
-		super("ShowGameLoadLayer", "Shows game load layer", module);
+	public JobOpenMainMenu(Module module) {
+		super("OpenMainMenu", "Initializes and open main menu", module);
 
-		addDependency("Inbuilt:GraphicsInterface:GraphicsInterfaceInit");
+		addDependency("Inbuilt:GraphicsInterface:LoadDefaultFonts");
 	}
 
 	@Override
 	protected void runImpl() {
-		GraphicsInterface.addLayer(new GameLoadLayer());
-
-		GraphicsInterface.run(() -> {
-			glfwShowWindow(getWindow());
-			glfwFocusWindow(getWindow());
-			return null;
-		});
+		GraphicsInterface.addLayerToBottom(new MainMenu(getModule()));
 	}
 
 }

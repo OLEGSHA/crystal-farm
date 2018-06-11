@@ -17,30 +17,23 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
-import static org.lwjgl.glfw.GLFW.glfwFocusWindow;
-import static org.lwjgl.glfw.GLFW.glfwShowWindow;
-import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.getWindow;
-
+import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
+import ru.windcorp.tge2.util.debug.Log;
 
-public class JobShowGameLoadLayer extends ModuleJob {
+public class JobLoadDefaultFonts extends ModuleJob {
 
-	public JobShowGameLoadLayer(Module module) {
-		super("ShowGameLoadLayer", "Shows game load layer", module);
-
+	public JobLoadDefaultFonts(Module module) {
+		super("LoadDefaultFonts", "Loads default fonts", module);
+		
 		addDependency("Inbuilt:GraphicsInterface:GraphicsInterfaceInit");
 	}
 
 	@Override
 	protected void runImpl() {
-		GraphicsInterface.addLayer(new GameLoadLayer());
-
-		GraphicsInterface.run(() -> {
-			glfwShowWindow(getWindow());
-			glfwFocusWindow(getWindow());
-			return null;
-		});
+		Log.info("Loading default fonts");
+		FontManager.setDefaultFont(FontManager.getFont("DejaVu-Serif_16"));
 	}
 
 }

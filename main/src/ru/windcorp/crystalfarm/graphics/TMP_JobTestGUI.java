@@ -17,23 +17,16 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
-import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.graphics.fonts.Font;
 import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
 import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
-import ru.windcorp.crystalfarm.graphics.fonts.GString;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
-import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Component;
-import ru.windcorp.crystalfarm.gui.GuiLayer;
 import ru.windcorp.crystalfarm.gui.Layout;
-import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
-import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.crystalfarm.util.Direction;
-import ru.windcorp.tge2.util.debug.Log;
 
 public class TMP_JobTestGUI extends ModuleJob {
 	
@@ -99,13 +92,13 @@ public class TMP_JobTestGUI extends ModuleJob {
 	public TMP_JobTestGUI(Module module) {
 		super("TMP_JobTestGUI", "Debug job to fiddle with GUI", module);
 		
-		addDependency("Inbuilt:GraphicsInterface:GraphicsInterfaceInit");
+		addDependency("Inbuilt:GraphicsInterface:LoadDefaultFonts");
 	}
 
 	@Override
 	protected void runImpl() {
 		
-		GuiLayer layer = new GuiLayer("GUI test");
+		/*GuiLayer layer = new GuiLayer("GUI test");
 		
 		ColorfulComponent root = new ColorfulComponent("Root", Color.BLACK, new LayoutVertical());
 		
@@ -137,7 +130,7 @@ public class TMP_JobTestGUI extends ModuleJob {
 		
 		layer.setRoot(bg);
 		
-		GraphicsInterface.addLayer(layer);
+		GraphicsInterface.addLayerToBottom(layer);*/
 		
 	}
 

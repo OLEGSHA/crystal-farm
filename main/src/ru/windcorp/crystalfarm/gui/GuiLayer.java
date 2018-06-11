@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.gui;
 
 import ru.windcorp.crystalfarm.graphics.*;
 import ru.windcorp.crystalfarm.input.Input;
+import ru.windcorp.tge2.util.IndentedStringBuilder;
 
 public class GuiLayer extends Layer implements InputListener, WindowResizeListener {
 	
@@ -57,6 +58,22 @@ public class GuiLayer extends Layer implements InputListener, WindowResizeListen
 	@Override
 	public void onWindowResize(int width, int height) {
 		root.setBounds(0, 0, width, height);
+	}
+	
+	@Override
+	public void dump(IndentedStringBuilder sb) {
+		sb.append("GUI layer " + toString() + " (" + this.getClass() + ")");
+		sb.indent();
+		sb.breakLine();
+		
+		if (getRoot() == null) {
+			sb.append("No root");
+		} else {
+			getRoot().dump(sb);
+		}
+		
+		sb.unindent();
+		sb.breakLine();
 	}
 
 }

@@ -55,6 +55,14 @@ public class Color implements Cloneable {
 				(rgba >>> (1*Byte.SIZE) & 0xFF) / 256.0,
 				(rgba 					& 0xFF) / 256.0);
 	}
+	
+	public static Color fromHsba(float hue, float saturation, float brightness, int alpha) {
+		return new Color(java.awt.Color.HSBtoRGB(hue, saturation, brightness) << Byte.SIZE | (alpha & 0xFF));
+	}
+	
+	public static Color fromHsba(int hue, int saturation, int brightness, int alpha) {
+		return fromHsba(hue / 256f, saturation / 256f, brightness / 256f, alpha);
+	}
 
 	public void copyFrom(Color other) {
 		r = other.r;
@@ -126,6 +134,11 @@ public class Color implements Cloneable {
 		a = stack[0][STACK_A];
 		
 		return this;
+	}
+	
+	@Override
+	public String toString() {
+		return r + "," + b + "," + g + "," + a;
 	}
 	
 }
