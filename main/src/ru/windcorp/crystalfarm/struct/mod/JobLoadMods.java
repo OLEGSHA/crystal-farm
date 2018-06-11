@@ -85,6 +85,7 @@ public class JobLoadMods extends ModuleJob {
 		processDirectory(rootDirectory);
 		processDirectory(new File(rootDirectory, CrystalFarm.VERSION.toString()));
 		processDirectory(new File(rootDirectory, CrystalFarm.VERSION_CODENAME));
+		CrystalFarmLauncher.processArguments3();
 	}
 	
 	private void processDirectory(File directory) {

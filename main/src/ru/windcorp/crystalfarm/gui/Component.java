@@ -471,8 +471,8 @@ public class Component extends Nameable {
 						
 						child.setHovered(true);
 						
-						if (!child.onInput(input)) {
-							return false;
+						if (!input.isConsumed()) {
+							child.onInput(input);
 						}
 					} else {
 						child.setHovered(false);
@@ -480,7 +480,7 @@ public class Component extends Nameable {
 				}
 			}
 
-			dispatchInput(input);
+			if (!input.isConsumed()) dispatchInput(input);
 			
 			break;
 			
@@ -494,7 +494,7 @@ public class Component extends Nameable {
 				}
 			}
 
-			dispatchInput(input);
+			if (!input.isConsumed()) dispatchInput(input);
 			
 			break;
 			

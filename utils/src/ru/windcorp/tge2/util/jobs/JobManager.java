@@ -8,8 +8,15 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.synch.Waiter;
 
+/*
+ * TODO: remove debug code when sure that no problems arise
+ * 
+ * Synchronization seems to deadlock sometime, so leaving this ugly code here for some time.
+ * - OLEGSHA
+ */
 public class JobManager<T extends Job> {
 	
 	private class JobRunner implements Runnable {
@@ -50,23 +57,31 @@ public class JobManager<T extends Job> {
 					
 				}
 				
+				Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " exited loop");
+				
+				synchronized (isRunning) {
+					if (!isRunning()) {
+						Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " walked away quietly");
+						return;
+					}
+					
+					Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " ended JM");
+					isRunning = Boolean.FALSE;
+				}
+				
 				synchronized (getListeners()) {
 					for (JobListener<? super T> l : getListeners()) {
 						l.onJobsEnd(JobManager.this);
 					}
 				}
-
-				synchronized (isRunning) {
-					if (!isRunning()) {
-						return;
-					}
-					
-					isRunning = Boolean.FALSE;
-				}
+				
+				Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " screaming \"HOORAY!\" at the top of its lungs");
 				
 				synchronized (getWaiter()) {
 					getWaiter().notifyAll();
 				}
+				
+				Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " ran away");
 				
 			} catch (InvalidJobSetException e) {
 				synchronized (getListeners()) {
@@ -190,37 +205,50 @@ public class JobManager<T extends Job> {
 	}
 	
 	public T nextJob() throws InvalidJobSetException {
+		Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " entered nextJob()");
 		do {
 			synchronized (getJobsLeft()) {
+				Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + "   entered synchronized (getLeftJobs())");
 				if (getJobsLeft().isEmpty()) {
+					Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " encountered no jobs");
 					return null;
 				}
 				
 				Iterator<T> iterator = getJobsLeft().iterator();
 				T j;
+				
+				Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + "   started iterating");
 			
 				while (iterator.hasNext()) {
 					j = iterator.next();
 					
 					if (j.canRun(this)) {
 						iterator.remove();
+						Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " found a job " + j.toString());
 						return j;
 					}
 				}
 			}
 			
+			Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + "   exited synchronized (getLeftJobs())");
+			
 			synchronized (getWaiter()) {
+				Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + "   entered synchronized (getWaiter())");
 				if (getWaiter().getWaiting() == getWorkers() - 1) {
+					Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + "   found dep problem");
 					synchronized (isRunning) {
 						isRunning = Boolean.FALSE;
 					}
 					getWaiter().notifyAll();
+					Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " about to complain about dep problem");
 					throw new InvalidJobSetException("Failed to resolve next job", this);
 				}
 				
 				while (true) {
 					try {
+						Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + "   falling asleep");
 						getWaiter().wait2();
+						Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + "   awoken");
 						break;
 					} catch (InterruptedException e) {
 						// Re-enter waiter loop
@@ -228,7 +256,7 @@ public class JobManager<T extends Job> {
 				}
 			}
 		} while (isRunning());
-		
+		Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " is slowpoke");
 		return null;
 	}
 

@@ -28,6 +28,7 @@ import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.fonts.GString;
 import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
 import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
+import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.input.KeyInput;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
@@ -51,6 +52,12 @@ public class Button extends Component implements Consumer<Object> {
 		
 		addInputListener((ComponentKeyInputListener) (comp, input) -> {
 			if (input.is(GLFW.GLFW_KEY_ENTER, KeyInput.RELEASED)) {
+				accept(null);
+				input.consume();
+			}
+		});
+		addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
+			if (input.isLeftButton() && input.isPressed()) {
 				accept(null);
 				input.consume();
 			}

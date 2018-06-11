@@ -21,11 +21,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.cfg.ConfigurationNode;
 import ru.windcorp.crystalfarm.cfg.Section;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.tge2.util.Nameable;
 import ru.windcorp.tge2.util.jobs.JobManager;
+import ru.windcorp.tge2.util.unixarg.UnixArgument;
 
 public abstract class Module extends Nameable {
 	
@@ -45,6 +47,10 @@ public abstract class Module extends Nameable {
 	protected <T extends ConfigurationNode> T addConfig(T node) {
 		configurationNodes.add(node);
 		return node;
+	}
+	
+	protected void addArgument(UnixArgument<?> argument) {
+		CrystalFarm.ARGUMENT_SYSTEM.addArgument(argument);
 	}
 	
 	public void registerConfiguration(Section section) {

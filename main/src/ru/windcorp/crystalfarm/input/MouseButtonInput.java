@@ -34,11 +34,50 @@ public class MouseButtonInput extends ButtonInput {
 
 	@Override
 	public InputTarget getTarget() {
-		return InputTarget.FOCUSED;
+		return InputTarget.HOVERED;
 	}
 	
 	public int getButton() {
 		return button;
+	}
+	
+	public boolean isLeftButton() {
+		return getButton() == BUTTON_LEFT;
+	}
+	
+	public boolean isMiddleButton() {
+		return getButton() == BUTTON_MIDDLE;
+	}
+	
+	public boolean isRightButton() {
+		return getButton() == BUTTON_RIGHT;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder("Input[MouseButton, ");
+		
+		switch (getAction()) {
+		case PRESSED:  sb.append("pressed "); break;
+		case RELEASED: sb.append("released "); break;
+		case REPEATED: sb.append("repeated "); break;
+		default: sb.append("? "); break;
+		}
+		
+		switch (getButton()) {
+		case BUTTON_LEFT:	sb.append("LMB"); break;
+		case BUTTON_RIGHT:	sb.append("LMB"); break;
+		case BUTTON_MIDDLE:	sb.append("LMB"); break;
+		default: sb.append("?"); break;
+		}
+		
+		if (getMods() != 0) sb.append(' ');
+		if (hasCtrl()) sb.append('C');
+		if (hasShift()) sb.append('S');
+		if (hasAlt()) sb.append('A');
+		
+		sb.append(']');
+		return sb.toString();
 	}
 
 }

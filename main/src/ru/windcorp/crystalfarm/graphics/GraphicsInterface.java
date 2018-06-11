@@ -245,7 +245,7 @@ public class GraphicsInterface {
 			coords[LR_X] = texture.getWidth() / (float) texture.getTextureWidth();
 			coords[LR_Y] = texture.getHeight() / (float) texture.getTextureHeight();
 		} else {
-			// TODO
+			// TODO pick tile
 		}
 		
 		direction.turnCoordiates(coords);

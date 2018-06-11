@@ -21,12 +21,17 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.glfw.Callbacks.*;
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
+import java.lang.reflect.InvocationTargetException;
+
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.cfg.SettingBoolean;
 import ru.windcorp.crystalfarm.cfg.SettingInt;
+import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.jobs.JobManager;
+import ru.windcorp.tge2.util.unixarg.UnixArgument;
+import ru.windcorp.tge2.util.unixarg.UnixArgumentInvalidSyntaxException;
 
 public class ModuleGraphicsInterface extends Module {
 	
@@ -42,6 +47,19 @@ public class ModuleGraphicsInterface extends Module {
 		addConfig(WINDOW_HEIGHT);
 		addConfig(WINDOW_FULLSCREEN);
 		addConfig(WINDOW_MAXIMIZED);
+		
+		addArgument(new UnixArgument<Void>(
+				"debugTextureLoading", null,
+				"Enables extra debug info for texture loading", null,
+				false, false, true) {
+
+			@Override
+			protected boolean runImpl(Void arg) throws UnixArgumentInvalidSyntaxException, InvocationTargetException {
+				TextureManager.setEnableDebug(true);
+				return false;
+			}
+			
+		});
 	}
 
 	@Override

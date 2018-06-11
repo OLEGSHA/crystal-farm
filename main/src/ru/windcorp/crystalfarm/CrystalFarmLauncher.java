@@ -25,6 +25,7 @@ import java.util.Queue;
 
 import ru.windcorp.crystalfarm.debug.JobReportPart;
 import ru.windcorp.crystalfarm.debug.LWJGLValueSection;
+import ru.windcorp.crystalfarm.debug.LoadThreadsUnixArgument;
 import ru.windcorp.crystalfarm.debug.ModReportPart;
 import ru.windcorp.crystalfarm.debug.ModlistSuggestionProvider;
 import ru.windcorp.crystalfarm.debug.ModuleReportPart;
@@ -43,18 +44,20 @@ import ru.windcorp.tge2.util.unixarg.UnixArgumentSystem;
 public class CrystalFarmLauncher {
 	
 	private static JobManager<ModuleJob> jobManager = null;
+	private static int loadThreads = Runtime.getRuntime().availableProcessors();
+	
+	private static final Queue<String> ARG_QUEUE = new LinkedList<>();
 
 	public static void main(String[] args) {
 		CrystalFarm.setLaunchArgs(args);
 		
 		setupBasicArguments();
 		
-		Queue<String> argQueue = new LinkedList<>();
 		for (String s : args) {
-			argQueue.add(s);
+			ARG_QUEUE.add(s);
 		}
 		
-		processArguments1(argQueue);
+		processArguments1(ARG_QUEUE);
 		
 		setupExecutionReport();
 		
@@ -66,6 +69,7 @@ public class CrystalFarmLauncher {
 			Log.info("Initializing");
 			
 			registerInbuiltMod();
+			processArguments2(ARG_QUEUE);
 			
 			Log.debug("Creating job manager");
 			createJobManager();
@@ -87,6 +91,7 @@ public class CrystalFarmLauncher {
 	private static void setupBasicArguments() {
 		ARGUMENT_SYSTEM.addArgument(new DebugUnixArgument());
 		ARGUMENT_SYSTEM.addArgument(new LogUnixArgument());
+		ARGUMENT_SYSTEM.addArgument(new LoadThreadsUnixArgument());
 	}
 
 	private static void processArguments1(Queue<String> argQueue) {
@@ -141,12 +146,25 @@ public class CrystalFarmLauncher {
 		Log.debug("Done");
 	}
 	
+	private static void processArguments2(Queue<String> argQueue) {
+		try {
+			if (ARGUMENT_SYSTEM.run(argQueue.iterator(),
+					UnixArgumentSystem.UnknownArgumentPolicy.IGNORE,
+					UnixArgumentSystem.InvalidSyntaxPolicy.IGNORE,
+					false)) {
+				System.exit(0);
+			}
+		} catch (InvocationTargetException e) {
+			ExecutionReport.reportCriticalError(e, null, "Unhandled exception while processing arguments encountered");
+		}
+	}
+	
 	private static void runJobs() {
 		Log.topic("Registering first jobs");
 		ModuleRegistry.getModules().forEach((name, module) -> module.registerJobs(getJobManager()));
 		Log.end("Registering first jobs");
 		
-		getJobManager().doJobs();
+		getJobManager().doJobs(loadThreads);
 	}
 	
 	public static JobManager<ModuleJob> getJobManager() {
@@ -167,6 +185,23 @@ public class CrystalFarmLauncher {
 
 	public static int getLoadThreads() {
 		return getJobManager().getWorkers();
+	}
+	
+	public static void setLoadThreads(int loadThreads) {
+		CrystalFarmLauncher.loadThreads = loadThreads;
+	}
+
+	public static void processArguments3() {
+		try {
+			if (ARGUMENT_SYSTEM.run(ARG_QUEUE.iterator(),
+					UnixArgumentSystem.UnknownArgumentPolicy.WARN,
+					UnixArgumentSystem.InvalidSyntaxPolicy.TERMINATE,
+					false)) {
+				System.exit(0);
+			}
+		} catch (InvocationTargetException e) {
+			ExecutionReport.reportCriticalError(e, null, "Unhandled exception while processing arguments encountered");
+		}
 	}
 
 }

@@ -56,12 +56,12 @@ public abstract class Job extends Describable implements Runnable {
 		return state;
 	}
 	
-	public synchronized boolean isExecuted() {
+	public boolean isExecuted() {
 		return state == STATE_EXECUTED;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public synchronized <T extends Job> void execute(JobManager<T> manager) throws JobException, InvocationTargetException {
+	public <T extends Job> void execute(JobManager<T> manager) throws JobException, InvocationTargetException {
 		if (getState() != STATE_SCHEDULED) {
 			// This is obviously an error - we can spend time here
 			
@@ -109,7 +109,7 @@ public abstract class Job extends Describable implements Runnable {
 		this.state = STATE_EXECUTED;
 	}
 	
-	public synchronized boolean canRun(JobManager<?> manager) {
+	public boolean canRun(JobManager<?> manager) {
 		if (getState() != STATE_SCHEDULED) {
 			return false;
 		}
@@ -135,7 +135,7 @@ public abstract class Job extends Describable implements Runnable {
 		return true;
 	}
 	
-	public synchronized String debugCanRun(JobManager<?> manager, String ok) {
+	public String debugCanRun(JobManager<?> manager, String ok) {
 		if (getState() != STATE_SCHEDULED) {
 			return "Job not scheduled";
 		}
@@ -172,7 +172,7 @@ public abstract class Job extends Describable implements Runnable {
 		return dependencies;
 	}
 	
-	public synchronized void addDependency(String dependent) {
+	public void addDependency(String dependent) {
 		this.dependencies.add(dependent);
 	}
 	
@@ -190,11 +190,11 @@ public abstract class Job extends Describable implements Runnable {
 	 * Marks an object as <i>used</i> by this job. See {@link Job#getUsedObjects()} for details.
 	 * @param object the object to mark as used
 	 */
-	public synchronized void addUsedObject(Object object) {
+	public void addUsedObject(Object object) {
 		this.usedObjects.add(object);
 	}
 	
-	public synchronized void setScheduled() {
+	public void setScheduled() {
 		this.state = STATE_SCHEDULED;
 	}
 

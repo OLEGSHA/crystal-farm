@@ -65,12 +65,14 @@ public class TextureManager {
 	
 	private static final Queue<Vector2<TexturePrimitive, ByteBuffer>> LOAD_QUEUE = new ConcurrentLinkedQueue<>();
 	
+	private static boolean enableDebug;
+	
 	private static Resource getResource(String textureName) {
 		return CrystalFarmResourceManagers.RM_ASSETS.getResource("texture/" + textureName + ".png");
 	}
 	
 	public static Vector2<TexturePrimitive, ByteBuffer> loadToByteBuffer(String textureName) {
-		Log.debug("Loading texture " + textureName + " into memory");
+		if (getEnableDebug()) Log.debug("Loading texture " + textureName + " into memory");
 		Resource resource = getResource(textureName);
 		
 		String problem = resource.canRead();
@@ -135,7 +137,7 @@ public class TextureManager {
 	}
 	
 	private static void loadInGL(TexturePrimitive image, ByteBuffer data) {
-		Log.debug("Loading texture " + image + " into OpenGL");
+		if (getEnableDebug()) Log.debug("Loading texture " + image + " into OpenGL");
 		
 		int textureId = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, textureId);
@@ -190,6 +192,14 @@ public class TextureManager {
 		}
 		
 		return classFilter.cast(texture);
+	}
+
+	public static boolean getEnableDebug() {
+		return enableDebug;
+	}
+
+	public static void setEnableDebug(boolean enableDebug) {
+		TextureManager.enableDebug = enableDebug;
 	}
 
 }
