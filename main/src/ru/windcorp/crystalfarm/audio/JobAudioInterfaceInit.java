@@ -19,20 +19,13 @@ package ru.windcorp.crystalfarm.audio;
 
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
-import java.io.IOException;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
- 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL;
-import org.lwjgl.openal.AL10;
 
 public class JobAudioInterfaceInit extends ModuleJob {
 	
-	public JobAudioInterfaceInit(String name, String description, Module module) {
-		super(name, description, module);
-		System.err.println("Called auto-generated constructor for type JobAudioInterfaceInit");
-		// TODO Auto-generated constructor stub
+	public JobAudioInterfaceInit(Module module) {
+		super("AudioInterfaceInit", "Initializes OpenAL", module);
+		
+		addDependency("Inbuilt:Configuration:LoadConfig");
 	}
 
 	@Override

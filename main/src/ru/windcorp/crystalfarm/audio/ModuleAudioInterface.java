@@ -18,7 +18,6 @@
 package ru.windcorp.crystalfarm.audio;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.jobs.JobManager;
@@ -31,7 +30,8 @@ public class ModuleAudioInterface extends Module {
 
 	@Override
 	public void registerJobs(JobManager<ModuleJob> manager) {
-		//manager
+		manager.addJob(new JobAudioInterfaceInit(this));
+		manager.addJob(new TMP_JobTestAudio(this));
 	}
 
 }
