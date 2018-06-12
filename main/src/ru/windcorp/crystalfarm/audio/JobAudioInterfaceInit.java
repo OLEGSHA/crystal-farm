@@ -18,16 +18,16 @@
 package ru.windcorp.crystalfarm.audio;
 
 import static ru.windcorp.crystalfarm.audio.AudioInterface.*;
+import static org.lwjgl.openal.ALC10.*;
+import static org.lwjgl.openal.ALC.*;
+import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.openal.AL.*;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL;
-import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.ALC;
-import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.ALCCapabilities;
 
 import ru.windcorp.crystalfarm.struct.modules.Module;
@@ -46,24 +46,14 @@ public class JobAudioInterfaceInit extends ModuleJob {
 	protected void runImpl() {
 		Log.info("OpenAL initialization");
 		
-		//ALC.create();
-		
-		long device = ALC10.alcOpenDevice((ByteBuffer) null);
-		ALCCapabilities deviceCaps = ALC.createCapabilities(device);
+		setDevice(alcOpenDevice((ByteBuffer) null));
+		ALCCapabilities deviceCaps = createCapabilities(getDevice());
 		ModuleAudioInterface.isALInitialized = true;
 
-		long context = ALC10.alcCreateContext(device, (IntBuffer)null);
-		ALC10.alcMakeContextCurrent(context);
-		AL.createCapabilities(deviceCaps);
+		long context = alcCreateContext(getDevice(), (IntBuffer)null);
+		alcMakeContextCurrent(context);
 		
-		
-		/** Position of the source sound. */
-		FloatBuffer sourcePos = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
-		sourcePos.rewind();
-		
-		/** Velocity of the source sound. */
-		FloatBuffer sourceVel = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
-		sourceVel.rewind();
+		createCapabilities(deviceCaps);
 		
 		/** Position of the listener. */
 		FloatBuffer listenerPos = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
@@ -79,30 +69,23 @@ public class JobAudioInterfaceInit extends ModuleJob {
 		listenerOri.rewind();
 		
 		// Bind the buffer with the source.
-		AL10.alGenSources(getSources()); 
+		alGenSources(getSources());
+		alGenBuffers(getBuffers());
 		
 		//TODO You can delete it, I guess
-		if (AL10.alGetError() != AL10.AL_NO_ERROR) {
+		if (alGetError() != AL_NO_ERROR) {
 			ExecutionReport.reportCriticalError(null, null,
-			"Could not initialize Audio Interface due to OpenAL error (code %d)", AL10.alGetError());
-		}
-		 
-		AL10.alSourcei(getSources().get(0), AL10.AL_BUFFER, getBuffers().get(0));
-		AL10.alSourcef(getSources().get(0), AL10.AL_PITCH, 1.0f);
-		AL10.alSourcef(getSources().get(0), AL10.AL_GAIN, 1.0f);
-		AL10.alSourcefv(getSources().get(0), AL10.AL_POSITION, sourcePos);
-		AL10.alSourcefv(getSources().get(0), AL10.AL_VELOCITY, sourceVel);
-		
-		AL10.alListenerfv(AL10.AL_POSITION,		listenerPos);
-		AL10.alListenerfv(AL10.AL_VELOCITY,		listenerVel);
-		AL10.alListenerfv(AL10.AL_ORIENTATION,	listenerOri);
-		
-		if (AL10.alGetError() != AL10.AL_NO_ERROR) {
-			ExecutionReport.reportCriticalError(null, null,
-			"Could not initialize Audio Interface due to OpenAL error (code %d)", AL10.alGetError());
+			"Could not initialize Audio Interface due to OpenAL error (code %d)", alGetError());
 		}
 		
+		alListenerfv(AL_POSITION,		listenerPos);
+		alListenerfv(AL_VELOCITY,		listenerVel);
+		alListenerfv(AL_ORIENTATION,	listenerOri);
 		
+		if (alGetError() != AL_NO_ERROR) {
+			ExecutionReport.reportCriticalError(null, null,
+			"Could not initialize Audio Interface due to OpenAL error (code %d)", alGetError());
+		}
 		
 		Log.debug("OpenAL initialized successfully");
 	}

@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.audio;
 
 import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALC;
+import org.lwjgl.openal.ALC10;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.struct.modules.Module;
@@ -45,6 +46,7 @@ public class ModuleAudioInterface extends Module {
 			
 			AL10.alDeleteSources(AudioInterface.getSources());
 			AL10.alDeleteBuffers(AudioInterface.getBuffers());
+			ALC10.alcCloseDevice(AudioInterface.getDevice());
 			ALC.destroy();
 		}));
 	}

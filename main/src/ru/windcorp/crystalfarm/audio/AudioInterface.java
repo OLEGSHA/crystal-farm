@@ -19,9 +19,11 @@ package ru.windcorp.crystalfarm.audio;
 
 import static org.lwjgl.openal.AL10.*;
 
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.openal.AL10;
 
 public class AudioInterface {
 	
@@ -30,8 +32,23 @@ public class AudioInterface {
 	/** Sources are points emitting sound. */
 	private final static IntBuffer SOURCES = BufferUtils.createIntBuffer(1);
 	
+	private static long device;
+	
 	public static void play(Sound sound, float volume, float pitch) {
-		alSourcePlay(sound.getBufferId());
+		/** Position of the source sound. */
+		FloatBuffer sourcePos = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
+		sourcePos.rewind();
+		
+		/** Velocity of the source sound. */
+		FloatBuffer sourceVel = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
+		sourceVel.rewind();
+		 
+		AL10.alSourcei(getSources().get(0), AL10.AL_BUFFER, getBuffers().get(0));
+		AL10.alSourcef(getSources().get(0), AL10.AL_PITCH, 1.0f);
+		AL10.alSourcef(getSources().get(0), AL10.AL_GAIN, 1.0f);
+		AL10.alSourcefv(getSources().get(0), AL10.AL_POSITION, sourcePos);
+		AL10.alSourcefv(getSources().get(0), AL10.AL_VELOCITY, sourceVel);
+		alSourcePlay(getSources().get(0));
 	}
 
 	public static IntBuffer getSources() {
@@ -44,6 +61,14 @@ public class AudioInterface {
 	
 	public static int getBuffer(int bufferId) {
 		return getBuffers().get(bufferId);
+	}
+
+	public static long getDevice() {
+		return device;
+	}
+
+	static void setDevice(long device) {
+		AudioInterface.device = device;
 	}
 	
 }
