@@ -19,7 +19,6 @@ package ru.windcorp.crystalfarm.graphics.fonts;
 
 import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.gui.Size;
-import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.translation.TString;
 
 public class GString extends TString {
@@ -32,15 +31,15 @@ public class GString extends TString {
 	private char[] chars;
 	private Size size;
 	
-	public GString(Module module, String name, Font font, FontStyle style, boolean bold, Color color) {
-		super(module, name);
+	public GString(String name, Font font, FontStyle style, boolean bold, Color color) {
+		super(name);
 		this.font = font;
 		this.style = style;
 		this.color = color;
 	}
 	
-	public GString(Module module, String name) {
-		this(module, name, FontManager.getDefaultFont(), FontStyle.PLAIN, false, Color.WHITE);
+	public GString(String name) {
+		this(name, FontManager.getDefaultFont(), FontStyle.PLAIN, false, Color.WHITE);
 	}
 	
 	@Override

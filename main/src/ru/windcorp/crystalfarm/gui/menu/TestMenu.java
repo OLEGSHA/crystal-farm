@@ -19,14 +19,13 @@ package ru.windcorp.crystalfarm.gui.menu;
 
 import ru.windcorp.crystalfarm.graphics.fonts.GString;
 import ru.windcorp.crystalfarm.gui.Button;
-import ru.windcorp.crystalfarm.struct.modules.Module;
 
 public class TestMenu extends MenuLayer {
 
-	public TestMenu(Module module) {
-		super("TestMenu", true, module);
+	public TestMenu() {
+		super("TestMenu", true);
 		
-		Button button = new Button("ExampleButton", new GString(module, "menu.test.button"), null);
+		Button button = new Button("ExampleButton", new GString("menu.test.button"), null);
 		
 		add(button);
 	}

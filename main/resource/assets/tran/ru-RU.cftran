@@ -1,20 +1,18 @@
-# Inbuilt:Translation
-
 # Приветствие
-Inbuilt:Translation_welcome = Теперь я могу говорить по-русски ну прям как в России!
+welcome = Теперь я могу говорить по-русски ну прям как в России!
 
 # Меню
 	# Общее
-		Inbuilt:GraphicsInterface_menu.generic.close = Готово
+		menu.generic.close = Готово
 	# Главное меню
-		Inbuilt:GraphicsInterface_MainMenu.title = Главное меню
+		MainMenu.title = Главное меню
 	# Тестовое меню
-		Inbuilt:GraphicsInterface_TestMenu.title = Тестовое меню
-		Inbuilt:GraphicsInterface_menu.test.button = Кнопка
+		TestMenu.title = Тестовое меню
+		menu.test.button = Кнопка
 
 # Тест
-Inbuilt:GraphicsInterface_TMP_1.1 = Играть!
-Inbuilt:GraphicsInterface_TMP_1.2 = Настройки
-Inbuilt:GraphicsInterface_TMP_1.3 = Об игре
-Inbuilt:GraphicsInterface_TMP_1.4 = Выход
-Inbuilt:GraphicsInterface_TMP_1.5 = Тест GUI
+TMP_1.1 = Играть!
+TMP_1.2 = Настройки
+TMP_1.3 = Об игре
+TMP_1.4 = Выход
+TMP_1.5 = Тест GUI

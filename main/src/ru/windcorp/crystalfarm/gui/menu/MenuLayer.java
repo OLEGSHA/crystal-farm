@@ -30,24 +30,23 @@ import ru.windcorp.crystalfarm.gui.GuiLayer;
 import ru.windcorp.crystalfarm.gui.layout.LayoutBorder;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
-import ru.windcorp.crystalfarm.struct.modules.Module;
 
 public class MenuLayer extends GuiLayer {
 	
 	private final Menu contents;
 
-	public MenuLayer(String name, boolean addCloseButton, Module module) {
+	public MenuLayer(String name, boolean addCloseButton) {
 		super(name);
 		
 		Component root = new Component(name + "Bg");
 		root.setLayout(new LayoutBorder());
 		
-		this.contents = new Menu(name, new GString(module, name + ".title"));
+		this.contents = new Menu(name, new GString(name + ".title"));
 		
 		root.addChild(contents.center().setLayoutHint(LayoutBorder.CENTER));
 		if (addCloseButton) {
 			root.addChild(
-					new Button(name + ".close", new GString(module, "menu.generic.close"), button -> close())
+					new Button(name + ".close", new GString("menu.generic.close"), button -> close())
 						.center().setLayoutHint(LayoutBorder.DOWN)
 			);
 		}

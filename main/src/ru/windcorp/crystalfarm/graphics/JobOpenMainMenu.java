@@ -31,7 +31,7 @@ public class JobOpenMainMenu extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
-		GraphicsInterface.addLayerToBottom(new MainMenu(getModule()));
+		GraphicsInterface.addLayerToBottom(new MainMenu());
 	}
 
 }

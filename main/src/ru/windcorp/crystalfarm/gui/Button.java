@@ -37,9 +37,9 @@ public class Button extends Component implements Consumer<Object>, GraphicsDesig
 
 	private Label label = null;
 	
-	private final Collection<Consumer<? super Button>> actions = Collections.synchronizedCollection(new ArrayList<>());
+	private final Collection<Consumer<?>> actions = Collections.synchronizedCollection(new ArrayList<>());
 	
-	public Button(String name, GString label, Consumer<? super Button> action) {
+	public Button(String name, GString label, Consumer<?> action) {
 		super(name);
 		setFocusable(true);
 		setLayout(new LayoutCenter());
@@ -77,17 +77,17 @@ public class Button extends Component implements Consumer<Object>, GraphicsDesig
 		return this;
 	}
 	
-	public Button addAction(Consumer<? super Button> action) {
+	public Button addAction(Consumer<?> action) {
 		if (action != null) getActions().add(action);
 		return this;
 	}
 	
-	public Button removeAction(Consumer<? super Button> action) {
+	public Button removeAction(Consumer<?> action) {
 		getActions().remove(action);
 		return this;
 	}
 	
-	public Collection<Consumer<? super Button>> getActions() {
+	public Collection<Consumer<?>> getActions() {
 		return actions;
 	}
 	
@@ -97,7 +97,7 @@ public class Button extends Component implements Consumer<Object>, GraphicsDesig
 	 */
 	@Override
 	public void accept(Object t) {
-		getActions().forEach(consumer -> consumer.accept(this));
+		getActions().forEach(consumer -> consumer.accept(null));
 	}
 
 	@Override

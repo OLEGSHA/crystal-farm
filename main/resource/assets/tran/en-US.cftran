@@ -1,20 +1,20 @@
 # Inbuilt:Translation
 
 # Welcome message
-Inbuilt:Translation_welcome = I can now speak English just as they speak it in the US!
+welcome = I can now speak English just as they speak it in the US!
 
 # Menus
 	# Generic
-		Inbuilt:GraphicsInterface_menu.generic.close = Done
+		menu.generic.close = Done
 	# Main menu
-		Inbuilt:GraphicsInterface_MainMenu.title = Main Menu
+		MainMenu.title = Main Menu
 	# Test menu
-		Inbuilt:GraphicsInterface_TestMenu.title = Test Menu
-		Inbuilt:GraphicsInterface_menu.test.button = Button
+		TestMenu.title = Test Menu
+		menu.test.button = Button
 
 # Test
-Inbuilt:GraphicsInterface_TMP_1.1 = Play!
-Inbuilt:GraphicsInterface_TMP_1.2 = Settings
-Inbuilt:GraphicsInterface_TMP_1.3 = About
-Inbuilt:GraphicsInterface_TMP_1.4 = Exit
-Inbuilt:GraphicsInterface_TMP_1.5 = Test GUI
+TMP_1.1 = Play!
+TMP_1.2 = Settings
+TMP_1.3 = About
+TMP_1.4 = Exit
+TMP_1.5 = Test GUI

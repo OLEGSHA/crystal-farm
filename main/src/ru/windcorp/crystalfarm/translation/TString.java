@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import ru.windcorp.crystalfarm.struct.modules.Module;
-
 public class TString implements Cloneable, Comparable<TString> {
 	
 	private static AtomicInteger cleanRejectCounter = new AtomicInteger(0);
@@ -32,16 +30,18 @@ public class TString implements Cloneable, Comparable<TString> {
 	
 	private final String key;
 	private String value = null;
+	private Object[] args = null;
 	
 	private Collection<Consumer<? super TString>> changeListeners = null;
 
-	protected TString(String key) {
+	public TString(String key, Object... args) {
 		this.key = key;
+		this.setArgs(args);
 		ModuleTranslation.register(this);
 	}
 	
-	public TString(Module module, String name) {
-		this(module.toString() + "_" + name);
+	public TString(String key) {
+		this(key, (Object[]) null);
 	}
 	
 	public synchronized void addChangeListener(Consumer<? super TString> listener) {
@@ -62,7 +62,7 @@ public class TString implements Cloneable, Comparable<TString> {
 		return changeListeners;
 	}
 	
-	public synchronized String get() {
+	public synchronized String getRaw() {
 		if (value == null) {
 			return getKey();
 		}
@@ -70,13 +70,21 @@ public class TString implements Cloneable, Comparable<TString> {
 		return value;
 	}
 	
+	public String get() {
+		return format(getArgs());
+	}
+	
 	public String format(Object... args) {
-		String value = get();
+		String raw = getRaw();
+		if (args == null || raw.equals(getKey())) {
+			return raw;
+		}
+		
 		try {
-			return String.format(value, args);
+			return String.format(raw, getArgs());
 		} catch (Exception e) {
 			// Fail silently
-			return value;
+			return raw;
 		}
 	}
 	
@@ -88,6 +96,14 @@ public class TString implements Cloneable, Comparable<TString> {
 		return key;
 	}
 	
+	public Object[] getArgs() {
+		return args;
+	}
+
+	public void setArgs(Object[] args) {
+		this.args = args;
+	}
+
 	@Override
 	public String toString() {
 		return get();

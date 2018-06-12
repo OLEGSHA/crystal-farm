@@ -23,26 +23,25 @@ import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Image;
 import ru.windcorp.crystalfarm.gui.layout.LayoutBorder;
-import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.tge2.util.debug.Log;
 
 public class MainMenu extends MenuLayer {
 
-	public MainMenu(Module module) {
-		super("MainMenu", false, module);
+	public MainMenu() {
+		super("MainMenu", false);
 		
 		getRoot().addChild(new Image("MainMenu.logo", SimpleTexture.get("logo")).setLayoutHint(LayoutBorder.UP));
 
-		Button button1 = new Button("1.3", new GString(module, "TMP_1.3"), null);
+		Button button1 = new Button("1.3", new GString("TMP_1.3"), null);
 		button1.addAction(button -> {
 			getContents().removeChild(button1);
 		});
 		
-		add(new Button("1.1", new GString(module, "TMP_1.1"), button -> Log.info(button + " activated")),
-				new Button("1.2", new GString(module, "TMP_1.2"), button -> Log.info(button + " activated")),
+		add(new Button("1.1", new GString("TMP_1.1"), button -> Log.info(button + " activated")),
+				new Button("1.2", new GString("TMP_1.2"), button -> Log.info(button + " activated")),
 				button1,
-				new Button("1.5", new GString(module, "TMP_1.5"), button -> new TestMenu(module).show()),
-				new Button("1.4", new GString(module, "TMP_1.4"), button -> CrystalFarm.exit("user request", 0)));
+				new Button("1.5", new GString("TMP_1.5"), button -> new TestMenu().show()),
+				new Button("1.4", new GString("TMP_1.4"), button -> CrystalFarm.exit("user request", 0)));
 		
 	}
 	
