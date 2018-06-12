@@ -52,7 +52,6 @@ public class JobAudioInterfaceInit extends ModuleJob {
 
 		long context = alcCreateContext(getDevice(), (IntBuffer)null);
 		alcMakeContextCurrent(context);
-		
 		createCapabilities(deviceCaps);
 		
 		/** Position of the listener. */
@@ -70,7 +69,6 @@ public class JobAudioInterfaceInit extends ModuleJob {
 		
 		// Bind the buffer with the source.
 		alGenSources(getSources());
-		alGenBuffers(getBuffers());
 		
 		//TODO You can delete it, I guess
 		if (alGetError() != AL_NO_ERROR) {

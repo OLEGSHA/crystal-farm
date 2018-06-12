@@ -17,17 +17,30 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
-import java.io.IOException;
+import static org.lwjgl.openal.AL10.AL_FORMAT_MONO16;
+import static org.lwjgl.openal.AL10.AL_FORMAT_STEREO16;
+import static org.lwjgl.openal.AL10.alBufferData;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_close;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_get_info;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_get_samples_short_interleaved;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_open_memory;
+import static org.lwjgl.stb.STBVorbis.stb_vorbis_stream_length_in_samples;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
+import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
+import org.lwjgl.stb.STBVorbisInfo;
 
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
@@ -61,31 +74,85 @@ public class SoundManager {
 			return null;
 		}
 		
-		AudioInputStream inputStream = null;
+		int bufferId = AL10.alGenBuffers();
+		
 		try {
-			inputStream = AudioSystem.getAudioInputStream(resource.getInputStream());
-		} catch (UnsupportedAudioFileException e) {
-			ExecutionReport.reportCriticalError(null,
-					ExecutionReport.rscNotSupp(resource.toString(), "Audio format not supported"), null);
-			return null;
+			try (STBVorbisInfo info = STBVorbisInfo.malloc()) {
+	            ShortBuffer pcm = readVorbis(resource, 32 * 1024, info);
+	            alBufferData(bufferId, info.channels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, pcm, info.sample_rate());
+	        }
 		} catch (IOException e) {
-			ExecutionReport.reportCriticalError(null,
+			ExecutionReport.reportCriticalError(e,
 					ExecutionReport.rscCorrupt(resource.toString(), "Could not read or parse sound file"), null);
 			return null;
 		}
 		
-		WaveData waveData = WaveData.create(inputStream);
-		Sound sound = createSound(name, waveData);
+		Sound sound = new Sound(name, bufferId);
 		
 		SOUNDS.put(name, sound);
 		
 		return sound;
 	}
 
-	private static Sound createSound(String name, WaveData data) {
-		AL10.alBufferData(AudioInterface.getBuffers().get(0), data.format, data.data, data.samplerate);
-		data.dispose();
-		return new Sound(name, 0);
+	/*
+	 * Method readVorbis() is imported from LWJGL OpenAL Demo
+	 * 
+	 * Copyright LWJGL. All rights reserved.
+	 * License terms: https://www.lwjgl.org/license
+	 */
+    private static ShortBuffer readVorbis(Resource resource, int bufferSize, STBVorbisInfo info) throws IOException {
+        ByteBuffer vorbis  = ioResourceToByteBuffer(resource, bufferSize);
+        IntBuffer  error   = BufferUtils.createIntBuffer(1);
+        long       decoder = stb_vorbis_open_memory(vorbis, error, null);
+        if (decoder == NULL) {
+            throw new IOException("Failed to open Ogg Vorbis file. Error: " + error.get(0));
+        }
+        
+        stb_vorbis_get_info(decoder, info);
+
+        int channels = info.channels();
+
+        int lengthSamples = stb_vorbis_stream_length_in_samples(decoder);
+
+        ShortBuffer pcm = BufferUtils.createShortBuffer(lengthSamples);
+
+        pcm.limit(stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm) * channels);
+        stb_vorbis_close(decoder);
+
+        return pcm;
+    }
+
+	private static ByteBuffer ioResourceToByteBuffer(Resource resource, int bufferSize) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream(bufferSize);
+		InputStream in = resource.getInputStream();
+		
+		// Sync'ing once to avoid excessive monitor checks in baos.write()
+		synchronized (baos) {
+			byte[] buffer = new byte[bufferSize];
+			int read;
+			do {
+				read = in.read(buffer);
+				baos.write(buffer);
+			} while (read == bufferSize);
+
+			ByteBuffer result = ByteBuffer.allocateDirect(baos.size());
+			result.order(ByteOrder.nativeOrder());
+			result.put(baos.toByteArray());
+			result.flip();
+			return result;
+		}
+	}
+
+	static IntBuffer getBuffers() {
+		synchronized (SOUNDS) {
+			IntBuffer buffers = IntBuffer.allocate(SOUNDS.size());
+			
+			SOUNDS.forEach((name, sound) -> {
+				buffers.put(sound.getBufferId());
+			});
+			
+			return buffers;
+		}
 	}
 
 }
