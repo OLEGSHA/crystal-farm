@@ -35,6 +35,7 @@ public class TString implements Cloneable, Comparable<TString> {
 	private Collection<Consumer<? super TString>> changeListeners = null;
 
 	public TString(String key, Object... args) {
+		if (args != null && args.length == 0) args = null;
 		this.key = key;
 		this.setArgs(args);
 		ModuleTranslation.register(this);

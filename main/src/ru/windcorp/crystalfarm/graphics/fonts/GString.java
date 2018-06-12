@@ -31,15 +31,15 @@ public class GString extends TString {
 	private char[] chars;
 	private Size size;
 	
-	public GString(String name, Font font, FontStyle style, boolean bold, Color color) {
-		super(name);
+	public GString(String name, Font font, FontStyle style, boolean bold, Color color, Object... args) {
+		super(name, args);
 		this.font = font;
 		this.style = style;
 		this.color = color;
 	}
 	
-	public GString(String name) {
-		this(name, FontManager.getDefaultFont(), FontStyle.PLAIN, false, Color.WHITE);
+	public GString(String name, Object... args) {
+		this(name, FontManager.getDefaultFont(), FontStyle.PLAIN, false, Color.WHITE, args);
 	}
 	
 	@Override
