@@ -30,11 +30,12 @@ public class AudioInterface {
 	private final static IntBuffer SOURCES = BufferUtils.createIntBuffer(1);
 	
 	private static long device;
+	private static boolean isAudioReady = false;
 	
 	private static final float[] FLOAT_ZERO3 = new float[] {0, 0, 0};
 	
 	public static void play(Sound sound, float volume, float pitch) {
-		AL10.alSourcei(getSources().get(0), AL10.AL_BUFFER, getBuffers().get(0));
+		AL10.alSourcei(getSources().get(0), AL10.AL_BUFFER, sound.getBufferId());
 		AL10.alSourcef(getSources().get(0), AL10.AL_PITCH, pitch);
 		AL10.alSourcef(getSources().get(0), AL10.AL_GAIN, volume);
 		AL10.alSourcefv(getSources().get(0), AL10.AL_POSITION, FLOAT_ZERO3);
@@ -56,6 +57,14 @@ public class AudioInterface {
 
 	static void setDevice(long device) {
 		AudioInterface.device = device;
+	}
+
+	public static boolean isAudioReady() {
+		return isAudioReady;
+	}
+
+	static void setAudioReady(boolean isAudioReady) {
+		AudioInterface.isAudioReady = isAudioReady;
 	}
 	
 }

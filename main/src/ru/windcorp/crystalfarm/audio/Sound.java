@@ -21,15 +21,21 @@ import ru.windcorp.tge2.util.Nameable;
 
 public class Sound extends Nameable {
 
-	private final int bufferId;
+	private int bufferId;
 
-	public Sound(String name, int bufferId) {
+	public Sound(String name) {
 		super(name);
-		this.bufferId = bufferId;
 	}
 
 	public int getBufferId() {
+		if (bufferId == 0) {
+			throw new IllegalStateException("Sound not initialized yet");
+		}
 		return bufferId;
+	}
+	
+	void setBufferId(int bufferId) {
+		this.bufferId = bufferId;
 	}
 	
 }

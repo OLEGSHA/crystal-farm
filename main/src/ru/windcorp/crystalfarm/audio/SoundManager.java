@@ -37,16 +37,35 @@ import java.nio.ShortBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 import org.lwjgl.stb.STBVorbisInfo;
 
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
+import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.grh.Resource;
 
 public class SoundManager {
+	
+	private static class DelayedLoad {
+		final Sound sound;
+		final ShortBuffer pcm;
+		final int format;
+		final int sampleRate;
+		
+		DelayedLoad(Sound sound, ShortBuffer pcm, int format, int sampleRate) {
+			this.sound = sound;
+			this.pcm = pcm;
+			this.format = format;
+			this.sampleRate = sampleRate;
+		}
+	}
+	
+	private static final Queue<DelayedLoad> DELAYED_LOAD_QUEUE = new ConcurrentLinkedQueue<>();
 	
 	private static final Map<String, Sound> SOUNDS = Collections.synchronizedMap(new HashMap<>());
 	
@@ -64,7 +83,7 @@ public class SoundManager {
 		return CrystalFarmResourceManagers.RM_ASSETS.getResource("audio/" + name + ".ogg");
 	}
 
-	private static Sound load(String name) {
+	private synchronized static Sound load(String name) {
 		Resource resource = getResource(name);
 		
 		String problem = resource.canRead();
@@ -74,12 +93,14 @@ public class SoundManager {
 			return null;
 		}
 		
-		int bufferId = AL10.alGenBuffers();
+		ShortBuffer pcm;
+		int format, sampleRate;
 		
 		try {
 			try (STBVorbisInfo info = STBVorbisInfo.malloc()) {
-	            ShortBuffer pcm = readVorbis(resource, 32 * 1024, info);
-	            alBufferData(bufferId, info.channels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, pcm, info.sample_rate());
+	            pcm = readVorbis(resource, 32 * 1024, info);
+	            format = info.channels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+	            sampleRate = info.sample_rate();
 	        }
 		} catch (IOException e) {
 			ExecutionReport.reportCriticalError(e,
@@ -87,18 +108,32 @@ public class SoundManager {
 			return null;
 		}
 		
-		Sound sound = new Sound(name, bufferId);
-		
+		Sound sound = new Sound(name);
 		SOUNDS.put(name, sound);
 		
+		if (AudioInterface.isAudioReady()) {
+			loadInAL(sound, pcm, format, sampleRate);
+		} else {
+			DELAYED_LOAD_QUEUE.add(new DelayedLoad(sound, pcm, format, sampleRate));
+		}
+		
 		return sound;
+	}
+	
+	private static void loadInAL(Sound sound, ShortBuffer pcm, int format, int sampleRate) {
+		Log.critical("Loading " + sound.getName());
+		int bufferId = AL10.alGenBuffers();
+		alBufferData(bufferId, format, pcm, sampleRate);
+		sound.setBufferId(bufferId);
+	}
+	
+	static synchronized void processQueueAndSetAudioReady() {
+		DELAYED_LOAD_QUEUE.forEach(delayed -> loadInAL(delayed.sound, delayed.pcm, delayed.format, delayed.sampleRate));
+		AudioInterface.setAudioReady(true);
 	}
 
 	/*
 	 * Method readVorbis() is imported from LWJGL OpenAL Demo
-	 * 
-	 * Copyright LWJGL. All rights reserved.
-	 * License terms: https://www.lwjgl.org/license
 	 */
     private static ShortBuffer readVorbis(Resource resource, int bufferSize, STBVorbisInfo info) throws IOException {
         ByteBuffer vorbis  = ioResourceToByteBuffer(resource, bufferSize);

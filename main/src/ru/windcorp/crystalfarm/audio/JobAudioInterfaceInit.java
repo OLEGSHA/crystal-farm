@@ -70,6 +70,8 @@ public class JobAudioInterfaceInit extends ModuleJob {
 		// Bind the buffer with the source.
 		alGenSources(getSources());
 		
+		SoundManager.processQueueAndSetAudioReady();
+		
 		if (alGetError() != AL_NO_ERROR) {
 			ExecutionReport.reportCriticalError(null, null,
 			"Could not initialize Audio Interface due to OpenAL error (code %d)", alGetError());
