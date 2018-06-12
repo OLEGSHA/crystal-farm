@@ -35,8 +35,8 @@ public class AudioInterface {
 	
 	public static void play(Sound sound, float volume, float pitch) {
 		AL10.alSourcei(getSources().get(0), AL10.AL_BUFFER, getBuffers().get(0));
-		AL10.alSourcef(getSources().get(0), AL10.AL_PITCH, 1.0f);
-		AL10.alSourcef(getSources().get(0), AL10.AL_GAIN, 1.0f);
+		AL10.alSourcef(getSources().get(0), AL10.AL_PITCH, pitch);
+		AL10.alSourcef(getSources().get(0), AL10.AL_GAIN, volume);
 		AL10.alSourcefv(getSources().get(0), AL10.AL_POSITION, FLOAT_ZERO3);
 		AL10.alSourcefv(getSources().get(0), AL10.AL_VELOCITY, FLOAT_ZERO3);
 		alSourcePlay(getSources().get(0));
