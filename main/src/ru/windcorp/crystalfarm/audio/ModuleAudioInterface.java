@@ -17,12 +17,17 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
+import org.lwjgl.openal.AL10;
+import org.lwjgl.openal.ALC;
+
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.jobs.JobManager;
 
 public class ModuleAudioInterface extends Module {
+	
+	static boolean isALInitialized = false;
 
 	public ModuleAudioInterface() {
 		super("AudioInterface", InbuiltMod.INST);
@@ -32,6 +37,16 @@ public class ModuleAudioInterface extends Module {
 	public void registerJobs(JobManager<ModuleJob> manager) {
 		manager.addJob(new JobAudioInterfaceInit(this));
 		manager.addJob(new TMP_JobTestAudio(this));
+		
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			if (!isALInitialized) {
+				return;
+			}
+			
+			AL10.alDeleteSources(AudioInterface.getSources());
+			AL10.alDeleteBuffers(AudioInterface.getBuffers());
+			ALC.destroy();
+		}));
 	}
 
 }

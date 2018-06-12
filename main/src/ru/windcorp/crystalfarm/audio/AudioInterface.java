@@ -17,10 +17,33 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
+import static org.lwjgl.openal.AL10.*;
+
+import java.nio.IntBuffer;
+
+import org.lwjgl.BufferUtils;
+
 public class AudioInterface {
 	
+	/** Buffers hold sound data. */
+	private final static IntBuffer BUFFERS = BufferUtils.createIntBuffer(1);
+	/** Sources are points emitting sound. */
+	private final static IntBuffer SOURCES = BufferUtils.createIntBuffer(1);
+	
 	public static void play(Sound sound, float volume, float pitch) {
-		
+		alSourcePlay(sound.getBufferId());
+	}
+
+	public static IntBuffer getSources() {
+		return SOURCES;
+	}
+
+	public static IntBuffer getBuffers() {
+		return BUFFERS;
+	}
+	
+	public static int getBuffer(int bufferId) {
+		return getBuffers().get(bufferId);
 	}
 	
 }

@@ -17,6 +17,19 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
-public class Sound {
+import ru.windcorp.tge2.util.Nameable;
 
+public class Sound extends Nameable {
+
+	private final int bufferId;
+
+	public Sound(String name, int bufferId) {
+		super(name);
+		this.bufferId = bufferId;
+	}
+
+	public int getBufferId() {
+		return bufferId;
+	}
+	
 }

@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.audio;
 
 import java.io.IOException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,8 @@ import java.util.Map;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+
+import org.lwjgl.openal.AL10;
 
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
@@ -45,7 +48,7 @@ public class SoundManager {
 	}
 	
 	private static Resource getResource(String name) {
-		return CrystalFarmResourceManagers.RM_ASSETS.getResource("sound/" + name + ".ogg");
+		return CrystalFarmResourceManagers.RM_ASSETS.getResource("audio/" + name + ".ogg");
 	}
 
 	private static Sound load(String name) {
@@ -60,7 +63,7 @@ public class SoundManager {
 		
 		AudioInputStream inputStream = null;
 		try {
-			AudioSystem.getAudioInputStream(resource.getInputStream());
+			inputStream = AudioSystem.getAudioInputStream(resource.getInputStream());
 		} catch (UnsupportedAudioFileException e) {
 			ExecutionReport.reportCriticalError(null,
 					ExecutionReport.rscNotSupp(resource.toString(), "Audio format not supported"), null);
@@ -80,11 +83,9 @@ public class SoundManager {
 	}
 
 	private static Sound createSound(String name, WaveData data) {
-		
-		// TODO create sound object and return it
-		
-		System.err.println("Called auto-generated method SoundManager.SoundManager");
-		return null;
+		AL10.alBufferData(AudioInterface.getBuffers().get(0), data.format, data.data, data.samplerate);
+		data.dispose();
+		return new Sound(name, 0);
 	}
 
 }

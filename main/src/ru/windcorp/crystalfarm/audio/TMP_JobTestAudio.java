@@ -31,7 +31,9 @@ public class TMP_JobTestAudio extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
-		// Test AudioInterface here: load and play a few sounds, etc.
+		Sound sound = SoundManager.get("Rondo_Alla_Turka");
+		AudioInterface.play(sound, 0, 0);
+		
 	}
 
 }
