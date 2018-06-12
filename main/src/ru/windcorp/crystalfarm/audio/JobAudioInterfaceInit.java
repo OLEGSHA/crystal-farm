@@ -70,16 +70,6 @@ public class JobAudioInterfaceInit extends ModuleJob {
 		// Bind the buffer with the source.
 		alGenSources(getSources());
 		
-		//TODO You can delete it, I guess
-		if (alGetError() != AL_NO_ERROR) {
-			ExecutionReport.reportCriticalError(null, null,
-			"Could not initialize Audio Interface due to OpenAL error (code %d)", alGetError());
-		}
-		
-		alListenerfv(AL_POSITION,		listenerPos);
-		alListenerfv(AL_VELOCITY,		listenerVel);
-		alListenerfv(AL_ORIENTATION,	listenerOri);
-		
 		if (alGetError() != AL_NO_ERROR) {
 			ExecutionReport.reportCriticalError(null, null,
 			"Could not initialize Audio Interface due to OpenAL error (code %d)", alGetError());
