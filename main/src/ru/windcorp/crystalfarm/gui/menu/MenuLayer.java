@@ -86,6 +86,10 @@ public class MenuLayer extends GuiLayer {
 		return this;
 	}
 	
+	public void show() {
+		GraphicsInterface.addLayer(this);
+	}
+	
 	public void close() {
 		GraphicsInterface.removeLayer(MenuLayer.this);
 	}

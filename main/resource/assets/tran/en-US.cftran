@@ -4,11 +4,17 @@
 Inbuilt:Translation_welcome = I can now speak English just as they speak it in the US!
 
 # Menus
+	# Generic
+		Inbuilt:GraphicsInterface_menu.generic.close = Done
 	# Main menu
 		Inbuilt:GraphicsInterface_MainMenu.title = Main Menu
+	# Test menu
+		Inbuilt:GraphicsInterface_TestMenu.title = Test Menu
+		Inbuilt:GraphicsInterface_menu.test.button = Button
 
 # Test
 Inbuilt:GraphicsInterface_TMP_1.1 = Play!
 Inbuilt:GraphicsInterface_TMP_1.2 = Settings
 Inbuilt:GraphicsInterface_TMP_1.3 = About
 Inbuilt:GraphicsInterface_TMP_1.4 = Exit
+Inbuilt:GraphicsInterface_TMP_1.5 = Test GUI

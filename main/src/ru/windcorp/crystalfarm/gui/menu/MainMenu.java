@@ -41,6 +41,7 @@ public class MainMenu extends MenuLayer {
 		add(new Button("1.1", new GString(module, "TMP_1.1"), button -> Log.info(button + " activated")),
 				new Button("1.2", new GString(module, "TMP_1.2"), button -> Log.info(button + " activated")),
 				button1,
+				new Button("1.5", new GString(module, "TMP_1.5"), button -> new TestMenu(module).show()),
 				new Button("1.4", new GString(module, "TMP_1.4"), button -> CrystalFarm.exit("user request", 0)));
 		
 	}
