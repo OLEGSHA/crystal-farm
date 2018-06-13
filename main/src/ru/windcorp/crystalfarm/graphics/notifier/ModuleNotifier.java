@@ -26,7 +26,7 @@ import ru.windcorp.tge2.util.jobs.JobManager;
 public class ModuleNotifier extends Module {
 	
 	public static final SettingInt SETTING_LIVE_TIMER =
-			new SettingInt("LiveTimer", "Time, in seconds, that a non-modal notification will persist on the screen", 10);
+			new SettingInt("LiveTimer", "Time, in seconds, that a non-modal notification will persist on the screen", 3);
 
 	public ModuleNotifier() {
 		super("Notifier", InbuiltMod.INST);

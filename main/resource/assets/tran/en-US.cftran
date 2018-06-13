@@ -12,6 +12,14 @@ welcome = I can now speak English just as they speak it in the US!
 		TestMenu.title = Test Menu
 		menu.test.button = Button
 
+# Misc
+	# DebugInputListener
+		misc.debugInputListener.shortcuts.enabled = Debug shortcuts enabled
+		misc.debugInputListener.shortcuts.disabled = Debug shortcuts disabled
+		misc.debugInputListener.layerDump = Graphics layer dump complete\nCheck the logs to see it
+		misc.debugInputListener.fps.enabled = FPS display turned on
+		misc.debugInputListener.fps.disabled = FPS display turned off
+
 # Test
 TMP_1.1 = Play!
 TMP_1.2 = Settings

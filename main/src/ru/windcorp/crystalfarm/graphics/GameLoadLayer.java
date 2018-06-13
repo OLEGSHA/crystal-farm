@@ -46,8 +46,8 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 	private static final Color MAIN_COLOR = Color.fromHsba((float) Math.random(), 1.0f, 0.75f, 0xFF);//new Color(0xBF4C00FF);
 	
 	private final SimpleTexture logo = SimpleTexture.get("load/logo");
-	private final SimpleTexture iconThreadLoadWork = SimpleTexture.get("load/loadThread.work");
-	private final SimpleTexture iconThreadLoadSleep = SimpleTexture.get("load/loadThread.sleep");
+	private final SimpleTexture iconThreadLoadWork = SimpleTexture.get("mascot/work");
+	private final SimpleTexture iconThreadLoadSleep = SimpleTexture.get("mascot/sleep");
 	
 	private Font font = null;
 	private int maxThreadHeight = iconThreadLoadSleep.getHeight();

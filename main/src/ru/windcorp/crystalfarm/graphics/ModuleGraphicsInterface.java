@@ -39,6 +39,7 @@ public class ModuleGraphicsInterface extends Module {
 	static final SettingInt WINDOW_HEIGHT = new SettingInt("WindowHeight", "Height of the game window at startup. Has no effect in fullscreen mode", 480);
 	static final SettingBoolean WINDOW_FULLSCREEN = new SettingBoolean("WindowFullscreen", "True when window is in fullscreen. Does not affect WindowMaximized", false);
 	static final SettingBoolean WINDOW_MAXIMIZED = new SettingBoolean("WindowMaximized", "True when window is maximized. Does not affect WindowFullscreen", false);
+	static final SettingBoolean SHOW_FPS = new SettingBoolean("ShowFPS", "When true, current FPS is displayed", false);
 	
 	public ModuleGraphicsInterface() {
 		super("GraphicsInterface", InbuiltMod.INST);
@@ -47,6 +48,7 @@ public class ModuleGraphicsInterface extends Module {
 		addConfig(WINDOW_HEIGHT);
 		addConfig(WINDOW_FULLSCREEN);
 		addConfig(WINDOW_MAXIMIZED);
+		addConfig(SHOW_FPS);
 		
 		addArgument(new UnixArgument<Void>(
 				"debugTextureLoading", null,

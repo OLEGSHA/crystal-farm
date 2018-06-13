@@ -25,6 +25,8 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import ru.windcorp.crystalfarm.CrystalFarm;
+import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
+import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
 import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
 import ru.windcorp.crystalfarm.graphics.texture.TexturePrimitive;
 import ru.windcorp.tge2.util.debug.Log;
@@ -64,6 +66,7 @@ public class RenderThread implements Runnable {
 		setGraphicsReady();
 		lock.unlock();
 		
+		double lastFrame = glfwGetTime();
 		while (!glfwWindowShouldClose(getWindow())) {
 			TextureManager.processLoadQueue();
 			processRunQueue();
@@ -74,11 +77,14 @@ public class RenderThread implements Runnable {
 
 			glfwSwapBuffers(getWindow());
 			glfwPollEvents();
+			
+			frame = (-lastFrame + (lastFrame = glfwGetTime())) * 1000;
 		}
 		
 	}
 
 	private void doRender() {
+		drawFps();
 		
 		synchronized (GraphicsInterface.getLayers()) {
 			for (Layer l : GraphicsInterface.getLayers()) {
@@ -87,7 +93,19 @@ public class RenderThread implements Runnable {
 		}
 		
 	}
-	
+
+	private void drawFps() {
+		if (ModuleGraphicsInterface.SHOW_FPS.get() && FontManager.getDefaultFont() != null) {
+			FontManager.getDefaultFont().render(
+					String.valueOf((int) getFps()),
+					0,
+					getWindowHeight() - FontManager.getDefaultFont().getHeight(),
+					false,
+					FontStyle.PLAIN,
+					Color.BLACK);
+		}
+	}
+
 	private void initializeGlfw() {
 		Log.debug("About to initialize GLFW version " + glfwGetVersionString());
 		

@@ -184,6 +184,11 @@ public class GraphicsInterface {
 		return cursorY;
 	}
 	
+	public static boolean isCursorIn(int x, int y, int width, int height) {
+		return cursorX >= x && cursorX < x + width &&
+				cursorY >= y && cursorY < y + height;
+	}
+	
 	public static boolean isFullscreen() {
 		return ModuleGraphicsInterface.WINDOW_FULLSCREEN.get();
 	}
@@ -211,6 +216,24 @@ public class GraphicsInterface {
 					getWindowHeight(),
 					0);
 		}
+	}
+	
+	/*
+	 * Timing
+	 */
+	
+	static double frame = 1 / 60 * 1000;
+	
+	public static double time() {
+		return glfwGetTime() * 1000.0;
+	}
+	
+	public static double frame() {
+		return frame;
+	}
+	
+	public static double getFps() {
+		return 1000 / frame;
 	}
 	
 	/*

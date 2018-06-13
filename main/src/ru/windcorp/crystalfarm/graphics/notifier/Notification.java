@@ -18,13 +18,11 @@
 package ru.windcorp.crystalfarm.graphics.notifier;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
+import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
 import java.util.function.Consumer;
 
-import org.lwjgl.glfw.GLFW;
-
 import ru.windcorp.crystalfarm.graphics.Color;
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.fonts.GString;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
@@ -37,39 +35,41 @@ public class Notification {
 		/**
 		 * Debug notifications are ignored unless Debug.allowDebug is true
 		 */
-		DEBUG ("debug", Color.LIGHT_GRAY),
+		DEBUG ("work", "normal", Color.LIGHT_GRAY),
 		
 		/**
 		 * Indicates a neutral notification
 		 */
-		INFO_NEUTRAL ("neutral", Color.LIGHT_GRAY),
+		INFO_NEUTRAL ("neutral", "normal", new Color(0xEE_EE_EE_FF)),
 		
 		/**
 		 * Indicates a positive notification
 		 */
-		INFO_POSITIVE ("positive", new Color(0x93_E2_71_FF)),
+		INFO_POSITIVE ("happy", "normal", new Color(0x93_E2_71_FF)),
 		
 		/**
 		 * Indicates an alarm. Nothing 
 		 */
-		WARNING ("warning", new Color(0xFF_A0_60_FF)),
+		WARNING ("attention", "normal", new Color(0xFF_A0_60_FF)),
 		
 		/**
 		 * Indicates an error message. Something has gone wrong
 		 */
-		ERROR ("error", new Color(0xFF_77_77_FF)),
+		ERROR ("broken", "normal", new Color(0xFF_77_77_FF)),
 		
 		/**
 		 * Indicates a question to the user
 		 */
-		QUESTION ("question", new Color(0xB5_C0_FF_FF));
+		QUESTION ("question", "normal", new Color(0xB5_C0_FF_FF));
 		
 		private final Texture icon;
+		//private final Sound sound;
 		private final Color color;
 		private final Color borderColor;
 		
-		Type(String iconName, Color color) {
-			this.icon = SimpleTexture.get("load/loadThread.work"/*"notification/" + iconName*/);
+		Type(String iconName, String soundName, Color color) {
+			this.icon = SimpleTexture.get("mascot/" + iconName);
+			//this.sound = SoundManager.get("ui/notification/" + soundName);
 			this.color = color;
 			this.borderColor = color.clone().multiply(0.75);
 		}
@@ -77,6 +77,10 @@ public class Notification {
 		public Texture getIcon() {
 			return icon;
 		}
+		
+//		public Sound getSound() {
+//			return sound;
+//		}
 
 		public Color getColor() {
 			return color;
@@ -87,36 +91,40 @@ public class Notification {
 		}
 	}
 	
+	private static final float ACCELERATION = 0.01f;
+	private static final float BOUNCINESS = 0.5f;
+	
 	private final Type type;
 	private final boolean isModal;
 	
 	private GString label;
 	private final String key;
-	private final Object[] params;
+	private final Object[] args;
 	private final Consumer<?> action;
 	
 	private NotifierLayer layer;
 	
-	private int x = 0,
-			y = 0,
-			width = 0,
-			height = 0;
+	int x = 0,
+		y = 0,
+		width = 0,
+		height = 0;
 	
 	private float vx = 0, vy = 0;
 	
-	private int liveTimer = ModuleNotifier.SETTING_LIVE_TIMER.get() * 1000;
+	private double hideAt = -1;
 	
-	public Notification(Type type, boolean isModal, Consumer<?> action, String key, Object... params) {
+	public Notification(Type type, boolean isModal, Consumer<?> action, String key, Object... args) {
 		this.type = type;
 		this.key = key;
-		this.params = params;
+		this.args = args;
 		this.isModal = isModal;
 		this.action = action;
 	}
 	
 	void show(NotifierLayer layer) {
 		this.layer = layer;
-		this.label = new GString(key, params).setColor(Color.BLACK);
+		this.label = new GString(key, args).setColor(Color.BLACK);
+		this.hideAt = ModuleNotifier.SETTING_LIVE_TIMER.get() * 1000 + time();
 		
 		Size textSize = getText().getBounds();
 		
@@ -127,6 +135,8 @@ public class Notification {
 		y = layer.nextY;
 		
 		layer.nextY += height;
+		
+		//AudioInterface.play(getType().getSound(), 1, 1);
 	}
 	
 	public Type getType() {
@@ -145,39 +155,57 @@ public class Notification {
 		return action;
 	}
 	
-	public void render() {
-		x = Math.min(0, x + (int) vx);
+	public int render(int targetY) {
+		x = Math.min(LINE_THICKNESS, (int) (x + vx * frame()));
 		
-		if (x == 0) {
-			vx *= -0.5f;
+		if (x == LINE_THICKNESS) {
+			if (vx > 1) {
+				vx *= -BOUNCINESS;
+			} else {
+				vx = 0;
+			}
 		} else {
-			vx += 0.5;
+			vx += ACCELERATION * frame();
 		}
 		
-//		if (isModal()) {
-//			if (liveTimer > 0) {
-//				liveTimer -= GLFW.glfwGetTimerValue() * 1000 / GLFW.glfwGetTimerFrequency();
-//			} else {
-//				y = (int) (y - vy);
-//				vy += 0.5;
-//				
-//				if (y < -height) {
-//					layer.hide(this);
-//				}
-//			}
-//		}
+		int advance;
+		if (!isModal() && hideAt < time()) {
+			y -= vy * frame();
+			vy += ACCELERATION * frame();
+			
+			advance = 0;
+			
+			if (y < -height) {
+				layer.hide(this);
+			}
+		} else {
+			y = Math.max(targetY, (int) (y - vy * frame()));
+			if (y == targetY) {
+				vy = 0;
+			} else {
+				vy += ACCELERATION * frame();
+			}
+			
+			advance = height;
+		}
 		
-		GraphicsInterface.fillRectangle(x, y, width, height,
+		fillRectangle(x, y, width, height,
 				getType().getColor(),
 				getType().getBorderColor(),
 				LINE_THICKNESS);
 		
-		GraphicsInterface.drawTexture(
+		drawTexture(
 				x + 2*LINE_THICKNESS,
 				y + 2*LINE_THICKNESS,
 				getType().getIcon());
 		
 		getText().render(x + 3*LINE_THICKNESS + getType().getIcon().getWidth(), y + 2*LINE_THICKNESS);
+		
+		if (isCursorIn(x, y, width, height)) {
+			fillRectangle(x, y, width, height, COVER_COLOR);
+		}
+		
+		return advance;
 	}
 
 }

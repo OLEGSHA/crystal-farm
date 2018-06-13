@@ -17,17 +17,17 @@
  */
 package ru.windcorp.crystalfarm.graphics.notifier;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.Layer;
 
 public class NotifierLayer extends Layer {
 
-	private final Collection<Notification> notesOnScreen = Collections.synchronizedCollection(new ArrayList<>());
+	private final Collection<Notification> notesOnScreen = new ConcurrentLinkedQueue<>();
 	
-	int nextY = 0;
+	int nextY = GraphicsDesign.LINE_THICKNESS;
 
 	public NotifierLayer() {
 		super("Notifier");
@@ -40,6 +40,7 @@ public class NotifierLayer extends Layer {
 	
 	public void hide(Notification note) {
 		getNotesOnScreen().remove(note);
+		nextY -= note.height;
 	}
 
 	public Collection<Notification> getNotesOnScreen() {
@@ -48,7 +49,10 @@ public class NotifierLayer extends Layer {
 
 	@Override
 	public void render() {
-		getNotesOnScreen().forEach(note -> note.render());
+		int targetY = GraphicsDesign.LINE_THICKNESS;
+		for (Notification n : getNotesOnScreen()) {
+			targetY += n.render(targetY);
+		}
 	}
 
 }

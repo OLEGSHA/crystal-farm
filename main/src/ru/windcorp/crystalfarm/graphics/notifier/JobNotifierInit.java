@@ -28,6 +28,7 @@ public class JobNotifierInit extends ModuleJob {
 		super("NotifierInit", "Initializes notification system", module);
 		
 		addDependency("Inbuilt:GraphicsInterface:LoadDefaultFonts");
+		addDependency("Inbuilt:AudioInterface:AudioInterfaceInit");
 	}
 
 	@Override

@@ -20,6 +20,8 @@ package ru.windcorp.crystalfarm.graphics.notifier;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import ru.windcorp.crystalfarm.graphics.notifier.Notification.Type;
+
 public class Notifier {
 
 	private static NotifierLayer layer = new NotifierLayer();
@@ -42,6 +44,26 @@ public class Notifier {
 				QUEUE.add(notification);
 			}
 		}
+	}
+	
+	public static void debug(String key, Object... args) {
+		postNotification(new Notification(Type.DEBUG, false, null, key, args));
+	}
+	
+	public static void info(String key, Object... args) {
+		postNotification(new Notification(Type.INFO_NEUTRAL, false, null, key, args));
+	}
+	
+	public static void positive(String key, Object... args) {
+		postNotification(new Notification(Type.INFO_POSITIVE, false, null, key, args));
+	}
+	
+	public static void warn(String key, Object... args) {
+		postNotification(new Notification(Type.WARNING, false, null, key, args));
+	}
+	
+	public static void error(String key, Object... args) {
+		postNotification(new Notification(Type.ERROR, false, null, key, args));
 	}
 	
 	static void postQueuedNotifications() {
