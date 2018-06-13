@@ -32,15 +32,26 @@ public class AudioInterface {
 	private static long device;
 	private static boolean isAudioReady = false;
 	
-	private static final float[] FLOAT_ZERO3 = new float[] {0, 0, 0};
 	
-	public static void play(Sound sound, float volume, float pitch) {
+	@SuppressWarnings("unused")
+	private static float[] positions;
+	
+	public static void play(Sound sound, float volume, float pitch, float xPosition, float yPosition) {
 		AL10.alSourcei(getSources().get(0), AL10.AL_BUFFER, sound.getBufferId());
 		AL10.alSourcef(getSources().get(0), AL10.AL_PITCH, pitch);
 		AL10.alSourcef(getSources().get(0), AL10.AL_GAIN, volume);
-		AL10.alSourcefv(getSources().get(0), AL10.AL_POSITION, FLOAT_ZERO3);
-		AL10.alSourcefv(getSources().get(0), AL10.AL_VELOCITY, FLOAT_ZERO3);
+		AL10.alSourcefv(getSources().get(0), AL10.AL_POSITION, positions = new float[] {xPosition, yPosition, 0});	
+		//TODO OLEGSHA, check if it is needed, I guess it's not AL10.alSourcefv(getSources().get(0), AL10.AL_DIRECTION, *direction*);
+		
 		alSourcePlay(getSources().get(0));
+	}
+	
+	public static void pause() {
+		AL10.alSourcePause(getSources().get(0));
+	}
+	
+	public static void stop() {
+		AL10.alSourceStop(getSources().get(0));
 	}
 
 	public static IntBuffer getSources() {

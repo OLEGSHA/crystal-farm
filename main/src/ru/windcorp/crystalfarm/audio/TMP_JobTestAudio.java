@@ -31,9 +31,9 @@ public class TMP_JobTestAudio extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
-		Sound sound = SoundManager.get("Rondo_Alla_Turka");
-		AudioInterface.play(sound, 1.0f, 1.0f);
-		
+		//TODO Rondo_Alla_Turka doesn't work with position settings 
+		Sound sound = SoundManager.get("rooster");
+		AudioInterface.play(sound, 1.0f, 1.0f, 10.0f, -4.0f);
 	}
 
 }
