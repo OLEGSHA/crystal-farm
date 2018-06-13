@@ -23,6 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import ru.windcorp.crystalfarm.debug.CrystalFarmExecutionReportBackend;
+import ru.windcorp.crystalfarm.debug.CrystalFarmExecutionReportListener;
 import ru.windcorp.crystalfarm.debug.JobReportPart;
 import ru.windcorp.crystalfarm.debug.LWJGLValueSection;
 import ru.windcorp.crystalfarm.debug.LoadThreadsUnixArgument;
@@ -115,6 +117,9 @@ public class CrystalFarmLauncher {
 		ExecutionReport.enableReportAtShutdown();
 		ExecutionReport.enableUnhandledThrowableHandling();
 		ExecutionReport.addDefaults();
+		
+		ExecutionReport.setBackend(new CrystalFarmExecutionReportBackend());
+		ExecutionReport.addListener(new CrystalFarmExecutionReportListener());
 		
 		if (Debug.allowDebug) {
 			ExecutionReport.setForcedReport(true);

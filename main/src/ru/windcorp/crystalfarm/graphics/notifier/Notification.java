@@ -155,6 +155,7 @@ public class Notification {
 		return action;
 	}
 	
+	// FIXME sometimes notifications start shaking
 	public int render(int targetY) {
 		x = Math.min(LINE_THICKNESS, (int) (x + vx * frame()));
 		

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -174,6 +176,8 @@ public class ExecutionReport {
 		private int problemId = -1;
 		private final String resource;
 		private final String description;
+		
+		private ProblemLevel level = ProblemLevel.WARNING;
 		private final DamagedResourceIssue issue;
 		
 		public DamagedResourceReport(String resource, String description, DamagedResourceIssue problem) {
@@ -194,6 +198,10 @@ public class ExecutionReport {
 			return issue;
 		}
 		
+		public ProblemLevel getLevel() {
+			return level;
+		}
+		
 		public int getId() {
 			return id;
 		}
@@ -204,6 +212,7 @@ public class ExecutionReport {
 		
 		public void linkToProblem(ProblemReport error) {
 			this.problemId = error.getId();
+			this.level = error.getType();
 		}
 		
 	}
@@ -242,21 +251,26 @@ public class ExecutionReport {
 	}
 	
 	private static final List<ProblemReport> PROBLEMS =
-			new LinkedList<ProblemReport>();
+			Collections.synchronizedList(new LinkedList<ProblemReport>());
 	
 	private static int surpressedDebugProblems = 0;
 	
 	private static final List<DebugValueSection> VALUE_SECTIONS =
-			new ArrayList<DebugValueSection>();
+			Collections.synchronizedList(new ArrayList<DebugValueSection>());
 	
 	private static final List<DamagedResourceReport> DAMAGED_RESOURCES =
-			new LinkedList<DamagedResourceReport>();
+			Collections.synchronizedList(new LinkedList<DamagedResourceReport>());
 	
 	private static final List<SuggestionProvider> SUGGESTION_PROVIDERS =
-			new LinkedList<SuggestionProvider>();
+			Collections.synchronizedList(new LinkedList<SuggestionProvider>());
 	
 	private static final List<ReportPart> EXTRA_REPORT_PARTS =
-			new LinkedList<ReportPart>();
+			Collections.synchronizedList(new LinkedList<ReportPart>());
+	
+	private static final Collection<ExecutionReportListener> LISTENERS =
+			Collections.synchronizedCollection(new ArrayList<>());
+	
+	private static ExecutionReportBackend backend = new ExecutionReportBackendDefault();
 	
 	private static int maxDVNameLength = 0;
 	private static boolean shutdownHookAdded = false;
@@ -287,20 +301,40 @@ public class ExecutionReport {
 		return EXTRA_REPORT_PARTS;
 	}
 	
+	public static Collection<ExecutionReportListener> getListeners() {
+		return LISTENERS;
+	}
+	
+	public static void addListener(ExecutionReportListener listener) {
+		getListeners().add(listener);
+	}
+	
+	public static void removeListener(ExecutionReportListener listener) {
+		getListeners().remove(listener);
+	}
+	
 	
 
-	public static synchronized void registerProblem(ProblemLevel type,
+	public static synchronized ProblemReport registerProblem(ProblemLevel type,
 			Throwable e,
 			DamagedResourceReport damagedResource,
 			String format,
 			Object... params) {
 		
-		getProblems().add(new ProblemReport(
+		ProblemReport report = new ProblemReport(
 				e,
 				damagedResource,
 				String.format(format, params),
 				String.format("%08X", format.hashCode()),
-				type));
+				type);
+		
+		getProblems().add(report);
+		
+		synchronized (getListeners()) {
+			for (ExecutionReportListener l : getListeners()) {
+				l.onProblem(report);
+			}
+		}
 		
 		if (damagedResource != null) {
 			registerDamagedResource(damagedResource);
@@ -309,6 +343,8 @@ public class ExecutionReport {
 		if (e instanceof Exception && type != ProblemLevel.DEBUG) {
 			ExceptionHandler.handle((Exception) e, String.format(format, params));
 		}
+		
+		return report;
 	}
 	
 	public static synchronized DamagedResourceReport createDamagedResourceReport(String resource,
@@ -396,9 +432,15 @@ public class ExecutionReport {
 
 	public static synchronized void registerDamagedResource(DamagedResourceReport report) {
 		getDamagedResources().add(report);
-		Log.warn("Resource " + report.getResource() +
+		log(report.getLevel(), "Resource " + report.getResource() +
 				" is " + report.getIssue().toString() +
 				": " + report.getDescription());
+		
+		synchronized (getListeners()) {
+			for (ExecutionReportListener l : getListeners()) {
+				l.onDamagedResource(report);
+			}
+		}
 	}
 	
 	/**
@@ -425,9 +467,9 @@ public class ExecutionReport {
 		}
 		
 		Log.critical(String.format(format, params));
-		registerProblem(ProblemLevel.CRITICAL_ERROR, e, damagedResource, format, params);
+		ProblemReport report = registerProblem(ProblemLevel.CRITICAL_ERROR, e, damagedResource, format, params);
 		Log.critical("Critical problem encountered, application will terminate");
-		System.exit(format.hashCode());
+		getBackend().requestExit(report);
 	}
 	
 	/**
@@ -625,17 +667,26 @@ public class ExecutionReport {
 		forceReport = forced;
 	}
 	
+	/**
+	 * @return the backend
+	 */
+	public static ExecutionReportBackend getBackend() {
+		return backend;
+	}
+
+	/**
+	 * @param backend the backend to set
+	 */
+	public static void setBackend(ExecutionReportBackend backend) {
+		ExecutionReport.backend = backend;
+	}
+
 	public static void enableUnhandledThrowableHandling() {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
 				ExecutionReport.reportUncaughtThrowable(e, t);
-				
-				System.err.print(e.getClass());
-				System.err.print(" in thread ");
-				System.err.println(t.getName());
-				e.printStackTrace();
 			}
 			
 		});
@@ -643,6 +694,40 @@ public class ExecutionReport {
 	
 	public static void addDefaults() {
 		addDebugValueSection(new ExecutionReportProblemAnalysisSection());
+	}
+	
+	public static void log(ProblemLevel level, String text) {
+		switch (level) {
+		case CRITICAL_ERROR:
+			Log.critical(text);
+			break;
+		case DEBUG:
+			Log.debug(text);
+			break;
+		case ERROR:
+		case UNCAUGHT:
+		default:
+			Log.error(text);
+			break;
+		case NOTIFICATION:
+			Log.info(text);
+			break;
+		case WARNING:
+			Log.warn(text);
+			break;
+		}
+	}
+	
+	public static ProblemReport getProblemReport(int id) {
+		synchronized (getProblems()) {
+			for (ProblemReport report : getProblems()) {
+				if (report.getId() == id) {
+					return report;
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	public static void print(PrintStream s) {
@@ -657,6 +742,21 @@ public class ExecutionReport {
 	}
 	
 	public static synchronized String create() {
+		synchronized (getProblems()) {
+			synchronized (getDamagedResources()) {
+				synchronized (getValueSections()) {
+					synchronized (getSuggestionProviders()) {
+						synchronized (getExtraReportParts()) {
+							// Sigh
+							return createImpl();
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	private static String createImpl() {
 		StringBuilder b = new StringBuilder();
 		
 		b.append("\n\n"

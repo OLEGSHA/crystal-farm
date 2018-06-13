@@ -77,7 +77,7 @@ public class ModuleTranslation extends Module {
 		return LANGUAGE_FALLBACK.get();
 	}
 	
-	public synchronized static String getValueForKey(String key) {
+	public static String getValueForKey(String key) {
 		if (hasLoaded) {
 			
 			synchronized (DICTIONARY) {
@@ -100,7 +100,7 @@ public class ModuleTranslation extends Module {
 		return key;
 	}
 	
-	synchronized static void register(TString tstring) {
+	static void register(TString tstring) {
 		STRING_SET.add(new WeakReference<>(tstring));
 		tstring.load();
 	}

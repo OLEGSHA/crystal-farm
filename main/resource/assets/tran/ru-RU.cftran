@@ -18,6 +18,14 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		misc.debugInputListener.fps.enabled = Счётчик FPS вкл.
 		misc.debugInputListener.fps.disabled = Счётчик FPS выкл.
 
+# Execution Report
+executionReport.notification.onProblem.debug = Отладочное уведомление:\nID: %1$s\nОписание: %2$s
+executionReport.notification.onProblem.notification = Уведомление:\nID: %1$s\nОписание: %2$s
+executionReport.notification.onProblem.warning = Внимание!\nID: %1$s\nОписание: %2$s
+executionReport.notification.onProblem.error = Обнаружена ошибка!\nID: %1$s\nОписание: %2$s
+executionReport.notification.onProblem.uncaught = Обнаружена проблема!\nID: %1$s\nОписание: %2$s
+executionReport.notification.onDamagedResource = Обнаружен повреждённый ресурс!\Ресурс: %1$s\Описание: %2$s
+
 # Тест
 TMP_1.1 = Играть!
 TMP_1.2 = Настройки

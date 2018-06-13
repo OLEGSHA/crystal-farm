@@ -20,6 +20,14 @@ welcome = I can now speak English just as they speak it in the US!
 		misc.debugInputListener.fps.enabled = FPS display turned on
 		misc.debugInputListener.fps.disabled = FPS display turned off
 
+# Execution Report
+executionReport.notification.onProblem.debug = Debug notification reported:\nID: %1$s\nDescription: %2$s
+executionReport.notification.onProblem.notification = Notification:\nID: %1$s\nDescription: %2$s
+executionReport.notification.onProblem.warning = Warning!\nID: %1$s\nDescription: %2$s
+executionReport.notification.onProblem.error = An error has been reported!\nID: %1$s\nDescription: %2$s
+executionReport.notification.onProblem.uncaught = A problem has been reported!\nID: %1$s\nDescription: %2$s
+executionReport.notification.onDamagedResource = A damaged resource reported!\nResource: %1$s\nDescription: %2$s
+
 # Test
 TMP_1.1 = Play!
 TMP_1.2 = Settings

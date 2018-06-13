@@ -193,6 +193,7 @@ public class GraphicsInterface {
 		return ModuleGraphicsInterface.WINDOW_FULLSCREEN.get();
 	}
 	
+	// FIXME window does not maximize correctly from code (window size issue?)
 	public static void setFullscreen(boolean fullscreen) {
 		ModuleGraphicsInterface.WINDOW_FULLSCREEN.set(fullscreen);
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
