@@ -25,13 +25,16 @@ import ru.windcorp.tge2.util.jobs.JobManager;
 
 public class ModuleNotifier extends Module {
 	
-	public static final SettingInt SETTING_LIVE_TIMER =
-			new SettingInt("LiveTimer", "Time, in seconds, that a non-modal notification will persist on the screen", 3);
+	public static final SettingInt SETTING_TIMEOUT =
+			new SettingInt("Timeout", "Time, in seconds, that a non-modal notification will persist on the screen", 3);
+	public static final SettingInt SETTING_SHAKE_INTERVAL =
+			new SettingInt("ShakeInterval", "Time, in seconds, between small shakes for modal notifications", 5);
 
 	public ModuleNotifier() {
 		super("Notifier", InbuiltMod.INST);
 		
-		addConfig(SETTING_LIVE_TIMER);
+		addConfig(SETTING_TIMEOUT);
+		addConfig(SETTING_SHAKE_INTERVAL);
 	}
 
 	@Override

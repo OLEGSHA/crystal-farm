@@ -62,17 +62,20 @@ public class JobManager<T extends Job> {
 				synchronized (isRunning) {
 					if (!isRunning()) {
 						Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " walked away quietly");
+						
+						if (workers == 1) {
+							synchronized (getListeners()) {
+								for (JobListener<? super T> l : getListeners()) {
+									l.onJobsEnd(JobManager.this);
+								}
+							}
+						}
+						
 						return;
 					}
 					
 					Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " ended JM");
 					isRunning = Boolean.FALSE;
-				}
-				
-				synchronized (getListeners()) {
-					for (JobListener<? super T> l : getListeners()) {
-						l.onJobsEnd(JobManager.this);
-					}
 				}
 				
 				Log.debug("\t\t\t\t\t" + Thread.currentThread().getName() + " screaming \"HOORAY!\" at the top of its lungs");
@@ -89,6 +92,8 @@ public class JobManager<T extends Job> {
 						l.onJobDependencyProblem(JobManager.this, Thread.currentThread());
 					}
 				}
+			} finally {
+				workers--;
 			}
 			
 		}

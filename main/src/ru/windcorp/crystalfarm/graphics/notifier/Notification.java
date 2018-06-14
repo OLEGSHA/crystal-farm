@@ -110,8 +110,10 @@ public class Notification {
 		height = 0;
 	
 	private float vx = 0, vy = 0;
+	private boolean die = false;
 	
 	private double hideAt = -1;
+	private double shakeAt = -1;
 	
 	public Notification(Type type, boolean isModal, Consumer<?> action, String key, Object... args) {
 		this.type = type;
@@ -124,7 +126,8 @@ public class Notification {
 	void show(NotifierLayer layer) {
 		this.layer = layer;
 		this.label = new GString(key, args).setColor(Color.BLACK);
-		this.hideAt = ModuleNotifier.SETTING_LIVE_TIMER.get() * 1000 + time();
+		this.hideAt = ModuleNotifier.SETTING_TIMEOUT.get() * 1000 + time();
+		if (isModal()) this.shakeAt = ModuleNotifier.SETTING_SHAKE_INTERVAL.get() * 1000 + time();
 		
 		Size textSize = getText().getBounds();
 		
@@ -155,22 +158,44 @@ public class Notification {
 		return action;
 	}
 	
+	public boolean hasCursor() {
+		return isCursorIn(x, y, width, height);
+	}
+	
+	public void onClicked() {
+		if (getAction() != null) {
+			getAction().accept(null);
+		}
+		
+		onKicked();
+	}
+	
+	public void onKicked() {
+		vy = -0.01f;
+		die = true;
+	}
+	
 	// FIXME sometimes notifications start shaking
 	public int render(int targetY) {
 		x = Math.min(LINE_THICKNESS, (int) (x + vx * frame()));
 		
 		if (x == LINE_THICKNESS) {
-			if (vx > 1) {
-				vx *= -BOUNCINESS;
+			if (isModal() && shakeAt < time()) {
+				vx = -2;
+				this.shakeAt = ModuleNotifier.SETTING_SHAKE_INTERVAL.get() * 1000 + time();
 			} else {
-				vx = 0;
+				if (vx > 1) {
+					vx *= -BOUNCINESS;
+				} else {
+					vx = 0;
+				}
 			}
 		} else {
 			vx += ACCELERATION * frame();
 		}
 		
 		int advance;
-		if (!isModal() && hideAt < time()) {
+		if (die || (!isModal() && hideAt < time())) {
 			y -= vy * frame();
 			vy += ACCELERATION * frame();
 			
@@ -179,6 +204,8 @@ public class Notification {
 			if (y < -height) {
 				layer.hide(this);
 			}
+			
+			die = true;
 		} else {
 			y = Math.max(targetY, (int) (y - vy * frame()));
 			if (y == targetY) {
@@ -202,7 +229,7 @@ public class Notification {
 		
 		getText().render(x + 3*LINE_THICKNESS + getType().getIcon().getWidth(), y + 2*LINE_THICKNESS);
 		
-		if (isCursorIn(x, y, width, height)) {
+		if (hasCursor()) {
 			fillRectangle(x, y, width, height, COVER_COLOR);
 		}
 		

@@ -30,7 +30,7 @@ public class CrystalFarmExecutionReportListener implements ExecutionReportListen
 	public void onProblem(ProblemReport report) {
 		Notifier.postNotification(new Notification(
 				getType(report.getType()),
-				false,
+				true,
 				null,
 				"executionReport.notification.onProblem." + report.getType().name().toLowerCase(),
 				report.getProblemId(), report.getDescription()));
@@ -40,7 +40,7 @@ public class CrystalFarmExecutionReportListener implements ExecutionReportListen
 	public void onDamagedResource(DamagedResourceReport report) {
 		Notifier.postNotification(new Notification(
 				getType(report.getLevel()),
-				false,
+				true,
 				null,
 				"executionReport.notification.onDamagedResource",
 				report.getResource(), report.getDescription()));

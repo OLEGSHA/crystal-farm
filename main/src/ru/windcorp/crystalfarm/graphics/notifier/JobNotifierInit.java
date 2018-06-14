@@ -37,7 +37,11 @@ public class JobNotifierInit extends ModuleJob {
 		Notifier.setLayer(layer);
 		GraphicsInterface.addLayer(layer);
 		Notifier.postQueuedNotifications();
-		Notifier.postNotification(new Notification(Type.INFO_POSITIVE, false, null, "TMP_notification"));
+		showNote(null);
+	}
+	
+	private static void showNote(Object arg) {
+		Notifier.postNotification(new Notification(Type.INFO_POSITIVE, true, JobNotifierInit::showNote, "TMP_notification"));
 	}
 
 }

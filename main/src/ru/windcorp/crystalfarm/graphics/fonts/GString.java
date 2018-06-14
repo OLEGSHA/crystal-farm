@@ -46,7 +46,12 @@ public class GString extends TString {
 	protected synchronized void load() {
 		super.load();
 		this.chars = get().toCharArray();
-		this.size = getFont().getSize(chars, isBold());
+		
+		if (getFont() != null) {
+			calculateSize();
+		} else {
+			this.size = null;
+		}
 	}
 
 	public void render(int x, int y) {
@@ -54,7 +59,13 @@ public class GString extends TString {
 	}
 	
 	public Size getBounds() {
+		if (size == null)
+			calculateSize();
 		return size;
+	}
+	
+	private Size calculateSize() {
+		return this.size = getFont().getSize(chars, isBold());
 	}
 	
 	public Font getFont() {

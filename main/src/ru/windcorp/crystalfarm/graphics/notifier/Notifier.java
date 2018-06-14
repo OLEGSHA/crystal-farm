@@ -24,7 +24,7 @@ import ru.windcorp.crystalfarm.graphics.notifier.Notification.Type;
 
 public class Notifier {
 
-	private static NotifierLayer layer = new NotifierLayer();
+	private static NotifierLayer layer = null;
 	
 	private static final Queue<Notification> QUEUE = new ConcurrentLinkedQueue<>();
 

@@ -21,10 +21,10 @@ import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
 import java.nio.ByteBuffer;
 
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import ru.windcorp.crystalfarm.CrystalFarm;
+import ru.windcorp.crystalfarm.debug.CrystalFarmGLFWErrorHandler;
 import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
 import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
 import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
@@ -50,8 +50,6 @@ public class RenderThread implements Runnable {
 		
 		Log.topic("Graphics Init");
 		Log.info("Initializing GLFW (window toolkit)");
-		
-		GLFWErrorCallback.createPrint(System.err).set();
 		
 		initializeGlfw();
 		createWindow();
@@ -109,6 +107,8 @@ public class RenderThread implements Runnable {
 	private void initializeGlfw() {
 		Log.debug("About to initialize GLFW version " + glfwGetVersionString());
 		
+		glfwSetErrorCallback(new CrystalFarmGLFWErrorHandler());
+		
 		if (!glfwInit()) {
 			ExecutionReport.reportCriticalError(null, ExecutionReport.rscCorrupt("GLFW", "GLFW failed to initialize"), null);
 		}
@@ -143,9 +143,10 @@ public class RenderThread implements Runnable {
 	private void createWindowIcons() {
 		Vector2<TexturePrimitive, ByteBuffer> icon16 = TextureManager.loadToByteBuffer("window/icon16");
 		Vector2<TexturePrimitive, ByteBuffer> icon32 = TextureManager.loadToByteBuffer("window/icon32");
-		Vector2<TexturePrimitive, ByteBuffer> icon64 = TextureManager.loadToByteBuffer("window/icon64");
+//		Vector2<TexturePrimitive, ByteBuffer> icon48 = TextureManager.loadToByteBuffer("window/icon48");
+//		Vector2<TexturePrimitive, ByteBuffer> icon64 = TextureManager.loadToByteBuffer("window/icon64");
 		
-		try (GLFWImage.Buffer buffer = GLFWImage.malloc(3)) {
+		try (GLFWImage.Buffer buffer = GLFWImage.malloc(2)) {
 			buffer
 				.position(0)
 				.width(icon16.a.getWidth())
@@ -158,11 +159,17 @@ public class RenderThread implements Runnable {
 				.height(icon32.a.getHeight())
 				.pixels(icon32.b);
 			
-			buffer
-				.position(2)
-				.width(icon64.a.getWidth())
-				.height(icon64.a.getHeight())
-				.pixels(icon64.b);
+//			buffer
+//				.position(2)
+//				.width(icon48.a.getWidth())
+//				.height(icon48.a.getHeight())
+//				.pixels(icon48.b);
+//			
+//			buffer
+//				.position(3)
+//				.width(icon64.a.getWidth())
+//				.height(icon64.a.getHeight())
+//				.pixels(icon64.b);
 			
 			glfwSetWindowIcon(getWindow(), buffer);
 		}
@@ -174,6 +181,7 @@ public class RenderThread implements Runnable {
 		glfwSetCursorPosCallback(getWindow(), GraphicsInterface::handleCursorMove);
 		glfwSetMouseButtonCallback(getWindow(), GraphicsInterface::handleMouseButton);
 		glfwSetWindowSizeCallback(getWindow(), GraphicsInterface::handleWindowResize);
+		glfwSetWindowCloseCallback(getWindow(), GraphicsInterface::handleWindowClose);
 	}
 	
 	private void initializeOpenGL() {

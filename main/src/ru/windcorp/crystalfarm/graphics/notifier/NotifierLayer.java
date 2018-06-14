@@ -21,9 +21,12 @@ import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
+import ru.windcorp.crystalfarm.graphics.InputListener;
 import ru.windcorp.crystalfarm.graphics.Layer;
+import ru.windcorp.crystalfarm.input.Input;
+import ru.windcorp.crystalfarm.input.MouseButtonInput;
 
-public class NotifierLayer extends Layer {
+public class NotifierLayer extends Layer implements InputListener {
 
 	private final Collection<Notification> notesOnScreen = new ConcurrentLinkedQueue<>();
 	
@@ -52,6 +55,31 @@ public class NotifierLayer extends Layer {
 		int targetY = GraphicsDesign.LINE_THICKNESS;
 		for (Notification n : getNotesOnScreen()) {
 			targetY += n.render(targetY);
+		}
+	}
+
+	@Override
+	public void onInput(Input input) {
+		if (!(input instanceof MouseButtonInput)) {
+			return;
+		}
+		
+		MouseButtonInput mbi = (MouseButtonInput) input;
+		
+		if (!mbi.isPressed()) {
+			return;
+		}
+		
+		for (Notification n : getNotesOnScreen()) {
+			if (n.hasCursor()) {
+				if (mbi.isLeftButton()) {
+					n.onClicked();
+				} else if (mbi.isRightButton()) {
+					n.onKicked();
+				}
+				input.consume();
+				return;
+			}
 		}
 	}
 

@@ -30,7 +30,7 @@ public class MainMenu extends MenuLayer {
 	public MainMenu() {
 		super("MainMenu", false);
 		
-		getRoot().addChild(new Image("MainMenu.logo", SimpleTexture.get("logo")).setLayoutHint(LayoutBorder.UP));
+		getRoot().addChild(new Image("MainMenu.logo", SimpleTexture.get("title")).setLayoutHint(LayoutBorder.UP));
 
 		Button button1 = new Button("1.3", new GString("TMP_1.3"), null);
 		button1.addAction(button -> {

@@ -31,6 +31,8 @@ import java.util.stream.Stream;
 
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GLCapabilities;
+
+import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
 import ru.windcorp.crystalfarm.input.CursorMoveInput;
 import ru.windcorp.crystalfarm.input.Input;
@@ -156,6 +158,10 @@ public class GraphicsInterface {
 		dispatchInput(new MouseButtonInput(button, action, mods));
 	}
 	
+	static void handleWindowClose(long window) {
+		CrystalFarm.exit("Window closed", 0);
+	}
+	
 	/*
 	 * GLFW window operations
 	 */
@@ -168,6 +174,7 @@ public class GraphicsInterface {
 		GraphicsInterface.window = window;
 	}
 	
+	// TODO consider whether to use framebuffers
 	public static int getWindowWidth() {
 		return isFullscreen() ? fullscreenWidth : ModuleGraphicsInterface.WINDOW_WIDTH.get();
 	}
@@ -193,8 +200,12 @@ public class GraphicsInterface {
 		return ModuleGraphicsInterface.WINDOW_FULLSCREEN.get();
 	}
 	
-	// FIXME window does not maximize correctly from code (window size issue?)
+	public static boolean isMaximized() {
+		return ModuleGraphicsInterface.WINDOW_MAXIMIZED.get();
+	}
+	
 	public static void setFullscreen(boolean fullscreen) {
+		boolean changed = fullscreen != isFullscreen();
 		ModuleGraphicsInterface.WINDOW_FULLSCREEN.set(fullscreen);
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		
@@ -208,11 +219,16 @@ public class GraphicsInterface {
 					fullscreenHeight = vidmode.height(),
 					0);
 		} else {
+			boolean maximized = isMaximized();
+			if (maximized && !changed) {
+				return;
+			}
+			
 			glfwSetWindowMonitor(
 					getWindow(),
 					0,
-					(vidmode.width() - getWindowWidth()) / 2,
-					(vidmode.height() - getWindowHeight()) / 2,
+					maximized ? 0 : (vidmode.width() - getWindowWidth()) / 2,
+					maximized ? 0 : (vidmode.height() - getWindowHeight()) / 2,
 					getWindowWidth(),
 					getWindowHeight(),
 					0);
