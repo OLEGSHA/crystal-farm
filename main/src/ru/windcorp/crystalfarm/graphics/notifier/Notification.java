@@ -91,8 +91,8 @@ public class Notification {
 		}
 	}
 	
-	private static final float ACCELERATION = 0.01f;
-	private static final float BOUNCINESS = 0.5f;
+	private static final double ACCELERATION = 0.01f;
+	private static final double BOUNCINESS = 0.5f;
 	
 	private final Type type;
 	private final boolean isModal;
@@ -109,7 +109,7 @@ public class Notification {
 		width = 0,
 		height = 0;
 	
-	private float vx = 0, vy = 0;
+	private double vx = 0, vy = 0;
 	private boolean die = false;
 	
 	private double hideAt = -1;
@@ -163,6 +163,10 @@ public class Notification {
 	}
 	
 	public void onClicked() {
+		if (die) {
+			return;
+		}
+		
 		if (getAction() != null) {
 			getAction().accept(null);
 		}
@@ -171,11 +175,14 @@ public class Notification {
 	}
 	
 	public void onKicked() {
-		vy = -0.01f;
+		if (die) {
+			return;
+		}
+		
+		vy = -0.01;
 		die = true;
 	}
 	
-	// FIXME sometimes notifications start shaking
 	public int render(int targetY) {
 		x = Math.min(LINE_THICKNESS, (int) (x + vx * frame()));
 		
