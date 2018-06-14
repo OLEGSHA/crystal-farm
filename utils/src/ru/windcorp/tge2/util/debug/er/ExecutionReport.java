@@ -12,11 +12,11 @@ import java.util.List;
 
 import ru.windcorp.tge2.util.ExceptionHandler;
 import ru.windcorp.tge2.util.Nameable;
-import ru.windcorp.tge2.util.StringBuilderOutputStream;
 import ru.windcorp.tge2.util.debug.Debug;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport.DamagedResourceReport.DamagedResourceIssue;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport.ProblemReport.ProblemLevel;
+import ru.windcorp.tge2.util.stream.StringBuilderOutputStream;
 
 /**
  * Execution report holding information about application's status for debug purposes.

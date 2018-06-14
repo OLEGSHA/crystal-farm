@@ -1,4 +1,4 @@
-package ru.windcorp.tge2.util;
+package ru.windcorp.tge2.util.stream;
 
 import java.io.IOException;
 import java.io.OutputStream;
