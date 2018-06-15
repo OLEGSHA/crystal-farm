@@ -17,16 +17,35 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
+import org.lwjgl.openal.AL10;
+
 import ru.windcorp.tge2.util.Nameable;
 
+/**
+ * A Sound represents a loaded sound file. Sounds are associated with a unique OpenAL buffer.
+ * New Sounds can be created with {@link SoundManager#get(String)}.
+ * 
+ * @author OLEGSHA
+ */
 public class Sound extends Nameable {
 
 	private int bufferId;
+	private long length = -1;
 
-	public Sound(String name) {
+	/**
+	 * Creates a new Sound that is not associated to an OpenLA buffer with the specified name.
+	 * @param name the unique name of the sound
+	 * @see {@link SoundManager#get(String)}
+	 */
+	protected Sound(String name) {
 		super(name);
 	}
 
+	/**
+	 * Gets the associated OpenAL buffer name.
+	 * @return the buffer name that can be used by OpenAL functions
+	 * @throws IllegalStateException if no buffer has been set
+	 */
 	public int getBufferId() {
 		if (bufferId == 0) {
 			throw new IllegalStateException("Sound not initialized yet");
@@ -34,8 +53,36 @@ public class Sound extends Nameable {
 		return bufferId;
 	}
 	
+	/**
+	 * Sets the OpenAL buffer name for this Sound.
+	 * @param bufferId the name of the buffer
+	 */
 	void setBufferId(int bufferId) {
 		this.bufferId = bufferId;
+	}
+	
+	/**
+	 * Gets this Sound's length in milliseconds.
+	 * @param the duration of this Sound expressed in milliseconds
+	 * @throws IllegalStateException if no buffer has been set
+	 */
+	public long getLength() {
+		if (length == -1) {
+			calculateLength();
+		}
+		
+		return length;
+	}
+
+	private void calculateLength() {
+		if (getBufferId() == 0) {
+			throw new IllegalStateException("Sound not initialized yet");
+		}
+		
+		this.length = 1000l * Byte.SIZE
+				* AL10.alGetBufferi(getBufferId(), AL10.AL_SIZE)
+				/ AL10.alGetBufferi(getBufferId(), AL10.AL_BITS)
+				/ AL10.alGetBufferi(getBufferId(), AL10.AL_FREQUENCY);
 	}
 	
 }
