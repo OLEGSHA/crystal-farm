@@ -7,9 +7,9 @@ welcome = I can now speak English just as they speak it in the US!
 	# Generic
 		menu.generic.close = Done
 	# Main menu
-		MainMenu.title = Main Menu
+		menu.MainMenu.title = Main Menu
 	# Test menu
-		TestMenu.title = Test Menu
+		menu.TestMenu.title = Test Menu
 		menu.test.button = Button
 
 # Misc
@@ -25,6 +25,7 @@ executionReport.notification.onProblem.debug = Debug notification reported:\nID:
 executionReport.notification.onProblem.notification = Notification:\nID: %1$s\nDescription: %2$s
 executionReport.notification.onProblem.warning = Warning!\nID: %1$s\nDescription: %2$s
 executionReport.notification.onProblem.error = An error has been reported!\nID: %1$s\nDescription: %2$s
+executionReport.notification.onProblem.critical_error = null
 executionReport.notification.onProblem.uncaught = A problem has been reported!\nID: %1$s\nDescription: %2$s
 executionReport.notification.onDamagedResource = A damaged resource reported!\nResource: %1$s\nDescription: %2$s
 

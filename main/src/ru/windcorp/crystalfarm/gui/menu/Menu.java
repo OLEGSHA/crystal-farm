@@ -19,14 +19,14 @@ package ru.windcorp.crystalfarm.gui.menu;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
-import ru.windcorp.crystalfarm.graphics.fonts.GString;
+import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Label;
 import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
 
 public class Menu extends Component {
 
-	public Menu(String name, GString title) {
+	public Menu(String name, FontString title) {
 		super(name);
 		setLayout(new LayoutVertical(3*LINE_THICKNESS));
 		addChild(new Label(name + ".label", title.setBold(true).setStyle(FontStyle.ENGRAVED)));

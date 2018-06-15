@@ -23,10 +23,11 @@ import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 import java.util.function.Consumer;
 
 import ru.windcorp.crystalfarm.graphics.Color;
-import ru.windcorp.crystalfarm.graphics.fonts.GString;
+import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
 import ru.windcorp.crystalfarm.gui.Size;
+import ru.windcorp.crystalfarm.translation.TString;
 
 public class Notification {
 	
@@ -97,9 +98,8 @@ public class Notification {
 	private final Type type;
 	private final boolean isModal;
 	
-	private GString label;
-	private final String key;
-	private final Object[] args;
+	private FontString label = null;
+	private final TString text;
 	private final Consumer<?> action;
 	
 	private NotifierLayer layer;
@@ -115,21 +115,20 @@ public class Notification {
 	private double hideAt = -1;
 	private double shakeAt = -1;
 	
-	public Notification(Type type, boolean isModal, Consumer<?> action, String key, Object... args) {
+	public Notification(Type type, boolean isModal, Consumer<?> action, TString text) {
 		this.type = type;
-		this.key = key;
-		this.args = args;
+		this.text = text;
 		this.isModal = isModal;
 		this.action = action;
 	}
 	
 	void show(NotifierLayer layer) {
 		this.layer = layer;
-		this.label = new GString(key, args).setColor(Color.BLACK);
+		this.label = new FontString(text).setColor(Color.BLACK);
 		this.hideAt = ModuleNotifier.SETTING_TIMEOUT.get() * 1000 + time();
 		if (isModal()) this.shakeAt = ModuleNotifier.SETTING_SHAKE_INTERVAL.get() * 1000 + time();
 		
-		Size textSize = getText().getBounds();
+		Size textSize = getLabel().getBounds();
 		
 		width = 5*LINE_THICKNESS + getType().getIcon().getWidth() + textSize.width;
 		height = 4*LINE_THICKNESS + Math.max(getType().getIcon().getHeight(), textSize.height);
@@ -150,8 +149,12 @@ public class Notification {
 		return isModal;
 	}
 	
-	public GString getText() {
+	public FontString getLabel() {
 		return label;
+	}
+	
+	public TString getText() {
+		return text;
 	}
 	
 	public Consumer<?> getAction() {
@@ -234,7 +237,7 @@ public class Notification {
 				y + 2*LINE_THICKNESS,
 				getType().getIcon());
 		
-		getText().render(x + 3*LINE_THICKNESS + getType().getIcon().getWidth(), y + 2*LINE_THICKNESS);
+		getLabel().render(x + 3*LINE_THICKNESS + getType().getIcon().getWidth(), y + 2*LINE_THICKNESS);
 		
 		if (hasCursor()) {
 			fillRectangle(x, y, width, height, COVER_COLOR);

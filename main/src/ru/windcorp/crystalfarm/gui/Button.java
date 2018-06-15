@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 import org.lwjgl.glfw.GLFW;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
-import ru.windcorp.crystalfarm.graphics.fonts.GString;
+import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
 import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
@@ -39,7 +39,7 @@ public class Button extends Component implements Consumer<Object>, GraphicsDesig
 	
 	private final Collection<Consumer<?>> actions = Collections.synchronizedCollection(new ArrayList<>());
 	
-	public Button(String name, GString label, Consumer<?> action) {
+	public Button(String name, FontString label, Consumer<?> action) {
 		super(name);
 		setFocusable(true);
 		setLayout(new LayoutCenter());
@@ -68,11 +68,11 @@ public class Button extends Component implements Consumer<Object>, GraphicsDesig
 		return label;
 	}
 
-	public GString getText() {
+	public FontString getText() {
 		return getLabel().getText();
 	}
 
-	public Button setText(GString text) {
+	public Button setText(FontString text) {
 		getLabel().setText(text);
 		return this;
 	}

@@ -21,6 +21,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ru.windcorp.crystalfarm.graphics.notifier.Notification.Type;
+import ru.windcorp.crystalfarm.translation.TString;
 
 public class Notifier {
 
@@ -46,24 +47,24 @@ public class Notifier {
 		}
 	}
 	
-	public static void debug(String key, Object... args) {
-		postNotification(new Notification(Type.DEBUG, false, null, key, args));
+	public static void debug(TString text) {
+		postNotification(new Notification(Type.DEBUG, false, null, text));
 	}
 	
-	public static void info(String key, Object... args) {
-		postNotification(new Notification(Type.INFO_NEUTRAL, false, null, key, args));
+	public static void info(TString text) {
+		postNotification(new Notification(Type.INFO_NEUTRAL, false, null, text));
 	}
 	
-	public static void positive(String key, Object... args) {
-		postNotification(new Notification(Type.INFO_POSITIVE, false, null, key, args));
+	public static void positive(TString text) {
+		postNotification(new Notification(Type.INFO_POSITIVE, false, null, text));
 	}
 	
-	public static void warn(String key, Object... args) {
-		postNotification(new Notification(Type.WARNING, false, null, key, args));
+	public static void warn(TString text) {
+		postNotification(new Notification(Type.WARNING, false, null, text));
 	}
 	
-	public static void error(String key, Object... args) {
-		postNotification(new Notification(Type.ERROR, false, null, key, args));
+	public static void error(TString text) {
+		postNotification(new Notification(Type.ERROR, false, null, text));
 	}
 	
 	static void postQueuedNotifications() {

@@ -50,7 +50,7 @@ public class ModuleTranslation extends Module {
 			DICTIONARY = Collections.synchronizedMap(new HashMap<>()),
 			DICTIONARY_FALLBACK = Collections.synchronizedMap(new HashMap<>());
 	
-	private static final Collection<WeakReference<TString>> STRING_SET = Collections.synchronizedCollection(new LinkedList<>());
+	private static final Collection<WeakReference<TStringTranslated>> STRING_SET = Collections.synchronizedCollection(new LinkedList<>());
 	
 	static boolean hasLoaded = false;
 
@@ -100,7 +100,7 @@ public class ModuleTranslation extends Module {
 		return key;
 	}
 	
-	static void register(TString tstring) {
+	static void register(TStringTranslated tstring) {
 		STRING_SET.add(new WeakReference<>(tstring));
 		tstring.load();
 	}
@@ -115,8 +115,8 @@ public class ModuleTranslation extends Module {
 		STRING_SET.forEach(ref -> load(ref));
 	}
 
-	private static void load(WeakReference<TString> ref) {
-		TString str = ref.get();
+	private static void load(WeakReference<TStringTranslated> ref) {
+		TStringTranslated str = ref.get();
 		if (str != null) {
 			str.load();
 		}

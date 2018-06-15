@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.debug;
 
 import ru.windcorp.crystalfarm.graphics.notifier.Notification;
 import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
+import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport.DamagedResourceReport;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport.ProblemReport;
@@ -32,18 +33,28 @@ public class CrystalFarmExecutionReportListener implements ExecutionReportListen
 				getType(report.getType()),
 				true,
 				null,
-				"executionReport.notification.onProblem." + report.getType().name().toLowerCase(),
-				report.getProblemId(), report.getDescription()));
+				TString.formatted(
+						TString.translated(
+								"executionReport.notification.onProblem." + report.getType().name().toLowerCase()
+						),
+						report.getProblemId(), report.getDescription()
+				)
+		));
 	}
 
 	@Override
 	public void onDamagedResource(DamagedResourceReport report) {
-		Notifier.postNotification(new Notification(
-				getType(report.getLevel()),
-				true,
-				null,
-				"executionReport.notification.onDamagedResource",
-				report.getResource(), report.getDescription()));
+//		Notifier.postNotification(new Notification(
+//				getType(report.getLevel()),
+//				true,
+//				null,
+//				TString.formatted(
+//						TString.translated(
+//								"executionReport.notification.onDamagedResource." + report.getLevel().name().toLowerCase()
+//						),
+//						report.getProblemId(), report.getDescription()
+//				)
+//		));
 	}
 	
 	public static Notification.Type getType(ExecutionReport.ProblemReport.ProblemLevel level) {

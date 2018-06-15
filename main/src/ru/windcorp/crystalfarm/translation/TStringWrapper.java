@@ -15,19 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.gui.menu;
+package ru.windcorp.crystalfarm.translation;
 
-import ru.windcorp.crystalfarm.gui.Button;
-import ru.windcorp.crystalfarm.translation.TString;
+public class TStringWrapper extends TString {
+	
+	private final Object object;
 
-public class TestMenu extends MenuLayer {
+	public TStringWrapper(Object object) {
+		this.object = object;
+	}
 
-	public TestMenu() {
-		super("TestMenu", true);
-		
-		Button button = new Button("ExampleButton", TString.translated("menu.test.button").toFont(), null);
-		
-		add(button);
+	@Override
+	protected String compute() {
+		return String.valueOf(object);
 	}
 
 }

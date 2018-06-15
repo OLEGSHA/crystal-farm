@@ -22,6 +22,7 @@ import org.lwjgl.glfw.GLFW;
 import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.debug.Log;
 
 public class DebugInputListener implements InputListener {
@@ -41,7 +42,7 @@ public class DebugInputListener implements InputListener {
 			if (i.getKey() == GLFW.GLFW_KEY_SLASH) {
 				debugEnabled = !debugEnabled;
 				Log.info("Debug keyboard shortcuts " + (debugEnabled ? "enabled" : "disabled"));
-				Notifier.info("misc.debugInputListener.shortcuts." + (debugEnabled ? "enabled" : "disabled"));
+				Notifier.info(TString.translated("misc.debugInputListener.shortcuts." + (debugEnabled ? "enabled" : "disabled")));
 				i.consume();
 				return;
 			}
@@ -56,12 +57,12 @@ public class DebugInputListener implements InputListener {
 			case GLFW.GLFW_KEY_L:
 				Log.info("Dumping layers");
 				Log.report("\n" + GraphicsInterface.dumpLayers());
-				Notifier.info("misc.debugInputListener.layerDump");
+				Notifier.info(TString.translated("misc.debugInputListener.layerDump"));
 				Log.info("Dump complete");
 				break;
 			case GLFW.GLFW_KEY_F:
 				ModuleGraphicsInterface.SHOW_FPS.set(!ModuleGraphicsInterface.SHOW_FPS.get());
-				Notifier.info("misc.debugInputListener.fps." + (ModuleGraphicsInterface.SHOW_FPS.get() ? "enabled" : "disabled"));
+				Notifier.info(TString.translated("misc.debugInputListener.fps." + (ModuleGraphicsInterface.SHOW_FPS.get() ? "enabled" : "disabled")));
 			}
 			
 		}

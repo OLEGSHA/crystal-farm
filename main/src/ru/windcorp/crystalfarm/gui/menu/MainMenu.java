@@ -18,11 +18,11 @@
 package ru.windcorp.crystalfarm.gui.menu;
 
 import ru.windcorp.crystalfarm.CrystalFarm;
-import ru.windcorp.crystalfarm.graphics.fonts.GString;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Image;
 import ru.windcorp.crystalfarm.gui.layout.LayoutBorder;
+import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.debug.Log;
 
 public class MainMenu extends MenuLayer {
@@ -32,16 +32,16 @@ public class MainMenu extends MenuLayer {
 		
 		getRoot().addChild(new Image("MainMenu.logo", SimpleTexture.get("title")).setLayoutHint(LayoutBorder.UP));
 
-		Button button1 = new Button("1.3", new GString("TMP_1.3"), null);
+		Button button1 = new Button("1.3", TString.translated("TMP_1.3").toFont(), null);
 		button1.addAction(button -> {
 			getContents().removeChild(button1);
 		});
 		
-		add(new Button("1.1", new GString("TMP_1.1"), button -> Log.info(button + " activated")).takeFocus(),
-				new Button("1.2", new GString("TMP_1.2"), button -> Log.info(button + " activated")),
+		add(new Button("1.1", TString.translated("TMP_1.1").toFont(), button -> Log.info(button + " activated")).takeFocus(),
+				new Button("1.2", TString.translated("TMP_1.2").toFont(), button -> Log.info(button + " activated")),
 				button1,
-				new Button("1.5", new GString("TMP_1.5"), button -> new TestMenu().show()),
-				new Button("1.4", new GString("TMP_1.4"), button -> CrystalFarm.exit("user request", 0)));
+				new Button("1.5", TString.translated("TMP_1.5").toFont(), button -> new TestMenu().show()),
+				new Button("1.4", TString.translated("TMP_1.4").toFont(), button -> CrystalFarm.exit("user request", 0)));
 		
 	}
 	

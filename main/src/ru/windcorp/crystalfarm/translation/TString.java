@@ -20,30 +20,28 @@ package ru.windcorp.crystalfarm.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public class TString implements Cloneable, Comparable<TString> {
-	
-	private static AtomicInteger cleanRejectCounter = new AtomicInteger(0);
-	private static final int MAX_REJECTED_CLEANS = 10;
-	
-	private final String key;
-	private String value = null;
-	private Object[] args = null;
-	
+import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.graphics.fonts.Font;
+import ru.windcorp.crystalfarm.graphics.fonts.FontString;
+import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
+
+public abstract class TString implements Comparable<TString> {
+
 	private Collection<Consumer<? super TString>> changeListeners = null;
-
-	public TString(String key, Object... args) {
-		if (args != null && args.length == 0) args = null;
-		this.key = key;
-		this.setArgs(args);
-		ModuleTranslation.register(this);
+	private String cache = null;
+	
+	public final String get() {
+		if (cache == null) {
+			cache = compute();
+		}
+		
+		return cache;
 	}
 	
-	public TString(String key) {
-		this(key, (Object[]) null);
-	}
+	protected abstract String compute();
 	
 	public synchronized void addChangeListener(Consumer<? super TString> listener) {
 		if (changeListeners == null) {
@@ -63,46 +61,11 @@ public class TString implements Cloneable, Comparable<TString> {
 		return changeListeners;
 	}
 	
-	public synchronized String getRaw() {
-		if (value == null) {
-			return getKey();
+	protected void update() {
+		cache = null;
+		if (changeListeners != null) {
+			changeListeners.forEach(listener -> listener.accept(this));
 		}
-		
-		return value;
-	}
-	
-	public String get() {
-		return format(getArgs());
-	}
-	
-	public String format(Object... args) {
-		String raw = getRaw();
-		if (args == null || raw.equals(getKey())) {
-			return raw;
-		}
-		
-		try {
-			return String.format(raw, getArgs());
-		} catch (Exception e) {
-			// Fail silently
-			return raw;
-		}
-	}
-	
-	protected synchronized void load() {
-		value = ModuleTranslation.getValueForKey(getKey());
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public Object[] getArgs() {
-		return args;
-	}
-
-	public void setArgs(Object[] args) {
-		this.args = args;
 	}
 
 	@Override
@@ -112,7 +75,7 @@ public class TString implements Cloneable, Comparable<TString> {
 
 	@Override
 	public int hashCode() {
-		return key == null ? 0 : key.hashCode();
+		return get().hashCode();
 	}
 
 	@Override
@@ -124,24 +87,56 @@ public class TString implements Cloneable, Comparable<TString> {
 		if (getClass() != obj.getClass())
 			return false;
 		TString other = (TString) obj;
-		if (key == null) {
-			if (other.key != null)
+		String otherValue = other.get();
+		String ownValue = get();
+		
+		if (ownValue == null) {
+			if (otherValue != null)
 				return false;
-		} else if (!key.equals(other.key))
+		} else if (!ownValue.equals(otherValue))
 			return false;
 		return true;
 	}
 
 	@Override
 	public int compareTo(TString o) {
-		return getKey().compareTo(o.getKey());
+		return get().compareTo(o.get());
 	}
 	
-	@Override
-	protected void finalize() throws Throwable {
-		if (cleanRejectCounter.getAndUpdate(i -> i == MAX_REJECTED_CLEANS ? i = 0 : i++) == MAX_REJECTED_CLEANS) {
-			ModuleTranslation.clean();
-		}
+	/*
+	 * Builders
+	 */
+	
+	public static TString wrap(Object obj) {
+		return new TStringWrapper(obj);
 	}
-
+	
+	public static TString translated(String key) {
+		return new TStringTranslated(key);
+	}
+	
+	public static TString concat(Object... objects) {
+		return new TStringConcat(objects);
+	}
+	
+	public static TString formatted(Object format, Object... args) {
+		return new TStringFormatter(format, args);
+	}
+	
+	public TString toFormatted(Object... args) {
+		return formatted(this, args);
+	}
+	
+	public FontString toFont(Font font, FontStyle style, boolean bold, Color color) {
+		return new FontString(this, font, style, bold, color);
+	}
+	
+	public FontString toFont() {
+		return new FontString(this);
+	}
+	
+	public TString apply(Function<String, String> function) {
+		return new TStringFunc(this, function);
+	}
+	
 }

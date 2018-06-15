@@ -23,13 +23,13 @@ import org.lwjgl.glfw.GLFW;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
-import ru.windcorp.crystalfarm.graphics.fonts.GString;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.GuiLayer;
 import ru.windcorp.crystalfarm.gui.layout.LayoutBorder;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.translation.TString;
 
 public class MenuLayer extends GuiLayer {
 	
@@ -41,12 +41,12 @@ public class MenuLayer extends GuiLayer {
 		Component root = new Component(name + "Bg");
 		root.setLayout(new LayoutBorder());
 		
-		this.contents = new Menu(name, new GString(name + ".title"));
+		this.contents = new Menu(name, TString.translated("menu." + name + ".title").toFont());
 		
 		root.addChild(contents.center().setLayoutHint(LayoutBorder.CENTER));
 		if (addCloseButton) {
 			root.addChild(
-					new Button(name + ".close", new GString("menu.generic.close"), button -> close())
+					new Button(name + ".close", TString.translated("menu.generic.close").toFont(), button -> close())
 						.center().setLayoutHint(LayoutBorder.DOWN)
 			);
 		}

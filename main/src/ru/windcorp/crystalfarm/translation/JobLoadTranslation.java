@@ -36,7 +36,7 @@ public class JobLoadTranslation extends ModuleJob {
 		ModuleTranslation.reload();
 		ModuleTranslation.hasLoaded = true;
 		
-		Log.info(new TString("welcome").toString());
+		Log.info(new TStringTranslated("welcome").toString());
 	}
 
 }
