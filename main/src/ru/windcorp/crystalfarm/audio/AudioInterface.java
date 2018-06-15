@@ -24,9 +24,6 @@ import java.nio.IntBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
 
-import ru.windcorp.tge2.util.synch.SynchUtil;
-import ru.windcorp.tge2.util.synch.Waiter;
-
 public class AudioInterface {
 	
 	//max ammount of sources
