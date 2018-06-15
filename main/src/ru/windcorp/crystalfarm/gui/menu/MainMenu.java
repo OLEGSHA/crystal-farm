@@ -37,7 +37,7 @@ public class MainMenu extends MenuLayer {
 			getContents().removeChild(button1);
 		});
 		
-		add(new Button("1.1", new GString("TMP_1.1"), button -> Log.info(button + " activated")),
+		add(new Button("1.1", new GString("TMP_1.1"), button -> Log.info(button + " activated")).takeFocus(),
 				new Button("1.2", new GString("TMP_1.2"), button -> Log.info(button + " activated")),
 				button1,
 				new Button("1.5", new GString("TMP_1.5"), button -> new TestMenu().show()),

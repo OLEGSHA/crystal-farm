@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -38,7 +39,7 @@ import ru.windcorp.tge2.util.Nameable;
 
 public class Component extends Nameable implements GraphicsDesign {
 
-	private final List<Component> children = Collections.synchronizedList(new ArrayList<>());
+	private final List<Component> children = Collections.synchronizedList(new CopyOnWriteArrayList<>());
 	private WeakReference<Component> parent = new WeakReference<>(null);
 	
 	private final Collection<ComponentFocusListener> focusListeners = Collections.synchronizedList(new ArrayList<>());
@@ -277,6 +278,28 @@ public class Component extends Nameable implements GraphicsDesign {
 			this.isFocused = focus;
 			getFocusListeners().forEach(listener -> listener.onFocusChange(this, focus));
 		}
+	}
+	
+	public Component takeFocus() {
+		if (isFocused()) {
+			return this;
+		}
+		
+		Component comp = this;
+		Component focused = null;
+		
+		while (comp != null) {
+			if ((focused = comp.findFocused()) != null) {
+				focused.setFocused(false);
+				setFocused(true);
+				return this;
+			}
+			
+			comp = comp.getParent();
+		}
+		
+		setFocused(true);
+		return this;
 	}
 	
 	public void focusNext() {
