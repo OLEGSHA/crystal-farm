@@ -22,21 +22,27 @@ import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALC10;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.cfg.SettingFloat;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.jobs.JobManager;
 
 public class ModuleAudioInterface extends Module {
 	
+	static final SettingFloat GAIN = new SettingFloat("Gain", "Sets audio volume [0.0; 1.0]", 1);
+	
 	static boolean isALInitialized = false;
 
 	public ModuleAudioInterface() {
 		super("AudioInterface", InbuiltMod.INST);
+		
+		addConfig(GAIN);
 	}
 
 	@Override
 	public void registerJobs(JobManager<ModuleJob> manager) {
 		manager.addJob(new JobAudioInterfaceInit(this));
+		manager.addJob(new JobMusicInit(this));
 		manager.addJob(new TMP_JobTestAudio(this));
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {

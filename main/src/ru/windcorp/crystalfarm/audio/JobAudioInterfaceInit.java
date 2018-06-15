@@ -43,6 +43,7 @@ public class JobAudioInterfaceInit extends ModuleJob {
 		addDependency("Inbuilt:Configuration:LoadConfig");
 	}
 	
+	
 	protected void runImpl() {
 		Log.info("OpenAL initialization");
 		

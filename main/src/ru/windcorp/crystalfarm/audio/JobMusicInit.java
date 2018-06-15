@@ -19,17 +19,21 @@ package ru.windcorp.crystalfarm.audio;
 
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
+import ru.windcorp.tge2.util.debug.Log;
 
-public class TMP_JobTestAudio extends ModuleJob {
+public class JobMusicInit extends ModuleJob {
 
-	public TMP_JobTestAudio(Module module) {
-		super("TMP_JobTestAudio", "Debug job to fiddle with audio", module);
-
+	public JobMusicInit(Module module) {
+		super("MusicInit", "Initializes music thread", module);
+		
 		addDependency("Inbuilt:AudioInterface:AudioInterfaceInit");
-		addDependency("Inbuilt:GraphicsInterface:TMP_JobTestGUI");
 	}
 
 	@Override
-	protected void runImpl() { 
+	protected void runImpl() {
+		Thread musicThread = new Thread(new Music(), "Music Thread");
+		musicThread.start();
+		Log.info("Started music");
 	}
+
 }

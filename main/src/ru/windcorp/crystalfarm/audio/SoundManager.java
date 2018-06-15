@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.audio;
 
 import static org.lwjgl.openal.AL10.AL_FORMAT_MONO16;
+
 import static org.lwjgl.openal.AL10.AL_FORMAT_STEREO16;
 import static org.lwjgl.openal.AL10.alBufferData;
 import static org.lwjgl.stb.STBVorbis.stb_vorbis_close;
@@ -50,6 +51,9 @@ import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.grh.Resource;
 
 public class SoundManager {
+	
+	//maximum buffers
+	public static final int NUM_BUFFERS = 3;
 	
 	private static class DelayedLoad {
 		final Sound sound;
@@ -133,11 +137,11 @@ public class SoundManager {
 	}
 
 	/*
-	 * Method readVorbis() is imported from LWJGL OpenAL Demo
+	 * Method readVorbis() is imported from LWJGL OpenAL Demo and modified
 	 */
     private static ShortBuffer readVorbis(Resource resource, int bufferSize, STBVorbisInfo info) throws IOException {
         ByteBuffer vorbis  = ioResourceToByteBuffer(resource, bufferSize);
-        IntBuffer  error   = BufferUtils.createIntBuffer(1);
+        IntBuffer  error   = BufferUtils.createIntBuffer(NUM_BUFFERS);
         long       decoder = stb_vorbis_open_memory(vorbis, error, null);
         if (decoder == NULL) {
             throw new IOException("Failed to open Ogg Vorbis file. Error: " + error.get(0));

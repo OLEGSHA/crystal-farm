@@ -17,19 +17,22 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
-import ru.windcorp.crystalfarm.struct.modules.Module;
-import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class TMP_JobTestAudio extends ModuleJob {
-
-	public TMP_JobTestAudio(Module module) {
-		super("TMP_JobTestAudio", "Debug job to fiddle with audio", module);
-
-		addDependency("Inbuilt:AudioInterface:AudioInterfaceInit");
-		addDependency("Inbuilt:GraphicsInterface:TMP_JobTestGUI");
-	}
+public class Music implements Runnable {
+	
+	public static final List<Sound> PLAYLIST = Collections.synchronizedList(new ArrayList<>());
 
 	@Override
-	protected void runImpl() { 
+	public void run() {
+		for (String name : new String[] {"rooster", "Rondo_Alla_Turka"}) {
+			PLAYLIST.add(SoundManager.get(name));
+		}
+		AudioInterface.play(0,PLAYLIST.get(0), 1.0f);
+		
+		AudioInterface.play(1,PLAYLIST.get(1), 1.0f);
 	}
+	
 }
