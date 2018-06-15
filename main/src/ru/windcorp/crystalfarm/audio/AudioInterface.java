@@ -23,7 +23,6 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.AL11;
 
 import ru.windcorp.tge2.util.synch.SynchUtil;
 import ru.windcorp.tge2.util.synch.Waiter;
@@ -48,7 +47,6 @@ public class AudioInterface {
 		AL10.alSourcef(getSources().get(index), AL10.AL_PITCH, pitch);
 		AL10.alSourcef(getSources().get(index), AL10.AL_GAIN, volume * ModuleAudioInterface.GAIN.get());
 		AL10.alSourcefv(getSources().get(index), AL10.AL_POSITION, positions = new float[] {xPosition, yPosition, 0});	
-		//TODO OLEGSHA, check if it is needed, I guess it's not AL10.alSourcefv(getSources().get(0), AL10.AL_DIRECTION, *direction*);
 		
 		alSourcePlay(getSources().get(index));
 	}
@@ -58,10 +56,7 @@ public class AudioInterface {
 	}
 	
 	public static void playCompletely(int index ,Sound sound, float volume) {
-		//float offset;
 		play(index ,sound, volume, 0, 0, 1.0f);
-		//AL10.alGetSourcei(getSources().get(0), AL11.AL_SEC_OFFSET, offset);
-		//SynchUtil.pause();
 	}
 	
 	public static void pause() {
