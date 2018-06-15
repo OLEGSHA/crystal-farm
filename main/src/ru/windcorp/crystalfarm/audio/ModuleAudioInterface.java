@@ -23,6 +23,7 @@ import org.lwjgl.openal.ALC10;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.cfg.SettingFloat;
+import ru.windcorp.crystalfarm.cfg.SettingInt;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.jobs.JobManager;
@@ -30,6 +31,7 @@ import ru.windcorp.tge2.util.jobs.JobManager;
 public class ModuleAudioInterface extends Module {
 
 	static final SettingFloat GAIN = new SettingFloat("Gain", "Sets audio volume [0.0; 1.0]", 1);
+	static final SettingInt SOURCES = new SettingInt("AudioSources", "Sets the amount of audio sources (sounds that can be played simultaneously)", 64);
 
 	static boolean isALInitialized = false;
 
@@ -37,6 +39,7 @@ public class ModuleAudioInterface extends Module {
 		super("AudioInterface", InbuiltMod.INST);
 		
 		addConfig(GAIN);
+		addConfig(SOURCES);
 	}
 
 	@Override

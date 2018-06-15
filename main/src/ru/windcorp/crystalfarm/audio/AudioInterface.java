@@ -19,82 +19,201 @@
 package ru.windcorp.crystalfarm.audio;
 
 import static org.lwjgl.openal.AL10.*;
+import static ru.windcorp.crystalfarm.audio.ModuleAudioInterface.*;
 
 import java.nio.IntBuffer;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL10;
+import ru.windcorp.tge2.util.synch.SynchUtil;
 
 public class AudioInterface {
 	
-	//max ammount of sources
-	public static final int NUM_SOURCES = 3;
-	
-	/** Sources are points emitting sound. */
-	private final static IntBuffer SOURCES = BufferUtils.createIntBuffer(NUM_SOURCES);
+	private static IntBuffer sources = null;
+	private static final Queue<Integer> SOURCE_QUEUE = new LinkedList<>();
+	private static final Map<Integer, Sound> SOURCE_SOUNDS = Collections.synchronizedMap(new HashMap<>());
 	
 	private static long device;
 	private static boolean isAudioReady = false;
 	
-	
-	@SuppressWarnings("unused")
-	private static float[] positions;
-	
 	/**
-	 * Play - makes source play the given sound with specified options.
+	 * Plays the given sound.
 	 * @param sound - the sound to play
-	 * @param volume - volume regulation
+	 * @param gain - sound volume
 	 * @param xPosition - sound position at X axis
 	 * @param yPosition - sound position at Y axis
-	 * @param pitch - frequency of sound
+	 * @param pitch - pitch change
 	 */
-	public static void play(Sound sound, float volume, float xPosition, float yPosition, float pitch) {
-		AL10.alSourcei(getSources().get(0), AL10.AL_BUFFER, sound.getBufferId());
-		AL10.alSourcef(getSources().get(0), AL10.AL_PITCH, pitch);
-		AL10.alSourcef(getSources().get(0), AL10.AL_GAIN, volume * ModuleAudioInterface.GAIN.get());
-		AL10.alSourcefv(getSources().get(0), AL10.AL_POSITION, positions = new float[] {xPosition, yPosition, 0});	
+	public static void play(Sound sound, float gain, float xPosition, float yPosition, float pitch) {
+		int source = nextSource();
 		
-		alSourcePlay(getSources().get(0));
+		if (isSourceActive(source)) {
+			alSourceStop(source);
+		}
+		
+		alSourcei(source,	AL_BUFFER,		sound.getBufferName());
+		alSourcef(source,	AL_PITCH,		pitch);
+		alSourcef(source,	AL_GAIN,		gain * GAIN.get());
+		alSource3f(source,	AL_POSITION,	xPosition, yPosition, 0);
+		
+		alSourcePlay(source);
+		SOURCE_SOUNDS.put(source, sound);
 	}
 	
-	public static void play(Sound sound, float volume) {
-		play(sound, volume, 0, 0, 1.0f);
+	/**
+	 * Plays the given sound. Pitch is preserved, sound is played at (0; 0).
+	 * @param sound - the sound to play
+	 * @param gain - sound volume
+	 */
+	public static void play(Sound sound, float gain) {
+		play(sound, gain, 0, 0, 1.0f);
 	}
 	
-	public static void playCompletely(int index , Sound sound, float volume) {
-		play(sound, volume, 0, 0, 1.0f);
+	/**
+	 * Plays the given sound and waits for it to stop.
+	 * @param sound - the sound to play
+	 * @param gain - sound volume
+	 * @param xPosition - sound position at X axis
+	 * @param yPosition - sound position at Y axis
+	 * @param pitch - pitch change
+	 */
+	public static void playCompletely(Sound sound, float gain, float xPosition, float yPosition, float pitch) {
+		play(sound, gain, xPosition, yPosition, pitch);
+		SynchUtil.pause(sound.getLength());
 	}
 	
-	public static void pause() {
-		AL10.alSourcePause(getSources().get(0));
+	/**
+	 * Plays the given sound and waits for it to stop. Pitch is preserved, sound is played at (0; 0).
+	 * @param sound - the sound to play
+	 * @param gain - sound volume
+	 */
+	public static void playCompletely(Sound sound, float gain) {
+		playCompletely(sound, gain, 0, 0, 1.0f);
 	}
 	
-	public static void stop() {
-		AL10.alSourceStop(getSources().get(0));
+	/**
+	 * Stops the given sound if it is playing, fails silently otherwise.
+	 * @param sound the sound to stop
+	 */
+	public static void stop(Sound sound) {
+		Integer source = getSourceBySound(sound);
+		if (source == null) return;
+		alSourceStop(source);
 	}
 	
-	public static IntBuffer getSources() {
-		return SOURCES;
+	/**
+	 * Sets the sources to use.
+	 * @param buffer a buffer that contains source names
+	 */
+	static void setSources(IntBuffer buffer) {
+		sources = buffer;
+		
+		sources.rewind();
+		while (sources.remaining() != 0) {
+			SOURCE_QUEUE.add(sources.get());
+		}
+		sources.rewind();
+	}
+	
+	/**
+	 * Gets all source names.
+	 * @return a buffer containing all source names
+	 */
+	static IntBuffer getSources() {
+		return sources;
+	}
+	
+	/**
+	 * Returns a source that can be used to play the next sound with.
+	 * This method first attempts to pick a source that is not playing any sound.
+	 * If all sources are occupied then it picks the source that has started first.
+	 * @return a source name
+	 */
+	private static Integer nextSource() {
+		synchronized (SOURCE_QUEUE) {
+			Integer result = null;
+			
+			for (Integer source : SOURCE_QUEUE) {
+				if (!isSourceActive(source)) {
+					result = source;
+				}
+			}
+			
+			if (result == null) result = SOURCE_QUEUE.poll();
+			SOURCE_QUEUE.add(result);
+			return result;
+		}
+	}
+	
+	/**
+	 * Finds a source that is currently playing the given sound.
+	 * If there are multiple sources playing it, returns one
+	 * arbitrarily.
+	 * @param sound the sound to look up
+	 * @return a source name or null if none found
+	 */
+	private static Integer getSourceBySound(Sound sound) {
+		for (Map.Entry<Integer, Sound> entry : SOURCE_SOUNDS.entrySet()) {
+			if (isSourceActive(entry.getKey()) && entry.getValue() == sound) {
+				return entry.getKey();
+			}
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Checks whether a source is considered active by OpenAL.
+	 * @param source the name of the source to check
+	 * @return true when source is
+	 * {@link org.lwjgl.openal.AL10#AL_PLAYING AL_PLAYING} or 
+	 * {@link org.lwjgl.openal.AL10#AL_PAUSED AL_PAUSED}.
+	 */
+	private static boolean isSourceActive(int source) {
+		int state = alGetSourcei(source, AL_SOURCE_STATE);
+		return state == AL_PLAYING || state == AL_PAUSED;
 	}
 
-	public static IntBuffer getBuffers() {
+	/**
+	 * Creates a complete list of OpenAL buffers.
+	 * @return a buffer with names of all OpenAL buffers
+	 */
+	static IntBuffer getBuffers() {
 		return SoundManager.getBuffers();
 	}
 
-	public static long getDevice() {
+	/**
+	 * Gets the OpenAL device handle.
+	 * @return the device handle
+	 */
+	static long getDevice() {
 		return device;
 	}
 
+	/**
+	 * Sets the OpenAL device handle.
+	 * @param device the device handle
+	 */
 	static void setDevice(long device) {
 		AudioInterface.device = device;
 	}
 
+	/**
+	 * Checks whether {@link AudioInterface} is ready to be used.
+	 * @return true when {@link AudioInterface} is ready to be used.
+	 */
 	public static boolean isAudioReady() {
 		return isAudioReady;
 	}
 
-	static void setAudioReady(boolean isAudioReady) {
-		AudioInterface.isAudioReady = isAudioReady;
+	/**
+	 * Marks {@link AudioInterface} as ready for use.
+	 */
+	static void setAudioReady() {
+		AudioInterface.isAudioReady = true;
 	}
 	
 }

@@ -24,7 +24,6 @@ import static org.lwjgl.openal.AL10.*;
 import static org.lwjgl.openal.AL.*;
 
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
@@ -51,25 +50,14 @@ public class JobAudioInterfaceInit extends ModuleJob {
 		ALCCapabilities deviceCaps = createCapabilities(getDevice());
 		ModuleAudioInterface.isALInitialized = true;
 
-		long context = alcCreateContext(getDevice(), (IntBuffer)null);
+		long context = alcCreateContext(getDevice(), (IntBuffer) null);
 		alcMakeContextCurrent(context);
 		createCapabilities(deviceCaps);
 		
-		/** Position of the listener. */
-		FloatBuffer listenerPos = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
-		listenerPos.rewind();
-		
-		/** Velocity of the listener. */
-		FloatBuffer listenerVel = BufferUtils.createFloatBuffer(3).put(new float[] { 0.0f, 0.0f, 0.0f });
-		listenerVel.rewind();
-		
-		/** Orientation of the listener. (first 3 elements are "at", second 3 are "up") */
-		FloatBuffer listenerOri =
-		    BufferUtils.createFloatBuffer(6).put(new float[] { 0.0f, 0.0f, -1.0f,  0.0f, 1.0f, 0.0f });
-		listenerOri.rewind();
-		
 		// Bind the buffer with the source.
-		alGenSources(getSources());
+		IntBuffer sources = BufferUtils.createIntBuffer(ModuleAudioInterface.SOURCES.get());
+		alGenSources(sources);
+		setSources(sources);
 		
 		SoundManager.processQueueAndSetAudioReady();
 		

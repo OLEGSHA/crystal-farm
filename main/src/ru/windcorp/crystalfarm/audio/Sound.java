@@ -29,7 +29,7 @@ import ru.windcorp.tge2.util.Nameable;
  */
 public class Sound extends Nameable {
 
-	private int bufferId;
+	private int bufferName;
 	private long length = -1;
 
 	/**
@@ -46,11 +46,11 @@ public class Sound extends Nameable {
 	 * @return the buffer name that can be used by OpenAL functions
 	 * @throws IllegalStateException if no buffer has been set
 	 */
-	public int getBufferId() {
-		if (bufferId == 0) {
+	public int getBufferName() {
+		if (bufferName == 0) {
 			throw new IllegalStateException("Sound not initialized yet");
 		}
-		return bufferId;
+		return bufferName;
 	}
 	
 	/**
@@ -58,7 +58,7 @@ public class Sound extends Nameable {
 	 * @param bufferId the name of the buffer
 	 */
 	void setBufferId(int bufferId) {
-		this.bufferId = bufferId;
+		this.bufferName = bufferId;
 	}
 	
 	/**
@@ -75,14 +75,14 @@ public class Sound extends Nameable {
 	}
 
 	private void calculateLength() {
-		if (getBufferId() == 0) {
+		if (getBufferName() == 0) {
 			throw new IllegalStateException("Sound not initialized yet");
 		}
 		
 		this.length = 1000l * Byte.SIZE
-				* AL10.alGetBufferi(getBufferId(), AL10.AL_SIZE)
-				/ AL10.alGetBufferi(getBufferId(), AL10.AL_BITS)
-				/ AL10.alGetBufferi(getBufferId(), AL10.AL_FREQUENCY);
+				* AL10.alGetBufferi(getBufferName(), AL10.AL_SIZE)
+				/ AL10.alGetBufferi(getBufferName(), AL10.AL_BITS)
+				/ AL10.alGetBufferi(getBufferName(), AL10.AL_FREQUENCY);
 	}
 	
 }

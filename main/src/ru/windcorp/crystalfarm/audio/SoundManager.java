@@ -129,7 +129,7 @@ public class SoundManager {
 	
 	static synchronized void processQueueAndSetAudioReady() {
 		DELAYED_LOAD_QUEUE.forEach(delayed -> loadInAL(delayed.sound, delayed.pcm, delayed.format, delayed.sampleRate));
-		AudioInterface.setAudioReady(true);
+		AudioInterface.setAudioReady();
 	}
 
 	/*
@@ -183,7 +183,7 @@ public class SoundManager {
 			IntBuffer buffers = IntBuffer.allocate(SOUNDS.size());
 			
 			SOUNDS.forEach((name, sound) -> {
-				buffers.put(sound.getBufferId());
+				buffers.put(sound.getBufferName());
 			});
 			
 			return buffers;

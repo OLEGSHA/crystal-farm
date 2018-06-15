@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ru.windcorp.tge2.util.debug.Log;
+
 public class Music implements Runnable {
 	
 	public static final List<Sound> PLAYLIST = Collections.synchronizedList(new ArrayList<>());
@@ -32,7 +34,8 @@ public class Music implements Runnable {
 		}
 		AudioInterface.play(PLAYLIST.get(0), 1.0f);
 		
-		AudioInterface.play(PLAYLIST.get(1), 1.0f);
+		AudioInterface.playCompletely(PLAYLIST.get(1), 1.0f);
+		Log.info("Done");
 	}
 	
 }
