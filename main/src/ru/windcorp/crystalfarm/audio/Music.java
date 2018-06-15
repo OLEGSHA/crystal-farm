@@ -30,9 +30,9 @@ public class Music implements Runnable {
 		for (String name : new String[] {"rooster", "Rondo_Alla_Turka"}) {
 			PLAYLIST.add(SoundManager.get(name));
 		}
-		AudioInterface.play(0,PLAYLIST.get(0), 1.0f);
+		AudioInterface.play(PLAYLIST.get(0), 1.0f);
 		
-		AudioInterface.play(1,PLAYLIST.get(1), 1.0f);
+		AudioInterface.play(PLAYLIST.get(1), 1.0f);
 	}
 	
 }

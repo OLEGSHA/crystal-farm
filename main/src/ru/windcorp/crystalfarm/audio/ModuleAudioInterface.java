@@ -28,9 +28,9 @@ import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.jobs.JobManager;
 
 public class ModuleAudioInterface extends Module {
-	
+
 	static final SettingFloat GAIN = new SettingFloat("Gain", "Sets audio volume [0.0; 1.0]", 1);
-	
+
 	static boolean isALInitialized = false;
 
 	public ModuleAudioInterface() {

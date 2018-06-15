@@ -36,14 +36,14 @@ import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
 public class JobAudioInterfaceInit extends ModuleJob {
-	
+
 	public JobAudioInterfaceInit(Module module) {
 		super("AudioInterfaceInit", "Initializes OpenAL", module);
 		
 		addDependency("Inbuilt:Configuration:LoadConfig");
 	}
-	
-	
+
+
 	protected void runImpl() {
 		Log.info("OpenAL initialization");
 		

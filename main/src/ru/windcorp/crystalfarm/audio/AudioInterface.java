@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package ru.windcorp.crystalfarm.audio;
 
 import static org.lwjgl.openal.AL10.*;
@@ -39,21 +40,29 @@ public class AudioInterface {
 	@SuppressWarnings("unused")
 	private static float[] positions;
 	
-	public static void play(int index, Sound sound, float volume,float xPosition, float yPosition, float pitch) {
-		AL10.alSourcei(getSources().get(index), AL10.AL_BUFFER, sound.getBufferId());
-		AL10.alSourcef(getSources().get(index), AL10.AL_PITCH, pitch);
-		AL10.alSourcef(getSources().get(index), AL10.AL_GAIN, volume * ModuleAudioInterface.GAIN.get());
-		AL10.alSourcefv(getSources().get(index), AL10.AL_POSITION, positions = new float[] {xPosition, yPosition, 0});	
+	/**
+	 * Play - makes source play the given sound with specified options.
+	 * @param sound - the sound to play
+	 * @param volume - volume regulation
+	 * @param xPosition - sound position at X axis
+	 * @param yPosition - sound position at Y axis
+	 * @param pitch - frequency of sound
+	 */
+	public static void play(Sound sound, float volume, float xPosition, float yPosition, float pitch) {
+		AL10.alSourcei(getSources().get(0), AL10.AL_BUFFER, sound.getBufferId());
+		AL10.alSourcef(getSources().get(0), AL10.AL_PITCH, pitch);
+		AL10.alSourcef(getSources().get(0), AL10.AL_GAIN, volume * ModuleAudioInterface.GAIN.get());
+		AL10.alSourcefv(getSources().get(0), AL10.AL_POSITION, positions = new float[] {xPosition, yPosition, 0});	
 		
-		alSourcePlay(getSources().get(index));
+		alSourcePlay(getSources().get(0));
 	}
 	
-	public static void play(int index,Sound sound, float volume) {
-		play(index ,sound, volume, 0, 0, 1.0f);
+	public static void play(Sound sound, float volume) {
+		play(sound, volume, 0, 0, 1.0f);
 	}
 	
-	public static void playCompletely(int index ,Sound sound, float volume) {
-		play(index ,sound, volume, 0, 0, 1.0f);
+	public static void playCompletely(int index , Sound sound, float volume) {
+		play(sound, volume, 0, 0, 1.0f);
 	}
 	
 	public static void pause() {
