@@ -32,6 +32,13 @@ public class TStringTranslated extends TString {
 		ModuleTranslation.register(this);
 	}
 	
+	/*
+	 * Ignore TString caching
+	 */
+	public String get() {
+		return compute();
+	}
+	
 	protected synchronized String compute() {
 		if (value == null) {
 			return getKey();

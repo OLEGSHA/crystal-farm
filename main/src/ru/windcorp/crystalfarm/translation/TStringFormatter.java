@@ -28,14 +28,10 @@ public class TStringFormatter extends TString {
 		this.format = format;
 		this.args = args;
 		
-		if (format instanceof TString) {
-			((TString) format).addChangeListener(x -> update());
-		}
+		listenForUpdates(format);
 		
 		for (Object arg : args) {
-			if (arg instanceof TString) {
-				((TString) arg).addChangeListener(x -> update());
-			}
+			listenForUpdates(arg);
 		}
 	}
 

@@ -23,7 +23,7 @@ public abstract class TStringParented extends TString {
 
 	public TStringParented(TString parent) {
 		this.parent = parent;
-		parent.addChangeListener(x -> update());
+		listenForUpdates(parent);
 	}
 
 	public TString getParent() {

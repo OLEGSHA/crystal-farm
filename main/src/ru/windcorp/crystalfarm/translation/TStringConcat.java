@@ -19,22 +19,24 @@ package ru.windcorp.crystalfarm.translation;
 
 public class TStringConcat extends TString {
 	
+	private final Object part0;
 	private final Object[] parts;
 
-	public TStringConcat(Object... parts) {
+	public TStringConcat(Object part0, Object... parts) {
+		this.part0 = part0;
 		this.parts = parts;
+		
+		listenForUpdates(part0);
 		for (Object part : parts) {
-			if (part instanceof TString) {
-				((TString) part).addChangeListener(sub -> update());
-			}
+			listenForUpdates(part);
 		}
 	}
 
 	@Override
 	protected String compute() {
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(String.valueOf(part0));
 		for (Object part : parts) {
-			sb.append(part.toString());
+			sb.append(String.valueOf(part));
 		}
 		return sb.toString();
 	}
