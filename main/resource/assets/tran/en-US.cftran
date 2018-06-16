@@ -1,5 +1,3 @@
-# Inbuilt:Translation
-
 # Welcome message
 welcome = I can now speak English just as they speak it in the US!
 
@@ -11,8 +9,14 @@ welcome = I can now speak English just as they speak it in the US!
 	# Test menu
 		menu.TestMenu.title = Test Menu
 		menu.test.button = Button
+		menu.test.choiceButton = Choice Button
+		menu.test.switchButton = Switch Button
+		menu.test.switchButton.text = "State: "
 
 # Misc
+	# Generic
+		misc.gen.enabled = Enabled
+		misc.gen.disabled = Disabled
 	# DebugInputListener
 		misc.debugInputListener.shortcuts.enabled = Debug shortcuts enabled
 		misc.debugInputListener.shortcuts.disabled = Debug shortcuts disabled

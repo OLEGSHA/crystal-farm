@@ -9,8 +9,14 @@ welcome = Теперь я могу говорить по-русски ну пр�
 	# Тестовое меню
 		menu.TestMenu.title = Тестовое меню
 		menu.test.button = Кнопка
+		menu.test.choiceButton = Кнопка-переключатель
+		menu.test.switchButton = Кнопка-выключатель
+		menu.test.switchButton.text = "Состояние: "
 		
 # Разное
+	# Generic
+		misc.gen.enabled = Вкл.
+		misc.gen.disabled = Выкл.
 	# DebugInputListener
 		misc.debugInputListener.shortcuts.enabled = Отладочные комбинации вкл.
 		misc.debugInputListener.shortcuts.disabled = Отладочные комбинации выкл.

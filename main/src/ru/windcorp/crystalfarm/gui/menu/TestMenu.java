@@ -17,7 +17,10 @@
  */
 package ru.windcorp.crystalfarm.gui.menu;
 
+import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.gui.Button;
+import ru.windcorp.crystalfarm.gui.ChoiceButton;
+import ru.windcorp.crystalfarm.gui.SwitchButton;
 import ru.windcorp.crystalfarm.translation.TString;
 
 public class TestMenu extends MenuLayer {
@@ -25,9 +28,18 @@ public class TestMenu extends MenuLayer {
 	public TestMenu() {
 		super("TestMenu", true);
 		
-		Button button = new Button("ExampleButton", TString.translated("menu.test.button").toFont(), null);
+		Button button = new Button("ExampleButton", TString.translated("menu.test.button").toFont(),
+				x -> Notifier.positive(TString.translated("menu.test.button").append("!")));
+		ChoiceButton choiceButton = new ChoiceButton("ExampleChoiceButton",
+				x -> Notifier.positive(TString.translated("menu.test.choiceButton").append("!")),
+				0, TString.wrap("1"), TString.wrap("2"), TString.wrap("3"));
 		
-		add(button);
+		TString base = TString.translated("menu.test.switchButton.text");
+		SwitchButton switchButton = new SwitchButton("ExampleSwitchButton",
+				base.append(TString.translated("misc.gen.enabled")), base.append(TString.translated("misc.gen.disabled")), false,
+				x -> Notifier.positive(TString.translated("menu.test.switchButton").append("!")));
+		
+		add(button, choiceButton, switchButton);
 	}
 
 }

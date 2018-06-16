@@ -62,6 +62,7 @@ public class Label extends Component {
 		
 		Size strSize = getText().getBounds();
 		setPreferredSize(strSize.width + getMargin() * 2, strSize.height + getMargin() * 2);
+		invalidate();
 	}
 
 	@Override
