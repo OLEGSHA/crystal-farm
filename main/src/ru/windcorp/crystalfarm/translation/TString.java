@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm.translation;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,6 +43,22 @@ import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
  * @author OLEGSHA
  */
 public abstract class TString implements Comparable<TString> {
+	
+	private class Updater implements Consumer<Object> {
+		final WeakReference<TString> parent;
+		
+		Updater(TString parent) {
+			this.parent = new WeakReference<TString>(parent);
+		}
+		
+		@Override
+		public void accept(Object t) {
+			TString parent = this.parent.get();
+			if (parent != null) {
+				parent.update();
+			}
+		}
+	}
 
 	private Collection<Consumer<? super TString>> changeListeners = null;
 	private String cache = null;
@@ -115,7 +132,7 @@ public abstract class TString implements Comparable<TString> {
 	 */
 	protected void listenForUpdates(Object obj) {
 		if (obj instanceof TString) {
-			((TString) obj).addChangeListener(x -> update());
+			((TString) obj).addChangeListener(new Updater(this));
 		}
 	}
 
