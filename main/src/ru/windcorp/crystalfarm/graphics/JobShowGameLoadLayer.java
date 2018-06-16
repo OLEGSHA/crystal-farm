@@ -34,7 +34,7 @@ public class JobShowGameLoadLayer extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
-		GraphicsInterface.addLayer(new GameLoadLayer());
+		GraphicsInterface.addStickyLayer(new GameLoadLayer());
 
 		GraphicsInterface.run(() -> {
 			glfwShowWindow(getWindow());

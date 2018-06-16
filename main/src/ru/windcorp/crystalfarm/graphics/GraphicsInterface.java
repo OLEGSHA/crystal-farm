@@ -20,13 +20,14 @@ package ru.windcorp.crystalfarm.graphics;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.glfw.GLFW.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 import org.lwjgl.glfw.GLFWVidMode;
@@ -54,17 +55,18 @@ public class GraphicsInterface {
 	private static int fullscreenWidth = ModuleGraphicsInterface.WINDOW_WIDTH.get();
 	private static int fullscreenHeight = ModuleGraphicsInterface.WINDOW_HEIGHT.get();
 	
-	private static final List<Layer> LAYERS = Collections.synchronizedList(new ArrayList<>());
+	private static final List<Layer> LAYERS = Collections.synchronizedList(new CopyOnWriteArrayList<>());
 	private static final List<Layer> LAYERS_REVERSE = new ReverseListView<>(LAYERS);
+	private static int firstStickyLayer = 0;
 	
-	private static final Collection<WindowResizeListener> LISTENERS_WINDOW_RESIZE = Collections.synchronizedCollection(new ArrayList<>());
+	private static final Collection<WindowResizeListener> LISTENERS_WINDOW_RESIZE = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
 	static Stream<WindowResizeListener> getWindowResizeListeners() {
 		return Stream.concat(
 				LAYERS.stream().filter(layer -> layer instanceof WindowResizeListener),
 				LISTENERS_WINDOW_RESIZE.stream());
 	}
 	
-	private static final Collection<InputListener> LISTENERS_INPUT = Collections.synchronizedCollection(new ArrayList<>());
+	private static final Collection<InputListener> LISTENERS_INPUT = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
 	static Stream<InputListener> getInputListeners() {
 		return Stream.concat(
 				LAYERS_REVERSE.stream().filter(layer -> layer instanceof InputListener),
@@ -78,15 +80,28 @@ public class GraphicsInterface {
 	 */
 	
 	public static void addLayer(Layer layer) {
+		getLayers().add(firstStickyLayer++, layer);
+	}
+	
+	public static void addStickyLayer(Layer layer) {
 		getLayers().add(layer);
 	}
 	
 	public static void addLayerToBottom(Layer layer) {
 		getLayers().add(0, layer);
+		firstStickyLayer++;
 	}
 	
 	public static void removeLayer(Layer layer) {
-		getLayers().remove(layer);
+		synchronized (LAYERS) {
+			int index = getLayers().indexOf(layer);
+			if (index != -1) {
+				if (index < firstStickyLayer) {
+					firstStickyLayer--;
+				}
+				getLayers().remove(index);
+			}
+		}
 	}
 	
 	public static void removeAllLayers() {
@@ -115,7 +130,12 @@ public class GraphicsInterface {
 	}
 	
 	static void dispatchInput(Input input) {
-		getInputListeners().forEach(l -> l.onInput(input));
+		Iterator<InputListener> iterator = getInputListeners().iterator();
+		synchronized (iterator) {
+			while (iterator.hasNext() && !input.isConsumed()) {
+				iterator.next().onInput(input);
+			}
+		}
 	}
 	
 	static void handleWindowResize(long window, int width, int height) {

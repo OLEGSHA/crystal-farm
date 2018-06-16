@@ -36,7 +36,7 @@ public class JobNotifierInit extends ModuleJob {
 	protected void runImpl() {
 		NotifierLayer layer = new NotifierLayer();
 		Notifier.setLayer(layer);
-		GraphicsInterface.addLayer(layer);
+		GraphicsInterface.addStickyLayer(layer);
 		Notifier.postQueuedNotifications();
 		showNote(null);
 	}
