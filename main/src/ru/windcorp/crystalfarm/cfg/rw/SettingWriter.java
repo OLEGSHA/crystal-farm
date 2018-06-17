@@ -15,24 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm;
+package ru.windcorp.crystalfarm.cfg.rw;
 
-import java.io.File;
+import ru.windcorp.crystalfarm.cfg.ConfigurationSyntaxException;
 
-import ru.windcorp.tge2.util.grh.FileResourceSupplier;
-import ru.windcorp.tge2.util.grh.ClassLoaderResourceSupplier;
-import ru.windcorp.tge2.util.grh.ResourceManager;
-import ru.windcorp.tge2.util.grh.SubResourceSupplier;
+@FunctionalInterface
+public interface SettingWriter<T> {
 
-public class CrystalFarmResourceManagers {
+	public String write(T value) throws ConfigurationSyntaxException;
 	
-	public static final ResourceManager RM_FILE_WD = new ResourceManager(
-			"FS WD", new FileResourceSupplier(new File("./")));
-	
-	public static final ResourceManager RM_JAR_ROOT = new ResourceManager(
-			"JAR root", new ClassLoaderResourceSupplier());
-	
-	public static final ResourceManager RM_ASSETS = new ResourceManager(
-			"Assets", new SubResourceSupplier(RM_JAR_ROOT, "assets"));
-
 }

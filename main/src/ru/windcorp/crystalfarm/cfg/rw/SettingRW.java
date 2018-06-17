@@ -17,29 +17,27 @@
  */
 package ru.windcorp.crystalfarm.cfg.rw;
 
-import java.util.function.Function;
-
 import ru.windcorp.tge2.util.Nameable;
 
 public class SettingRW<T> extends Nameable {
 	
-	private final Function<String, T> reader;
-	private final Function<T, String> writer;
+	private final SettingReader<T> reader;
+	private final SettingWriter<T> writer;
 	
 	private final Class<T> clazz;
 	
-	public SettingRW(String name, Class<T> clazz, Function<String, T> reader, Function<T, String> writer) {
+	public SettingRW(String name, Class<T> clazz, SettingReader<T> reader,SettingWriter<T> writer) {
 		super(name);
 		this.clazz = clazz;
 		this.reader = reader;
 		this.writer = writer;
 	}
 
-	public Function<String, T> getReader() {
+	public SettingReader<T> getReader() {
 		return reader;
 	}
 
-	public Function<T, String> getWriter() {
+	public SettingWriter<T> getWriter() {
 		return writer;
 	}
 

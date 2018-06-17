@@ -17,8 +17,6 @@
  */
 package ru.windcorp.crystalfarm.cfg;
 
-import java.util.function.Function;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -32,11 +30,11 @@ public class Setting<T> extends ConfigurationNode {
 	private T defaultValue;
 	private T value;
 	
-	private final Function<String, T> reader;
-	private final Function<T, String> writer;
+	private final SettingReader<T> reader;
+	private final SettingWriter<T> writer;
 	
 	public Setting(String name, String description, Class<T> type, T defaultValue,
-			Function<String, T> reader, Function<T, String> writer) {
+			SettingReader<T> reader, SettingWriter<T> writer) {
 		super(name, description);
 		this.type = type;
 		this.value = defaultValue;
@@ -81,7 +79,7 @@ public class Setting<T> extends ConfigurationNode {
 	public synchronized void set(T value) {
 		setRaw(value);
 		if (getElement() != null) {
-			getElement().setTextContent(getWriter().apply(value));
+			getElement().setTextContent(write(value));
 		}
 	}
 	
@@ -94,12 +92,20 @@ public class Setting<T> extends ConfigurationNode {
 		return type;
 	}
 
-	public Function<String, T> getReader() {
+	public SettingReader<T> getReader() {
 		return reader;
 	}
+	
+	public T read(String value) {
+		return getReader().read(value);
+	}
 
-	public Function<T, String> getWriter() {
+	public SettingWriter<T> getWriter() {
 		return writer;
+	}
+	
+	public String write(T value) {
+		return getWriter().write(value);
 	}
 
 	@Override
@@ -107,14 +113,14 @@ public class Setting<T> extends ConfigurationNode {
 		if (getElement() == null) {
 			setRaw(getDefaultValue());
 		} else {
-			setRaw(getReader().apply(getElement().getTextContent()));
+			setRaw(read(getElement().getTextContent()));
 		}
 	}
 	
 	@Override
 	public Element createElement(Document doc) {
 		Element result = super.createElement(doc);
-		result.setTextContent(getWriter().apply(getDefaultValue()));
+		result.setTextContent(write(getDefaultValue()));
 		return result;
 	}
 

@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class JarResourceSupplier implements ResourceSupplier {
+public class ClassLoaderResourceSupplier implements ResourceSupplier {
 
 	private final ClassLoader loader;
 	private final String localPath;
 	
-	public JarResourceSupplier(ClassLoader loader, String localPath) {
+	public ClassLoaderResourceSupplier(ClassLoader loader, String localPath) {
 		this.loader = loader;
 		
 		if (localPath == null || localPath.isEmpty() || localPath.equals("/")) {
@@ -27,23 +27,23 @@ public class JarResourceSupplier implements ResourceSupplier {
 		}
 	}
 	
-	public JarResourceSupplier(ClassLoader loader) {
+	public ClassLoaderResourceSupplier(ClassLoader loader) {
 		this(loader, null);
 	}
 	
-	public JarResourceSupplier(Class<?> clazz, String localPath) {
+	public ClassLoaderResourceSupplier(Class<?> clazz, String localPath) {
 		this(clazz.getClassLoader(), localPath);
 	}
 	
-	public JarResourceSupplier(Class<?> clazz) {
+	public ClassLoaderResourceSupplier(Class<?> clazz) {
 		this(clazz, null);
 	}
 	
-	public JarResourceSupplier(String localPath) {
+	public ClassLoaderResourceSupplier(String localPath) {
 		this(ResourceManager.class, localPath);
 	}
 	
-	public JarResourceSupplier() {
+	public ClassLoaderResourceSupplier() {
 		this((String) null);
 	}
 

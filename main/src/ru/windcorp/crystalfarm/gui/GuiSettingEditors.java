@@ -15,24 +15,31 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm;
+package ru.windcorp.crystalfarm.gui;
 
-import java.io.File;
+import java.util.List;
 
-import ru.windcorp.tge2.util.grh.FileResourceSupplier;
-import ru.windcorp.tge2.util.grh.ClassLoaderResourceSupplier;
-import ru.windcorp.tge2.util.grh.ResourceManager;
-import ru.windcorp.tge2.util.grh.SubResourceSupplier;
+import ru.windcorp.crystalfarm.cfg.Setting;
 
-public class CrystalFarmResourceManagers {
+public class GuiSettingEditors {
 	
-	public static final ResourceManager RM_FILE_WD = new ResourceManager(
-			"FS WD", new FileResourceSupplier(new File("./")));
+//	public static Component createEditor(ConfigurationNode setting) {
+//		if (setting instanceof Setting) {
+//			
+//		}
+//	}
 	
-	public static final ResourceManager RM_JAR_ROOT = new ResourceManager(
-			"JAR root", new ClassLoaderResourceSupplier());
-	
-	public static final ResourceManager RM_ASSETS = new ResourceManager(
-			"Assets", new SubResourceSupplier(RM_JAR_ROOT, "assets"));
+	public static <T> Component createLimitedChoiceEditor(Setting<T> setting, List<T> choices) {
+		ChoiceButton<T> button = new ChoiceButton<T>(
+				setting.getName() + ".editor",
+				null,
+				choices.indexOf(setting.get()),
+				choices);
+		
+		button.addAction(x -> setting.set(button.getSelection()));
+		setting.addListener(x -> button.selectSilently(choices.indexOf(setting.get())));
+		
+		return button;
+	}
 
 }

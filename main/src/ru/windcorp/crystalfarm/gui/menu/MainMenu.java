@@ -18,36 +18,99 @@
 package ru.windcorp.crystalfarm.gui.menu;
 
 import ru.windcorp.crystalfarm.CrystalFarm;
+import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Button;
+import ru.windcorp.crystalfarm.gui.Centerer;
+import ru.windcorp.crystalfarm.gui.Component;
+import ru.windcorp.crystalfarm.gui.GuiLayer;
+import ru.windcorp.crystalfarm.gui.GuiSettingEditors;
 import ru.windcorp.crystalfarm.gui.Image;
-import ru.windcorp.crystalfarm.gui.layout.LayoutBorder;
+import ru.windcorp.crystalfarm.gui.Label;
+import ru.windcorp.crystalfarm.gui.Size;
+import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
+import ru.windcorp.crystalfarm.translation.ModuleTranslation;
 import ru.windcorp.crystalfarm.translation.TString;
+import ru.windcorp.tge2.util.StringUtil;
 import ru.windcorp.tge2.util.debug.Log;
 
-public class MainMenu extends MenuLayer {
+public class MainMenu extends GuiLayer {
 
 	public MainMenu() {
-		super("MainMenu", false);
+		super("MainMenu");
 		
-		getRoot().addChild(new Image("MainMenu.logo", SimpleTexture.get("title")).setLayoutHint(LayoutBorder.UP));
-
-		Button button1 = new Button("1.3", TString.translated("TMP_1.3").toFont(), null);
-		button1.addAction(button -> {
-			getContents().removeChild(button1);
+		Component root = new Component("MainMenuBg");
+		root.setLayout(null);
+		
+		Component centered = new Component("MainMenuCentered");
+		
+			centered.addChild(new Image("MainMenu.logo", SimpleTexture.get("title")));
+			
+			Component menu = new Menu("MainMenu", TString.translated("menu.MainMenu.title").toFont());
+	
+				Button button1 = new Button("1.3", TString.translated("TMP_1.3").toFont(), null);
+				button1.addAction(button -> {
+					menu.removeChild(button1);
+				});
+				
+				menu.addChild(new Button("1.1", TString.translated("TMP_1.1").toFont(), button -> Log.info(button + " activated")).takeFocus());
+				menu.addChild(new Button("1.2", TString.translated("TMP_1.2").toFont(), button -> Log.info(button + " activated")));
+				menu.addChild(button1);
+				menu.addChild(new Button("1.5", TString.translated("TMP_1.5").toFont(), button -> new TestMenu().show()));
+				menu.addChild(new Button("1.4", TString.translated("TMP_1.4").toFont(), button -> CrystalFarm.exit("user request", 0)));
+			
+			centered.addChild(menu);
+			centered.setLayout(new LayoutVertical());
+		
+		root.addChild(new Centerer(centered) {
+			@Override
+			protected synchronized void layoutSelf() {
+				setBounds(
+						root.getX(),
+						root.getY(),
+						root.getWidth(),
+						root.getHeight());
+				
+				super.layoutSelf();
+			}
 		});
 		
-		add(new Button("1.1", TString.translated("TMP_1.1").toFont(), button -> Log.info(button + " activated")).takeFocus(),
-				new Button("1.2", TString.translated("TMP_1.2").toFont(), button -> Log.info(button + " activated")),
-				button1,
-				new Button("1.5", TString.translated("TMP_1.5").toFont(), button -> new TestMenu().show()),
-				new Button("1.4", TString.translated("TMP_1.4").toFont(), button -> CrystalFarm.exit("user request", 0)));
+		root.addChild(new Centerer(GuiSettingEditors.createLimitedChoiceEditor(ModuleTranslation.LANGUAGE, ModuleTranslation.getAvailableLanguages())) {
+			@Override
+			protected synchronized void layoutSelf() {
+				Size preferred = getPreferredSize();
+				setBounds(
+						root.getX() + root.getWidth() - preferred.width,
+						root.getY() + root.getHeight() - preferred.height,
+						preferred.width,
+						preferred.height);
+				
+				super.layoutSelf();
+			}
+		});
 		
-	}
-	
-	@Override
-	public void close() {
-		// Do nothing
+		root.addChild(new Label("MainMenu.notice", TString.translated("menu.MainMenu.notice").toFormatted(
+				CrystalFarm.FULL_NAME,
+				CrystalFarm.VERSION_CODENAME + "/" + CrystalFarm.VERSION,
+				StringUtil.iteratorToString(CrystalFarm.DEVELOPERS.iterator(), ", "),
+				CrystalFarm.YEARS,
+				CrystalFarm.LICENSE)
+				.toFont().setColor(Color.DARK_GRAY)) {
+			@Override
+			protected synchronized void layoutSelf() {
+				Size preferred = getPreferredSize();
+				setBounds(
+						root.getX(),
+						root.getY() + root.getHeight() - preferred.height,
+						preferred.width,
+						preferred.height);
+				
+				super.layoutSelf();
+			}
+		});
+		
+		setRoot(root);
+		
 	}
 
 }

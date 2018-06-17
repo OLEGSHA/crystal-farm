@@ -128,17 +128,21 @@ public class Notification {
 		this.hideAt = ModuleNotifier.SETTING_TIMEOUT.get() * 1000 + time();
 		if (isModal()) this.shakeAt = ModuleNotifier.SETTING_SHAKE_INTERVAL.get() * 1000 + time();
 		
+		getText().addChangeListener(x -> layout());
+		layout();
+		
+		x = -width;
+		y = layer.nextY;
+		layer.nextY += height;
+		
+		//AudioInterface.play(getType().getSound(), 1, 1);
+	}
+	
+	private void layout() {
 		Size textSize = getLabel().getBounds();
 		
 		width = 5*LINE_THICKNESS + getType().getIcon().getWidth() + textSize.width;
 		height = 4*LINE_THICKNESS + Math.max(getType().getIcon().getHeight(), textSize.height);
-		
-		x = -width;
-		y = layer.nextY;
-		
-		layer.nextY += height;
-		
-		//AudioInterface.play(getType().getSound(), 1, 1);
 	}
 	
 	public Type getType() {

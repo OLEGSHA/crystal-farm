@@ -28,13 +28,13 @@ import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.translation.TString;
 
-public class ChoiceButton extends Button {
+public class ChoiceButton<T> extends Button {
 	
-	private final List<TString> choices;
+	private final List<T> choices;
 	private int selection;
 
-	public ChoiceButton(String name, Consumer<?> action, int firstSelection, TString... choices) {
-		super(name, new FontString(choices[firstSelection]), action);
+	public ChoiceButton(String name, Consumer<?> action, int firstSelection, List<T> choices) {
+		super(name, new FontString(TString.wrap(choices.get(firstSelection))), action);
 		this.choices = new CopyOnWriteArrayList<>(choices);
 		this.selection = firstSelection;
 		
@@ -66,15 +66,15 @@ public class ChoiceButton extends Button {
 		});
 	}
 
-	public List<TString> getChoices() {
+	public List<T> getChoices() {
 		return choices;
 	}
 	
-	public void addChoice(TString choice) {
+	public void addChoice(T choice) {
 		getChoices().add(choice);
 	}
 	
-	public void removeChoice(TString choice) {
+	public void removeChoice(T choice) {
 		getChoices().remove(choice);
 	}
 	
@@ -86,10 +86,13 @@ public class ChoiceButton extends Button {
 		return selection;
 	}
 	
-	public void select(int selection) {
+	public void selectSilently(int selection) {
 		this.selection = selection;
-		
-		getText().setText(getSelection());
+		getText().setText(TString.wrap(getSelection()));
+	}
+	
+	public void select(int selection) {
+		selectSilently(selection);
 		super.accept(null);
 	}
 	
@@ -101,15 +104,12 @@ public class ChoiceButton extends Button {
 		select((getChoicesSize() + selection - 1) % getChoicesSize());
 	}
 	
-	public TString getSelection() {
+	public T getSelection() {
 		return getChoices().get(getSelected());
 	}
 	
-	public void select(TString choice) {
+	public void select(T choice) {
 		int index = getChoices().indexOf(choice);
-		if (index == -1) {
-			return;
-		}
 		select(index);
 	}
 	

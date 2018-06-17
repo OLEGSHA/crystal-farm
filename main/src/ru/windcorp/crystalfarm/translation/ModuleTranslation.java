@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
@@ -42,7 +44,7 @@ import ru.windcorp.tge2.util.jobs.JobManager;
 
 public class ModuleTranslation extends Module {
 	
-	private static final Setting<String>
+	public static final Setting<String>
 			LANGUAGE = new Setting<>("Language", "Launguage to use, as an IETF language tag", String.class, "en-US"),
 			LANGUAGE_FALLBACK = new Setting<>("LanguageFallback", "Launguage to use when main language is missing a mapping, as an IETF language tag", String.class, "en-US");
 	
@@ -51,6 +53,8 @@ public class ModuleTranslation extends Module {
 			DICTIONARY_FALLBACK = Collections.synchronizedMap(new HashMap<>());
 	
 	private static final Collection<WeakReference<TStringTranslated>> STRING_SET = Collections.synchronizedCollection(new LinkedList<>());
+	
+	private static final List<String> AVAILABLE_LANGUAGES = new ArrayList<>();
 	
 	static boolean hasLoaded = false;
 
@@ -112,6 +116,7 @@ public class ModuleTranslation extends Module {
 	public static synchronized void reload() {
 		reload(DICTIONARY, getLanguageCode());
 		if (!getLanguageCode().equals(getLanguageFallbackCode())) reload(DICTIONARY_FALLBACK, getLanguageFallbackCode());
+		ModuleTranslation.hasLoaded = true;
 		STRING_SET.forEach(ref -> load(ref));
 	}
 
@@ -196,6 +201,10 @@ public class ModuleTranslation extends Module {
 					null);
 			return;
 		}
+	}
+
+	public static List<String> getAvailableLanguages() {
+		return AVAILABLE_LANGUAGES;
 	}
 	
 }

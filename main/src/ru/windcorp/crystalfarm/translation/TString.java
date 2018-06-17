@@ -187,7 +187,11 @@ public abstract class TString implements Comparable<TString> {
 	 * @return a TString representation of this object.
 	 */
 	public static TString wrap(Object obj) {
-		return new TStringWrapper(obj);
+		if (obj instanceof TString) {
+			return (TString) obj;
+		} else {
+			return new TStringWrapper(obj);
+		}
 	}
 	
 	/**

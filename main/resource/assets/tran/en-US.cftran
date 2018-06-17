@@ -6,6 +6,7 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.generic.close = Done
 	# Main menu
 		menu.MainMenu.title = Main Menu
+		menu.MainMenu.notice = %1$s version %2$s\n© %3$s %4$s\nLicensed under %5$s
 	# Test menu
 		menu.TestMenu.title = Test Menu
 		menu.test.button = Button

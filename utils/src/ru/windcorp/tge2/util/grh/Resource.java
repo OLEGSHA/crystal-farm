@@ -1,8 +1,11 @@
 package ru.windcorp.tge2.util.grh;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.stream.Stream;
 
 import ru.windcorp.tge2.util.dataio.DataIOUtils;
 import ru.windcorp.tge2.util.dataio.DataReader;
@@ -52,8 +55,24 @@ public class Resource implements OutputSupplier {
 		return getManager().canRead(getPath());
 	}
 	
+	public boolean checkRead(ResourceProblemHandler ifProblem) throws RuntimeException, IOException {
+		String problem = canRead();
+		if (ifProblem != null && problem != null) {
+			return ifProblem.onProblem(problem);
+		}
+		return problem != null;
+	}
+	
 	public String canWrite() {
 		return getManager().canWrite(getPath());
+	}
+	
+	public boolean checkWrite(ResourceProblemHandler ifProblem) throws RuntimeException, IOException {
+		String problem = canWrite();
+		if (ifProblem != null && problem != null) {
+			return ifProblem.onProblem(problem);
+		}
+		return problem != null;
 	}
 
 	public Resource getSelfIfSuppliesOutput() {
@@ -73,5 +92,21 @@ public class Resource implements OutputSupplier {
 			throws IOException, SyntaxException {
 		return getManager().read(getPath(), format, params);
 	}
-
+	
+	public Stream<String> lines() throws IOException {
+		return new BufferedReader(new InputStreamReader(getInputStream())).lines();
+	}
+	
+	public Resource getChild(String childName) {
+		if (childName == null) {
+			throw new IllegalArgumentException("childName is null");
+		}
+		
+		if (!childName.startsWith("/")) {
+			childName = "/" + childName;
+		}
+		
+		return getManager().getResource(getPath() + childName);
+		
+	}
 }

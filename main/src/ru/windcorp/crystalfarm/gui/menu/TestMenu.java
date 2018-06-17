@@ -17,6 +17,8 @@
  */
 package ru.windcorp.crystalfarm.gui.menu;
 
+import java.util.Arrays;
+
 import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.ChoiceButton;
@@ -30,9 +32,9 @@ public class TestMenu extends MenuLayer {
 		
 		Button button = new Button("ExampleButton", TString.translated("menu.test.button").toFont(),
 				x -> Notifier.positive(TString.translated("menu.test.button").append("!")));
-		ChoiceButton choiceButton = new ChoiceButton("ExampleChoiceButton",
+		ChoiceButton<String> choiceButton = new ChoiceButton<String>("ExampleChoiceButton",
 				x -> Notifier.positive(TString.translated("menu.test.choiceButton").append("!")),
-				0, TString.wrap("1"), TString.wrap("2"), TString.wrap("3"));
+				0, Arrays.asList("1", "2", "3"));
 		
 		TString base = TString.translated("menu.test.switchButton.text");
 		SwitchButton switchButton = new SwitchButton("ExampleSwitchButton",

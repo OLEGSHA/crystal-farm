@@ -38,7 +38,7 @@ import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.crystalfarm.struct.modules.ModuleRegistry;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
-import ru.windcorp.tge2.util.grh.JarResourceSupplier;
+import ru.windcorp.tge2.util.grh.ClassLoaderResourceSupplier;
 import ru.windcorp.tge2.util.grh.ResourceManager;
 
 public class JobLoadMods extends ModuleJob {
@@ -293,7 +293,7 @@ public class JobLoadMods extends ModuleJob {
 			
 			ModRegistry.register(mod);
 			CrystalFarmResourceManagers.RM_ASSETS.addBackup(
-					new ResourceManager(mod.getName() + ":Assets", new JarResourceSupplier(urlClassLoader, "assets"))
+					new ResourceManager(mod.getName() + ":Assets", new ClassLoaderResourceSupplier(urlClassLoader, "assets"))
 					);
 			ModuleConfiguration.registerConfiguration(mod);
 			ModuleRegistry.getModulesByMod(mod).forEach(module -> module.registerJobs(CrystalFarmLauncher.getJobManager()));

@@ -15,24 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm;
+package ru.windcorp.crystalfarm.cfg;
 
-import java.io.File;
+import java.util.Collection;
 
-import ru.windcorp.tge2.util.grh.FileResourceSupplier;
-import ru.windcorp.tge2.util.grh.ClassLoaderResourceSupplier;
-import ru.windcorp.tge2.util.grh.ResourceManager;
-import ru.windcorp.tge2.util.grh.SubResourceSupplier;
+import ru.windcorp.crystalfarm.cfg.rw.SettingReader;
+import ru.windcorp.crystalfarm.cfg.rw.SettingWriter;
 
-public class CrystalFarmResourceManagers {
-	
-	public static final ResourceManager RM_FILE_WD = new ResourceManager(
-			"FS WD", new FileResourceSupplier(new File("./")));
-	
-	public static final ResourceManager RM_JAR_ROOT = new ResourceManager(
-			"JAR root", new ClassLoaderResourceSupplier());
-	
-	public static final ResourceManager RM_ASSETS = new ResourceManager(
-			"Assets", new SubResourceSupplier(RM_JAR_ROOT, "assets"));
+public class SettingChoice<T> extends SettingFiltered<T> {
+
+	public SettingChoice(String name, String description, Class<T> type, T defaultValue, Collection<?> choices) {
+		super(name, description, type, defaultValue,
+				choices::contains);
+	}
+
+	public SettingChoice(String name, String description, Class<T> type, T defaultValue, SettingReader<T> reader,
+			SettingWriter<T> writer, Collection<?> choices) {
+		super(name, description, type, defaultValue, reader, writer,
+				choices::contains);
+	}
 
 }

@@ -17,9 +17,14 @@
  */
 package ru.windcorp.crystalfarm.translation;
 
+import java.io.IOException;
+
+import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
+import ru.windcorp.crystalfarm.struct.mod.ModRegistry;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.debug.Log;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
 public class JobLoadTranslation extends ModuleJob {
 
@@ -34,9 +39,37 @@ public class JobLoadTranslation extends ModuleJob {
 	protected void runImpl() {
 		Log.info("Loading translations for " + ModuleTranslation.getLanguageCode() + "/" + ModuleTranslation.getLanguageFallbackCode() + "...");
 		ModuleTranslation.reload();
-		ModuleTranslation.hasLoaded = true;
+		
+		readLanguageList();
 		
 		Log.info(new TStringTranslated("welcome").toString());
+	}
+
+	private void readLanguageList() {
+		try {
+			CrystalFarmResourceManagers.RM_ASSETS.getResource("tran/langList")
+					.lines()
+					.forEach(line -> ModuleTranslation.getAvailableLanguages().add(line));
+		} catch (IOException e) {
+			ExecutionReport.reportError(e,
+					ExecutionReport.rscCorrupt(CrystalFarmResourceManagers.RM_ASSETS.getCanonicalPath("tran/langList"), "Could not read main language index"),
+					null);
+			return;
+		}
+		
+		ModRegistry.getMods().forEach((name, mod) -> {
+			try {
+				CrystalFarmResourceManagers.RM_ASSETS.getResource(name + "/tran/langList")
+						.lines()
+						.forEach(line -> {
+							if (!ModuleTranslation.getAvailableLanguages().contains(line)) {
+								ModuleTranslation.getAvailableLanguages().add(line);
+							}
+						});
+			} catch (IOException e) {
+				// Do nothing
+			}
+		});
 	}
 
 }
