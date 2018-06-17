@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Random;
 
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
-import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.grh.Resource;
 
@@ -53,10 +52,7 @@ public class Music implements Runnable {
 			int newPos;
 			
 			while (true) {
-				
-				Log.info("Entered");
 				AudioInterface.playCompletely(PLAYLIST.get(pos), 1);
-				Log.info("Exited");
 				
 				newPos = random.nextInt(PLAYLIST.size() - 1);
 				if (newPos >= pos) {
