@@ -17,11 +17,18 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
+import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.tge2.util.debug.Log;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
+import ru.windcorp.tge2.util.grh.Resource;
 
 public class Music implements Runnable {
 	
@@ -29,13 +36,62 @@ public class Music implements Runnable {
 
 	@Override
 	public void run() {
-		for (String name : new String[] {"rooster", "Rondo_Alla_Turka"}) {
-			PLAYLIST.add(SoundManager.get(name));
+		if (load()) {
+			return;
 		}
-		AudioInterface.play(PLAYLIST.get(0), 1.0f);
 		
-		AudioInterface.playCompletely(PLAYLIST.get(1), 1.0f);
-		Log.info("Done");
+		switch (PLAYLIST.size()) {
+		case 0:
+			ExecutionReport.reportNotification(null, null,
+					"No music has been found");
+			return;
+		case 1:
+			while (true) AudioInterface.playCompletely(PLAYLIST.get(0), 1);
+		default:
+			Random random = new Random();
+			int pos = random.nextInt(PLAYLIST.size());
+			int newPos;
+			
+			while (true) {
+				
+				Log.info("Entered");
+				AudioInterface.playCompletely(PLAYLIST.get(pos), 1);
+				Log.info("Exited");
+				
+				newPos = random.nextInt(PLAYLIST.size() - 1);
+				if (newPos >= pos) {
+					pos = newPos + 1;
+				} else {
+					pos = newPos;
+				}
+			}
+		}
+	}
+
+	private boolean load() {
+		Resource musicNames = CrystalFarmResourceManagers.RM_ASSETS.getResource("audio/music/musiclist");
+		String problem = musicNames.canRead();
+		if (problem != null) {
+			ExecutionReport.reportError(null,
+					ExecutionReport.rscCorrupt(musicNames.toString(), "Could not read musiclist: %s", problem),
+					null);
+			return true;
+		}
+		
+		try {
+			BufferedReader reader = new BufferedReader(new InputStreamReader(musicNames.getInputStream()));
+			
+			reader.lines().forEachOrdered(line -> {
+				PLAYLIST.add(SoundManager.get(line));
+			});
+		} catch (IOException e) {
+			ExecutionReport.reportCriticalError(e,
+					ExecutionReport.rscCorrupt(musicNames.toString(), "Could not read musiclist"),
+					null);
+		}
+		
+		return false;
+		
 	}
 	
 }
