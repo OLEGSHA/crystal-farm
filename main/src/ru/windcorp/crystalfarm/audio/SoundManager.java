@@ -17,14 +17,8 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
-import static org.lwjgl.openal.AL10.AL_FORMAT_MONO16;
-import static org.lwjgl.openal.AL10.AL_FORMAT_STEREO16;
-import static org.lwjgl.openal.AL10.alBufferData;
-import static org.lwjgl.stb.STBVorbis.stb_vorbis_close;
-import static org.lwjgl.stb.STBVorbis.stb_vorbis_get_info;
-import static org.lwjgl.stb.STBVorbis.stb_vorbis_get_samples_short_interleaved;
-import static org.lwjgl.stb.STBVorbis.stb_vorbis_open_memory;
-import static org.lwjgl.stb.STBVorbis.stb_vorbis_stream_length_in_samples;
+import static org.lwjgl.openal.AL10.*;
+import static org.lwjgl.stb.STBVorbis.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.io.ByteArrayOutputStream;
@@ -41,11 +35,9 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.openal.AL10;
 import org.lwjgl.stb.STBVorbisInfo;
 
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
-import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.grh.Resource;
 
@@ -99,7 +91,7 @@ public class SoundManager {
 		try {
 			try (STBVorbisInfo info = STBVorbisInfo.malloc()) {
 	            pcm = readVorbis(resource, 32 * 1024, info);
-	            format = info.channels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+	            format = getFormat(info);
 	            sampleRate = info.sample_rate();
 	        }
 		} catch (IOException e) {
@@ -120,11 +112,14 @@ public class SoundManager {
 		return sound;
 	}
 	
+	private static int getFormat(STBVorbisInfo info) {
+		return info.channels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16;
+	}
+	
 	private static void loadInAL(Sound sound, ShortBuffer pcm, int format, int sampleRate) {
-		Log.critical("Loading " + sound.getName());
-		int bufferId = AL10.alGenBuffers();
-		alBufferData(bufferId, format, pcm, sampleRate);
-		sound.setBufferId(bufferId);
+		int bufferName = alGenBuffers();
+		alBufferData(bufferName, format, pcm, sampleRate);
+		sound.setBufferName(bufferName);
 	}
 	
 	static synchronized void processQueueAndSetAudioReady() {
@@ -144,12 +139,9 @@ public class SoundManager {
         }
         
         stb_vorbis_get_info(decoder, info);
-
         int channels = info.channels();
-
         int lengthSamples = stb_vorbis_stream_length_in_samples(decoder);
-
-        ShortBuffer pcm = BufferUtils.createShortBuffer(lengthSamples);
+        ShortBuffer pcm = BufferUtils.createShortBuffer(lengthSamples * channels);
 
         pcm.limit(stb_vorbis_get_samples_short_interleaved(decoder, channels, pcm) * channels);
         stb_vorbis_close(decoder);
@@ -167,7 +159,7 @@ public class SoundManager {
 			int read;
 			do {
 				read = in.read(buffer);
-				baos.write(buffer);
+				baos.write(buffer, 0, read);
 			} while (read == bufferSize);
 
 			ByteBuffer result = ByteBuffer.allocateDirect(baos.size());

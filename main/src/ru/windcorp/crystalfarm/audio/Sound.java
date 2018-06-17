@@ -17,7 +17,7 @@
  */
 package ru.windcorp.crystalfarm.audio;
 
-import org.lwjgl.openal.AL10;
+import static org.lwjgl.openal.AL10.*;
 
 import ru.windcorp.tge2.util.Nameable;
 
@@ -57,7 +57,7 @@ public class Sound extends Nameable {
 	 * Sets the OpenAL buffer name for this Sound.
 	 * @param bufferId the name of the buffer
 	 */
-	void setBufferId(int bufferId) {
+	void setBufferName(int bufferId) {
 		this.bufferName = bufferId;
 	}
 	
@@ -80,9 +80,17 @@ public class Sound extends Nameable {
 		}
 		
 		this.length = 1000l * Byte.SIZE
-				* AL10.alGetBufferi(getBufferName(), AL10.AL_SIZE)
-				/ AL10.alGetBufferi(getBufferName(), AL10.AL_BITS)
-				/ AL10.alGetBufferi(getBufferName(), AL10.AL_FREQUENCY);
+				* alGetBufferi(getBufferName(), AL_SIZE)
+				/ alGetBufferi(getBufferName(), AL_BITS)
+				/ alGetBufferi(getBufferName(), AL_FREQUENCY)
+				/ alGetBufferi(getBufferName(), AL_CHANNELS);
+	}
+	
+	@Override
+	public String toString() {
+		return "Sound " + getName() +
+				" (OpenAL buffer name: " + getBufferName() + "; length: " +
+				(getLength() / 60000) + ":" + (getLength() % 60000 / 1000.0) + ")";
 	}
 	
 }
