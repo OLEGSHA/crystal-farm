@@ -47,15 +47,10 @@ public class MainMenu extends GuiLayer {
 			centered.addChild(new Image("MainMenu.logo", SimpleTexture.get("title")));
 			
 			Component menu = new Menu("MainMenu", TString.translated("menu.MainMenu.title").toFont());
-	
-				Button button1 = new Button("1.3", TString.translated("TMP_1.3").toFont(), null);
-				button1.addAction(button -> {
-					menu.removeChild(button1);
-				});
 				
 				menu.addChild(new Button("1.1", TString.translated("TMP_1.1").toFont(), button -> Log.info(button + " activated")).takeFocus());
 				menu.addChild(new Button("1.2", TString.translated("TMP_1.2").toFont(), button -> Log.info(button + " activated")));
-				menu.addChild(button1);
+				menu.addChild(new Button("1.3", TString.translated("TMP_1.3").toFont(), button -> new AboutMenu().show()));
 				menu.addChild(new Button("1.5", TString.translated("TMP_1.5").toFont(), button -> new TestMenu().show()));
 				menu.addChild(new Button("1.4", TString.translated("TMP_1.4").toFont(), button -> CrystalFarm.exit("user request", 0)));
 			
@@ -95,7 +90,7 @@ public class MainMenu extends GuiLayer {
 				StringUtil.iteratorToString(CrystalFarm.DEVELOPERS.iterator(), ", "),
 				CrystalFarm.YEARS,
 				CrystalFarm.LICENSE)
-				.toFont().setColor(Color.DARK_GRAY)) {
+				.toFont().setColor(Color.GRAY)) {
 			@Override
 			protected synchronized void layoutSelf() {
 				Size preferred = getPreferredSize();

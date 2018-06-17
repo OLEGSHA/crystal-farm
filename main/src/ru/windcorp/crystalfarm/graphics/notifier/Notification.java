@@ -22,6 +22,9 @@ import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
 import java.util.function.Consumer;
 
+import ru.windcorp.crystalfarm.audio.AudioInterface;
+import ru.windcorp.crystalfarm.audio.Sound;
+import ru.windcorp.crystalfarm.audio.SoundManager;
 import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
@@ -46,31 +49,31 @@ public class Notification {
 		/**
 		 * Indicates a positive notification
 		 */
-		INFO_POSITIVE ("happy", "normal", new Color(0x93_E2_71_FF)),
+		INFO_POSITIVE ("happy", "positive", new Color(0x93_E2_71_FF)),
 		
 		/**
 		 * Indicates an alarm. Nothing 
 		 */
-		WARNING ("attention", "normal", new Color(0xFF_A0_60_FF)),
+		WARNING ("attention", "attention", new Color(0xFF_A0_60_FF)),
 		
 		/**
 		 * Indicates an error message. Something has gone wrong
 		 */
-		ERROR ("broken", "normal", new Color(0xFF_77_77_FF)),
+		ERROR ("broken", "error", new Color(0xFF_77_77_FF)),
 		
 		/**
 		 * Indicates a question to the user
 		 */
-		QUESTION ("question", "normal", new Color(0xB5_C0_FF_FF));
+		QUESTION ("question", "attention", new Color(0xB5_C0_FF_FF));
 		
 		private final Texture icon;
-		//private final Sound sound;
+		private final Sound sound;
 		private final Color color;
 		private final Color borderColor;
 		
 		Type(String iconName, String soundName, Color color) {
 			this.icon = SimpleTexture.get("mascot/" + iconName);
-			//this.sound = SoundManager.get("ui/notification/" + soundName);
+			this.sound = SoundManager.get("ui/notification/" + soundName);
 			this.color = color;
 			this.borderColor = color.clone().multiply(0.75);
 		}
@@ -79,9 +82,9 @@ public class Notification {
 			return icon;
 		}
 		
-//		public Sound getSound() {
-//			return sound;
-//		}
+		public Sound getSound() {
+			return sound;
+		}
 
 		public Color getColor() {
 			return color;
@@ -111,6 +114,7 @@ public class Notification {
 	
 	private double vx = 0, vy = 0;
 	private boolean die = false;
+	private boolean soundPlayed = false;
 	
 	private double hideAt = -1;
 	private double shakeAt = -1;
@@ -134,8 +138,6 @@ public class Notification {
 		x = -width;
 		y = layer.nextY;
 		layer.nextY += height;
-		
-		//AudioInterface.play(getType().getSound(), 1, 1);
 	}
 	
 	private void layout() {
@@ -194,9 +196,15 @@ public class Notification {
 		x = Math.min(LINE_THICKNESS, (int) (x + vx * frame()));
 		
 		if (x == LINE_THICKNESS) {
+			if (!soundPlayed) {
+				AudioInterface.play(getType().getSound(), 1);
+				soundPlayed = true;
+			}
+			
 			if (isModal() && shakeAt < time()) {
 				vx = -2;
 				this.shakeAt = ModuleNotifier.SETTING_SHAKE_INTERVAL.get() * 1000 + time();
+				soundPlayed = false;
 			} else {
 				if (vx > 1) {
 					vx *= -BOUNCINESS;

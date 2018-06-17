@@ -78,7 +78,7 @@ public class Music implements Runnable {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(musicNames.getInputStream()));
 			
 			reader.lines().forEachOrdered(line -> {
-				PLAYLIST.add(SoundManager.get(line));
+				PLAYLIST.add(SoundManager.get("music/" + line));
 			});
 		} catch (IOException e) {
 			ExecutionReport.reportCriticalError(e,
