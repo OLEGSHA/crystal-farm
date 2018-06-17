@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.graphics.notifier;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.cfg.SettingFloat;
 import ru.windcorp.crystalfarm.cfg.SettingInt;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
@@ -29,12 +30,15 @@ public class ModuleNotifier extends Module {
 			new SettingInt("Timeout", "Time, in seconds, that a non-modal notification will persist on the screen", 3);
 	public static final SettingInt SETTING_SHAKE_INTERVAL =
 			new SettingInt("ShakeInterval", "Time, in seconds, between small shakes for modal notifications", 5);
+	public static final SettingFloat SETTING_ALERT_GAIN =
+			new SettingFloat("AlertGain", "The volume of audio alerts [0.0; 1.0]", 1);
 
 	public ModuleNotifier() {
 		super("Notifier", InbuiltMod.INST);
 		
 		addConfig(SETTING_TIMEOUT);
 		addConfig(SETTING_SHAKE_INTERVAL);
+		addConfig(SETTING_ALERT_GAIN);
 	}
 
 	@Override

@@ -30,8 +30,9 @@ import ru.windcorp.tge2.util.jobs.JobManager;
 
 public class ModuleAudioInterface extends Module {
 
-	static final SettingFloat GAIN = new SettingFloat("Gain", "Sets audio volume [0.0; 1.0]", 1);
+	static final SettingFloat GAIN = new SettingFloat("Gain", "Sets master audio volume [0.0; 1.0]", 1);
 	static final SettingInt SOURCES = new SettingInt("AudioSources", "Sets the amount of audio sources (sounds that can be played simultaneously)", 64);
+	static final SettingFloat GAIN_MUSIC = new SettingFloat("MusicGain", "Sets music volume [0.0; 1.0]", 0.4f);
 
 	static boolean isALInitialized = false;
 
@@ -40,6 +41,7 @@ public class ModuleAudioInterface extends Module {
 		
 		addConfig(GAIN);
 		addConfig(SOURCES);
+		addConfig(GAIN_MUSIC);
 	}
 
 	@Override

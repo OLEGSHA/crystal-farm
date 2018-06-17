@@ -197,7 +197,7 @@ public class Notification {
 		
 		if (x == LINE_THICKNESS) {
 			if (!soundPlayed) {
-				AudioInterface.play(getType().getSound(), 1);
+				AudioInterface.play(getType().getSound(), ModuleNotifier.SETTING_ALERT_GAIN.get());
 				soundPlayed = true;
 			}
 			

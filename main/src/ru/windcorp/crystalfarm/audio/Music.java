@@ -45,14 +45,14 @@ public class Music implements Runnable {
 					"No music has been found");
 			return;
 		case 1:
-			while (true) AudioInterface.playCompletely(PLAYLIST.get(0), 1);
+			while (true) AudioInterface.playCompletely(PLAYLIST.get(0), ModuleAudioInterface.GAIN_MUSIC.get());
 		default:
 			Random random = new Random();
 			int pos = random.nextInt(PLAYLIST.size());
 			int newPos;
 			
 			while (true) {
-				AudioInterface.playCompletely(PLAYLIST.get(pos), 1);
+				AudioInterface.playCompletely(PLAYLIST.get(pos), ModuleAudioInterface.GAIN_MUSIC.get());
 				
 				newPos = random.nextInt(PLAYLIST.size() - 1);
 				if (newPos >= pos) {
