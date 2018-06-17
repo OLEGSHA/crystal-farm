@@ -17,53 +17,24 @@
  */
 package ru.windcorp.crystalfarm.gui;
 
+import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.fillRectangle;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
-import org.lwjgl.glfw.GLFW;
-
-import ru.windcorp.crystalfarm.graphics.fonts.FontString;
-import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
-import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.translation.TString;
 
-public class ChoiceButton<T> extends Button {
+public class ChoiceButton<T> extends ArrowedComponent {
 	
 	private final List<T> choices;
 	private int selection;
 
 	public ChoiceButton(String name, Consumer<?> action, int firstSelection, List<T> choices) {
-		super(name, new FontString(TString.wrap(choices.get(firstSelection))), action);
+		super(name, action, TString.wrap(choices.get(firstSelection)).toFont());
+		
 		this.choices = new CopyOnWriteArrayList<>(choices);
 		this.selection = firstSelection;
-		
-		addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
-			if (input.isRightButton() && input.isPressed()) {
-				selectPrevious();
-				input.consume();
-			}
-		});
-		
-		addInputListener((ComponentKeyInputListener) (comp, input) -> {
-			if (input.isReleased()) {
-				return;
-			}
-			
-			switch (input.getKey()) {
-			case GLFW.GLFW_KEY_DOWN:
-			case GLFW.GLFW_KEY_RIGHT:
-				selectNext();
-				input.consume();
-				break;
-				
-			case GLFW.GLFW_KEY_UP:
-			case GLFW.GLFW_KEY_LEFT:
-				selectPrevious();
-				input.consume();
-				break;
-			}
-		});
 	}
 
 	public List<T> getChoices() {
@@ -88,7 +59,7 @@ public class ChoiceButton<T> extends Button {
 	
 	public void selectSilently(int selection) {
 		this.selection = selection;
-		getText().setText(TString.wrap(getSelection()));
+		getDisplay().getText().setText(TString.wrap(getSelection()));
 	}
 	
 	public void select(int selection) {
@@ -96,10 +67,12 @@ public class ChoiceButton<T> extends Button {
 		super.accept(null);
 	}
 	
+	@Override
 	public void selectNext() {
 		select((selection + 1) % getChoicesSize());
 	}
 	
+	@Override
 	public void selectPrevious() {
 		select((getChoicesSize() + selection - 1) % getChoicesSize());
 	}
@@ -107,15 +80,22 @@ public class ChoiceButton<T> extends Button {
 	public T getSelection() {
 		return getChoices().get(getSelected());
 	}
-	
+
 	public void select(T choice) {
 		int index = getChoices().indexOf(choice);
 		select(index);
 	}
-	
-	@Override
-	public void accept(Object t) {
-		selectNext();
-	}
 
+	@Override
+	protected void renderSelf() {
+		fillRectangle(
+				getX(),
+				getY(),
+				getWidth(),
+				getHeight(),
+				isHovered() ? FOREGROUND_COLOR_LIGHTER : FOREGROUND_COLOR,
+				isFocused() ? BORDER_COLOR_DARKER : BORDER_COLOR,
+				LINE_THICKNESS);
+	}
+	
 }

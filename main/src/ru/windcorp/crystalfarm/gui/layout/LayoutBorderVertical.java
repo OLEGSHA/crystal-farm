@@ -22,7 +22,7 @@ import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Layout;
 import ru.windcorp.crystalfarm.gui.Size;
 
-public class LayoutBorder implements Layout {
+public class LayoutBorderVertical implements Layout {
 	
 	public static final String CENTER = "Center",
 			UP = "Up",
@@ -30,11 +30,11 @@ public class LayoutBorder implements Layout {
 	
 	private final int margin;
 	
-	public LayoutBorder(int margin) {
+	public LayoutBorderVertical(int margin) {
 		this.margin = margin;
 	}
 	
-	public LayoutBorder() {
+	public LayoutBorderVertical() {
 		this(GraphicsDesign.LINE_THICKNESS);
 	}
 

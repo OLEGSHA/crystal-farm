@@ -20,9 +20,7 @@ package ru.windcorp.crystalfarm.gui.menu;
 import java.util.Arrays;
 
 import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
-import ru.windcorp.crystalfarm.gui.Button;
-import ru.windcorp.crystalfarm.gui.ChoiceButton;
-import ru.windcorp.crystalfarm.gui.SwitchButton;
+import ru.windcorp.crystalfarm.gui.*;
 import ru.windcorp.crystalfarm.translation.TString;
 
 public class TestMenu extends MenuLayer {
@@ -41,7 +39,17 @@ public class TestMenu extends MenuLayer {
 				base.append(TString.translated("misc.gen.enabled")), base.append(TString.translated("misc.gen.disabled")), false,
 				x -> Notifier.positive(TString.translated("menu.test.switchButton").append("!")));
 		
-		add(button, choiceButton, switchButton);
+		SliderInt sliderInt = new SliderInt("ExampleSliderInt",
+				0, 20, 4, 16,
+				x -> Notifier.positive(TString.translated("menu.test.sliderInt").append("!")));
+		
+		SliderFloat sliderFloat = new SliderFloat("ExampleSliderFloat",
+				0.0005f, 0.001f, 0.00001f, 0.0008f,
+				x -> Notifier.positive(TString.translated("menu.test.sliderFloat").append("!")));
+		
+		add(button, choiceButton, switchButton, sliderInt, sliderFloat);
+		
+		button.takeFocus();
 	}
 
 }

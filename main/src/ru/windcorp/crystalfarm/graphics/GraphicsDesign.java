@@ -23,9 +23,10 @@ public interface GraphicsDesign {
 	public static final Color BACKGROUND_COLOR_DARKER = Color.LIGHT_GRAY;
 	public static final Color FONT_COLOR = Color.WHITE;
 	public static final Color FOREGROUND_COLOR = new Color(0xBF_8D_6E_FF);
-	public static final Color FOREGROUND_COLOR_LIGHTER = FOREGROUND_COLOR.clone().multiply(1.5);
+	public static final Color FOREGROUND_COLOR_LIGHTER = FOREGROUND_COLOR.clone().multiply(1.25);
 	public static final Color BORDER_COLOR = new Color(0x7F_5D_49_FF);
 	public static final Color BORDER_COLOR_DARKER = BORDER_COLOR.clone().multiply(0.5);
+	public static final Color BORDER_COLOR_LIGHTER = BORDER_COLOR.clone().multiply(1.25);
 	public static final Color COVER_COLOR = new Color(0xFF_FF_FF_88);
 	
 	public static final int LINE_THICKNESS = 5;

@@ -17,9 +17,6 @@
  */
 package ru.windcorp.crystalfarm.gui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.function.Consumer;
 
 import org.lwjgl.glfw.GLFW;
@@ -33,14 +30,12 @@ import ru.windcorp.crystalfarm.input.KeyInput;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
-public class Button extends Component implements Consumer<Object>, GraphicsDesign {
+public class Button extends ActivatableComponent implements GraphicsDesign {
 
-	private Label label = null;
-	
-	private final Collection<Consumer<?>> actions = Collections.synchronizedCollection(new ArrayList<>());
+	private final Label label;
 	
 	public Button(String name, FontString label, Consumer<?> action) {
-		super(name);
+		super(name, action);
 		setFocusable(true);
 		setLayout(new LayoutCenter());
 		
@@ -61,7 +56,6 @@ public class Button extends Component implements Consumer<Object>, GraphicsDesig
 		
 		setText(label);
 		addChild(getLabel());
-		addAction(action);
 	}
 	
 	public Label getLabel() {
@@ -75,29 +69,6 @@ public class Button extends Component implements Consumer<Object>, GraphicsDesig
 	public Button setText(FontString text) {
 		getLabel().setText(text);
 		return this;
-	}
-	
-	public Button addAction(Consumer<?> action) {
-		if (action != null) getActions().add(action);
-		return this;
-	}
-	
-	public Button removeAction(Consumer<?> action) {
-		getActions().remove(action);
-		return this;
-	}
-	
-	public Collection<Consumer<?>> getActions() {
-		return actions;
-	}
-	
-	/**
-	 * Activates this button and dispatches event to action listeners.
-	 * @param t igonred
-	 */
-	@Override
-	public void accept(Object t) {
-		getActions().forEach(consumer -> consumer.accept(null));
 	}
 
 	@Override

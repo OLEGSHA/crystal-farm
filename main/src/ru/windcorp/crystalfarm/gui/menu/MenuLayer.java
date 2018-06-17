@@ -26,7 +26,7 @@ import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.GuiLayer;
-import ru.windcorp.crystalfarm.gui.layout.LayoutBorder;
+import ru.windcorp.crystalfarm.gui.layout.LayoutBorderVertical;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.translation.TString;
@@ -39,15 +39,15 @@ public class MenuLayer extends GuiLayer {
 		super(name);
 		
 		Component root = new Component(name + "Bg");
-		root.setLayout(new LayoutBorder());
+		root.setLayout(new LayoutBorderVertical());
 		
 		this.contents = new Menu(name, TString.translated("menu." + name + ".title").toFont());
 		
-		root.addChild(contents.center().setLayoutHint(LayoutBorder.CENTER));
+		root.addChild(contents.center().setLayoutHint(LayoutBorderVertical.CENTER));
 		if (addCloseButton) {
 			root.addChild(
 					new Button(name + ".close", TString.translated("menu.generic.close").toFont(), button -> close())
-						.center().setLayoutHint(LayoutBorder.DOWN)
+						.center().setLayoutHint(LayoutBorderVertical.DOWN)
 			);
 		}
 		

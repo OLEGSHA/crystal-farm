@@ -69,8 +69,8 @@ public class GraphicsInterface {
 	private static final Collection<InputListener> LISTENERS_INPUT = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
 	static Stream<InputListener> getInputListeners() {
 		return Stream.concat(
-				LAYERS_REVERSE.stream().filter(layer -> layer instanceof InputListener),
-				LISTENERS_INPUT.stream());
+				LISTENERS_INPUT.stream(),
+				LAYERS_REVERSE.stream().filter(layer -> layer instanceof InputListener));
 	}
 	
 	private static int cursorX = 0, cursorY = 0;

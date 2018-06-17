@@ -29,12 +29,14 @@ public class SimpleTexture extends Nameable implements Texture {
 	}
 	
 	public static SimpleTexture get(String name) {
-		SimpleTexture texture = TextureManager.get(name, SimpleTexture.class);
-		if (texture == null) {
-			texture = new SimpleTexture(TextureManager.loadTexture(name));
-			TextureManager.register(texture);
+		synchronized (TextureManager.class) {
+			SimpleTexture texture = TextureManager.get(name, SimpleTexture.class);
+			if (texture == null) {
+				texture = new SimpleTexture(TextureManager.loadTexture(name));
+				TextureManager.register(texture);
+			}
+			return texture;
 		}
-		return texture;
 	}
 
 	@Override
