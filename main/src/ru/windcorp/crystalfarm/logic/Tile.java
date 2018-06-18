@@ -1,0 +1,77 @@
+/**
+ * Crystal Farm the game
+ * Copyright (C) 2018  Crystal Farm Development Team
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package ru.windcorp.crystalfarm.logic;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+import ru.windcorp.crystalfarm.struct.mod.Mod;
+import ru.windcorp.crystalfarm.translation.TString;
+import ru.windcorp.tge2.util.exceptions.SyntaxException;
+
+public abstract class Tile extends Updateable {
+	
+	private final Mod mod;
+	private final String id;
+	private final TString name;
+	
+	private int nid;
+
+	public Tile(Mod mod, String id, TString name) {
+		this.mod = mod;
+		this.id = mod + ":" + id;
+		this.name = name;
+	}
+	
+	void setNid(int nid) {
+		this.nid = nid;
+	}
+	
+	int getNid() {
+		return nid;
+	}
+
+	public Mod getMod() {
+		return mod;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public TString getName() {
+		return name;
+	}
+	
+	@Override
+	protected Tile clone() {
+		return (Tile) super.clone();
+	}
+	
+	@Override
+	public void read(DataInput input, int change) throws IOException, SyntaxException {
+		// Do nothing
+	}
+	
+	@Override
+	public void write(DataOutput output, int change) throws IOException {
+		// Do nothing
+	}
+
+}
