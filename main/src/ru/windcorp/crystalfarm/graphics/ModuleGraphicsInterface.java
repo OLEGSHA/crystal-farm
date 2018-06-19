@@ -35,20 +35,42 @@ import ru.windcorp.tge2.util.unixarg.UnixArgumentInvalidSyntaxException;
 
 public class ModuleGraphicsInterface extends Module {
 	
-	static final SettingInt WINDOW_WIDTH = new SettingInt("WindowWidth", "Width of the game window at startup. Has no effect in fullscreen mode", 640);
-	static final SettingInt WINDOW_HEIGHT = new SettingInt("WindowHeight", "Height of the game window at startup. Has no effect in fullscreen mode", 480);
-	static final SettingBoolean WINDOW_FULLSCREEN = new SettingBoolean("WindowFullscreen", "True when window is in fullscreen. Does not affect WindowMaximized", false);
+	public static final int MIN_WIDTH = 1280;
+	public static final int MIN_HEIGHT = 720;
+	
+	static final SettingInt WINDOW_WIDTH = new SettingInt(
+			"WindowWidth", "Width of the game window at startup. Has no effect in fullscreen mode",
+			MIN_WIDTH, 16000, MIN_WIDTH, 1);
+	static final SettingInt WINDOW_HEIGHT = new SettingInt("WindowHeight", "Height of the game window at startup. Has no effect in fullscreen mode",
+			MIN_HEIGHT, 16000, MIN_HEIGHT, 1);
+	public static final SettingBoolean WINDOW_FULLSCREEN = new SettingBoolean("WindowFullscreen", "True when window is in fullscreen. Does not affect WindowMaximized", false);
 	static final SettingBoolean WINDOW_MAXIMIZED = new SettingBoolean("WindowMaximized", "True when window is maximized. Does not affect WindowFullscreen", false);
 	static final SettingBoolean SHOW_FPS = new SettingBoolean("ShowFPS", "When true, current FPS is displayed", false);
+	public static final SettingBoolean VSYNC = new SettingBoolean("Vsync", "When true, vertical synchronization is enabled", true);
 	
 	public ModuleGraphicsInterface() {
 		super("GraphicsInterface", InbuiltMod.INST);
+		
+		WINDOW_FULLSCREEN.addListener(x -> {
+			run(() -> {
+				setFullscreen(isFullscreen());
+				return null;
+			});
+		});
+		
+		WINDOW_FULLSCREEN.addListener(x -> {
+			run(() -> {
+				glfwSwapInterval(VSYNC.get() ? 1 : 0);
+				return null;
+			});
+		});
 		
 		addConfig(WINDOW_WIDTH);
 		addConfig(WINDOW_HEIGHT);
 		addConfig(WINDOW_FULLSCREEN);
 		addConfig(WINDOW_MAXIMIZED);
 		addConfig(SHOW_FPS);
+		addConfig(VSYNC);
 		
 		addArgument(new UnixArgument<Void>(
 				"debugTextureLoading", null,
@@ -74,7 +96,7 @@ public class ModuleGraphicsInterface extends Module {
 		manager.addJob(new JobLoadDefaultFonts(this));
 		manager.addJob(new JobOpenMainMenu(this));
 		
-		for (int i = 0; i < 10; ++i) manager.addJob(new TMP_JobDelayLoad(i, this));
+//		for (int i = 0; i < 10; ++i) manager.addJob(new TMP_JobDelayLoad(i, this));
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() ->  {
 			if (getWindow() != 0) {

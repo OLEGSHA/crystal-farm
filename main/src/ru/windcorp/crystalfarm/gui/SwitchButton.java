@@ -38,10 +38,13 @@ public class SwitchButton extends Button {
 		return state;
 	}
 	
-	public void setState(boolean state) {
+	public void setStateSilently(boolean state) {
 		this.state = state;
-		
 		getText().setText(state ? textTrue : textFalse);
+	}
+	
+	public void setState(boolean state) {
+		setStateSilently(state);
 		super.accept(null);
 	}
 	

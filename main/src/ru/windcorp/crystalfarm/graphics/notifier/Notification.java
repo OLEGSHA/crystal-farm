@@ -202,9 +202,11 @@ public class Notification {
 			}
 			
 			if (isModal() && shakeAt < time()) {
-				vx = -2;
 				this.shakeAt = ModuleNotifier.SETTING_SHAKE_INTERVAL.get() * 1000 + time();
-				soundPlayed = false;
+				if (!hasCursor()) {
+					vx = -2;
+					soundPlayed = false;
+				}
 			} else {
 				if (vx > 1) {
 					vx *= -BOUNCINESS;
@@ -244,16 +246,16 @@ public class Notification {
 				getType().getBorderColor(),
 				LINE_THICKNESS);
 		
+		if (hasCursor()) {
+			fillRectangle(x, y, width, height, COVER_COLOR);
+		}
+		
 		drawTexture(
 				x + 2*LINE_THICKNESS,
 				y + 2*LINE_THICKNESS,
 				getType().getIcon());
 		
 		getLabel().render(x + 3*LINE_THICKNESS + getType().getIcon().getWidth(), y + 2*LINE_THICKNESS);
-		
-		if (hasCursor()) {
-			fillRectangle(x, y, width, height, COVER_COLOR);
-		}
 		
 		return advance;
 	}

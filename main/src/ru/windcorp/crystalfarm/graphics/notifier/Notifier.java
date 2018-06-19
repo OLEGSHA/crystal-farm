@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ru.windcorp.crystalfarm.graphics.notifier.Notification.Type;
 import ru.windcorp.crystalfarm.translation.TString;
+import ru.windcorp.tge2.util.debug.Debug;
 
 public class Notifier {
 
@@ -48,7 +49,7 @@ public class Notifier {
 	}
 	
 	public static void debug(TString text) {
-		postNotification(new Notification(Type.DEBUG, false, null, text));
+		if (Debug.allowDebug) postNotification(new Notification(Type.DEBUG, true, null, text));
 	}
 	
 	public static void info(TString text) {

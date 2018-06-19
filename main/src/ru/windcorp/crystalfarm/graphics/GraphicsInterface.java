@@ -42,6 +42,7 @@ import ru.windcorp.crystalfarm.input.MouseButtonInput;
 import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.collections.ReverseListView;
+import ru.windcorp.tge2.util.debug.Debug;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
 /**
@@ -55,8 +56,8 @@ public class GraphicsInterface {
 	private static boolean graphicsReady = false;
 	private static GLCapabilities glCapabilities = null;
 	
-	private static int fullscreenWidth = ModuleGraphicsInterface.WINDOW_WIDTH.get();
-	private static int fullscreenHeight = ModuleGraphicsInterface.WINDOW_HEIGHT.get();
+	private static int unsavedWidth = ModuleGraphicsInterface.WINDOW_WIDTH.get();
+	private static int unsavedHeight = ModuleGraphicsInterface.WINDOW_HEIGHT.get();
 	
 	private static final List<Layer> LAYERS = Collections.synchronizedList(new CopyOnWriteArrayList<>());
 	private static final List<Layer> LAYERS_REVERSE = new ReverseListView<>(LAYERS);
@@ -177,7 +178,9 @@ public class GraphicsInterface {
 			return;
 		}
 		
-		if (!isFullscreen()) {
+		ModuleGraphicsInterface.WINDOW_MAXIMIZED.set(glfwGetWindowAttrib(getWindow(), GLFW_MAXIMIZED) == GLFW_TRUE);
+		
+		if (isWindowed()) {
 			ModuleGraphicsInterface.WINDOW_WIDTH.set(width);
 			ModuleGraphicsInterface.WINDOW_HEIGHT.set(height);
 		}
@@ -187,8 +190,6 @@ public class GraphicsInterface {
 		glLoadIdentity();
 		glOrtho(0, width, height, 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
-		
-		ModuleGraphicsInterface.WINDOW_MAXIMIZED.set(glfwGetWindowAttrib(getWindow(), GLFW_MAXIMIZED) == GLFW_TRUE);
 		
 		getWindowResizeListeners().forEach(l -> l.onWindowResize(width, height));
 	}
@@ -238,7 +239,7 @@ public class GraphicsInterface {
 	 */
 	// TODO consider whether to use framebuffers
 	public static int getWindowWidth() {
-		return isFullscreen() ? fullscreenWidth : ModuleGraphicsInterface.WINDOW_WIDTH.get();
+		return isWindowed() ? ModuleGraphicsInterface.WINDOW_WIDTH.get() : unsavedWidth;
 	}
 	
 	/**
@@ -246,7 +247,7 @@ public class GraphicsInterface {
 	 * @return the height of the display area in pixels 
 	 */
 	public static int getWindowHeight() {
-		return isFullscreen() ? fullscreenHeight : ModuleGraphicsInterface.WINDOW_HEIGHT.get();
+		return isWindowed() ? ModuleGraphicsInterface.WINDOW_HEIGHT.get() : unsavedHeight;
 	}
 	
 	/**
@@ -295,6 +296,14 @@ public class GraphicsInterface {
 	}
 	
 	/**
+	 * Checks whether this window is in in windowed mode and is not maximized.
+	 * @return {@code true} when the window is neither in fullscreen nor in maximized mode
+	 */
+	public static boolean isWindowed() {
+		return !isFullscreen() && !isMaximized();
+	}
+	
+	/**
 	 * Sets the window's fullscreen state.
 	 * @param fullscreen whether to set window to fullscreen
 	 */
@@ -309,8 +318,8 @@ public class GraphicsInterface {
 					glfwGetPrimaryMonitor(),
 					0,
 					0,
-					fullscreenWidth = vidmode.width(),
-					fullscreenHeight = vidmode.height(),
+					unsavedWidth = vidmode.width(),
+					unsavedHeight = vidmode.height(),
 					0);
 		} else {
 			boolean maximized = isMaximized();
@@ -318,6 +327,10 @@ public class GraphicsInterface {
 				return;
 			}
 			
+			Debug.debugObj(maximized ? 0 : (vidmode.width() - getWindowWidth()) / 2,
+					maximized ? 0 : (vidmode.height() - getWindowHeight()) / 2,
+					getWindowWidth(),
+					getWindowHeight());
 			glfwSetWindowMonitor(
 					getWindow(),
 					0,

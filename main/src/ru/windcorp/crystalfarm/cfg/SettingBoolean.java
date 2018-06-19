@@ -44,6 +44,10 @@ public class SettingBoolean extends ConfigurationNode {
 	}
 	
 	protected synchronized void setRaw(boolean value) {
+		if (this.value == value) {
+			return;
+		}
+		
 		this.value = value;
 		fireEvent();
 	}

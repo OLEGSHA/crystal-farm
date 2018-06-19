@@ -33,7 +33,7 @@ public class SliderFloat extends ArrowedComponent implements GraphicsDesign {
 		@Override
 		protected String compute() {
 			int signs = round(getValue() * power);
-			return signs / power + "." + StringUtil.padToRight(abs(signs) % power + "", decimals, '0');
+			return signs / power + "." + StringUtil.padToRight(abs(signs) % power + "", Math.max(decimals, 1), '0');
 		}
 		
 		@Override
@@ -56,7 +56,7 @@ public class SliderFloat extends ArrowedComponent implements GraphicsDesign {
 		this.max = max;
 		this.step = step;
 		this.multiplier = (int) (value / step);
-		this.decimals = max(0, (int) -ceil(log10(step)));
+		this.decimals = max(0, (int) -round(log10(step)));
 		this.power = pow10(decimals);
 		Log.info(power + "");
 		this.display = new TStringDisplay();

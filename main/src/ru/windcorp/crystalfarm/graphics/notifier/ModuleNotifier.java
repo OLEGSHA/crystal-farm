@@ -27,11 +27,11 @@ import ru.windcorp.tge2.util.jobs.JobManager;
 public class ModuleNotifier extends Module {
 	
 	public static final SettingInt SETTING_TIMEOUT =
-			new SettingInt("Timeout", "Time, in seconds, that a non-modal notification will persist on the screen", 3);
+			new SettingInt("Timeout", "Time, in seconds, that a non-modal notification will persist on the screen", 3, 60, 1, 1);
 	public static final SettingInt SETTING_SHAKE_INTERVAL =
-			new SettingInt("ShakeInterval", "Time, in seconds, between small shakes for modal notifications", 5);
+			new SettingInt("ShakeInterval", "Time, in seconds, between small shakes for modal notifications", 5, 60, 1, 1);
 	public static final SettingFloat SETTING_ALERT_GAIN =
-			new SettingFloat("AlertGain", "The volume of audio alerts [0.0; 1.0]", 1);
+			new SettingFloat("AlertGain", "The volume of audio alerts [0.0; 1.0]", 1, 1, 0, 0.1f);
 
 	public ModuleNotifier() {
 		super("Notifier", InbuiltMod.INST);

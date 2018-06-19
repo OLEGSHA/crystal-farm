@@ -132,6 +132,11 @@ public class RenderThread implements Runnable {
 			ExecutionReport.reportCriticalError(null, ExecutionReport.rscCorrupt("GLFW", "GLFW failed to initialize window"), null);
 		}
 		
+		glfwSetWindowSizeLimits(getWindow(),
+				ModuleGraphicsInterface.MIN_WIDTH,
+				ModuleGraphicsInterface.MIN_HEIGHT,
+				GLFW_DONT_CARE, GLFW_DONT_CARE);
+		
 		glfwMakeContextCurrent(getWindow());
 		glfwSwapInterval(1);
 	}
@@ -143,8 +148,6 @@ public class RenderThread implements Runnable {
 	private void createWindowIcons() {
 		Vector2<TexturePrimitive, ByteBuffer> icon16 = TextureManager.loadToByteBuffer("window/icon16");
 		Vector2<TexturePrimitive, ByteBuffer> icon32 = TextureManager.loadToByteBuffer("window/icon32");
-//		Vector2<TexturePrimitive, ByteBuffer> icon48 = TextureManager.loadToByteBuffer("window/icon48");
-//		Vector2<TexturePrimitive, ByteBuffer> icon64 = TextureManager.loadToByteBuffer("window/icon64");
 		
 		try (GLFWImage.Buffer buffer = GLFWImage.malloc(2)) {
 			buffer
@@ -158,18 +161,6 @@ public class RenderThread implements Runnable {
 				.width(icon32.a.getWidth())
 				.height(icon32.a.getHeight())
 				.pixels(icon32.b);
-			
-//			buffer
-//				.position(2)
-//				.width(icon48.a.getWidth())
-//				.height(icon48.a.getHeight())
-//				.pixels(icon48.b);
-//			
-//			buffer
-//				.position(3)
-//				.width(icon64.a.getWidth())
-//				.height(icon64.a.getHeight())
-//				.pixels(icon64.b);
 			
 			glfwSetWindowIcon(getWindow(), buffer);
 		}

@@ -19,6 +19,8 @@ package ru.windcorp.crystalfarm.gui.menu;
 
 import java.util.Arrays;
 
+import ru.windcorp.crystalfarm.audio.ModuleAudioInterface;
+import ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.gui.*;
 import ru.windcorp.crystalfarm.translation.TString;
@@ -47,7 +49,9 @@ public class TestMenu extends MenuLayer {
 				0.0005f, 0.001f, 0.00001f, 0.0008f,
 				x -> Notifier.positive(TString.translated("menu.test.sliderFloat").append("!")));
 		
-		add(button, choiceButton, switchButton, sliderInt, sliderFloat);
+		add(button, choiceButton, switchButton, sliderInt, sliderFloat,
+				GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),
+				GuiSettingEditors.createEditor(ModuleGraphicsInterface.WINDOW_FULLSCREEN));
 		
 		button.takeFocus();
 	}

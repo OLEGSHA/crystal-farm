@@ -84,6 +84,10 @@ public class Setting<T> extends ConfigurationNode {
 	}
 	
 	protected synchronized void setRaw(T value) {
+		if (this.value == value) {
+			return;
+		}
+		
 		this.value = value;
 		fireEvent();
 	}
