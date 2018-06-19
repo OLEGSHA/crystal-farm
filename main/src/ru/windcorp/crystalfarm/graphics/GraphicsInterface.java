@@ -44,6 +44,9 @@ import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.collections.ReverseListView;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
+/**
+ * An interface to access a limited set of OpenGL and the graphics structure specific to CrystalFarm
+ */
 public class GraphicsInterface {
 	
 	private static long window = 0;
@@ -79,19 +82,39 @@ public class GraphicsInterface {
 	 * Layers
 	 */
 	
+	/**
+	 * Adds a normal layer to the layer stack.
+	 * @param layer the layer to add
+	 * @see {@link #getLayers()}
+	 */
 	public static void addLayer(Layer layer) {
 		getLayers().add(firstStickyLayer++, layer);
 	}
 	
+	/**
+	 * Adds a sticky layer to the layer stack.
+	 * @param layer the layer to add
+	 * @see {@link #getLayers()}
+	 */
 	public static void addStickyLayer(Layer layer) {
 		getLayers().add(layer);
 	}
 	
+	/**
+	 * Adds a normal layer to the bottom of the layer stack.
+	 * @param layer the layer to add
+	 * @see {@link #getLayers()}
+	 */
 	public static void addLayerToBottom(Layer layer) {
 		getLayers().add(0, layer);
 		firstStickyLayer++;
 	}
 	
+	/**
+	 * Removes the given layer from the layer stack if it is present.
+	 * @param layer the layer to remove
+	 * @see {@link #getLayers()}
+	 */
 	public static void removeLayer(Layer layer) {
 		synchronized (LAYERS) {
 			int index = getLayers().indexOf(layer);
@@ -104,10 +127,21 @@ public class GraphicsInterface {
 		}
 	}
 	
-	public static void removeAllLayers() {
-		getLayers().clear();
-	}
-	
+	/**
+	 * Gets the graphics layer stack.
+	 * <p>
+	 * Graphics render is organized in {@link Layer}s. Each layer is responsible
+	 * for displaying a certain type of visuals. Examples of layers are menus
+	 * (each separately), HUD, notifications. Layers are rendered from bottom
+	 * to top of the stack.
+	 * <p>
+	 * Graphics layer stack is divided into <i>normal</i> and <i>sticky</i> layers.
+	 * Normal layers are expected to change based on the current game state. Sticky
+	 * layers usually stay throughout the launch. All sticky layers are displayed
+	 * on top of all normal layers. Stickiness is not an inherent property of the
+	 * layer, it is "set" when the layer is added, either through {@link #addLayer(Layer)},
+	 * {@link #addLayerToBottom(Layer)} or {@link #addStickyLayer(Layer)}.
+	 */
 	public static List<Layer> getLayers() {
 		return LAYERS;
 	}
@@ -186,6 +220,10 @@ public class GraphicsInterface {
 	 * GLFW window operations
 	 */
 	
+	/**
+	 * Gets the GLFW window handle.
+	 * @return the window handle usable in GLFW functions
+	 */
 	public static long getWindow() {
 		return window;
 	}
@@ -194,36 +232,72 @@ public class GraphicsInterface {
 		GraphicsInterface.window = window;
 	}
 	
+	/**
+	 * Gets the current window width.
+	 * @return the width of the display area in pixels 
+	 */
 	// TODO consider whether to use framebuffers
 	public static int getWindowWidth() {
 		return isFullscreen() ? fullscreenWidth : ModuleGraphicsInterface.WINDOW_WIDTH.get();
 	}
 	
+	/**
+	 * Gets the current window height.
+	 * @return the height of the display area in pixels 
+	 */
 	public static int getWindowHeight() {
 		return isFullscreen() ? fullscreenHeight : ModuleGraphicsInterface.WINDOW_HEIGHT.get();
 	}
 	
+	/**
+	 * Gets the current X coordinate of the cursor in display area coordinates.
+	 * @return the distance between the cursor and the left display area border
+	 */
 	public static int getCursorX() {
 		return cursorX;
 	}
 	
+	/**
+	 * Gets the current Y coordinate of the cursor in display area coordinates.
+	 * @return the distance between the cursor and the top display area border
+	 */
 	public static int getCursorY() {
 		return cursorY;
 	}
 	
+	/**
+	 * Checks whether the cursor is inside the given region.
+	 * @param x the X coordinate of the upper-left corner of the area
+	 * @param y the Y coordinate of the upper-left corner of the area
+	 * @param width the width of the area
+	 * @param height the height of the area
+	 * @return {@code true} when the cursor is currently in the given region
+	 */
 	public static boolean isCursorIn(int x, int y, int width, int height) {
 		return cursorX >= x && cursorX < x + width &&
 				cursorY >= y && cursorY < y + height;
 	}
 	
+	/**
+	 * Checks whether the window is in fullscreen mode.
+	 * @return {@code true} when the window is in fullscreen mode
+	 */
 	public static boolean isFullscreen() {
 		return ModuleGraphicsInterface.WINDOW_FULLSCREEN.get();
 	}
 	
+	/**
+	 * Checks whether the window is maximized.
+	 * @return {@code true} when the window is maximized
+	 */
 	public static boolean isMaximized() {
 		return ModuleGraphicsInterface.WINDOW_MAXIMIZED.get();
 	}
 	
+	/**
+	 * Sets the window's fullscreen state.
+	 * @param fullscreen whether to set window to fullscreen
+	 */
 	public static void setFullscreen(boolean fullscreen) {
 		boolean changed = fullscreen != isFullscreen();
 		ModuleGraphicsInterface.WINDOW_FULLSCREEN.set(fullscreen);
@@ -261,14 +335,28 @@ public class GraphicsInterface {
 	
 	static double frame = 1 / 60 * 1000;
 	
+	/**
+	 * Returns the current time in milliseconds. The time is relative to
+	 * an unspecified moment but is consistent within a launch. This value
+	 * is not guaranteed to be accurate to the millisecond.
+	 * @return the elapsed time in 1/1000th of a second
+	 */
 	public static double time() {
 		return glfwGetTime() * 1000.0;
 	}
 	
+	/**
+	 * Returns the duration of the last render cycle in milliseconds.
+	 * @return the time taken to render the previous frame.
+	 */
 	public static double frame() {
 		return frame;
 	}
 	
+	/**
+	 * Returns the current Frames-Per-Second (FPS).
+	 * @return the amount of render cycles per second
+	 */
 	public static double getFps() {
 		return 1000 / frame;
 	}
@@ -281,6 +369,17 @@ public class GraphicsInterface {
 		glColor4d(color.r, color.g, color.b, color.a);
 	}
 	
+	/**
+	 * Fills a rectangle with the given color. The rectangle may not be visible, partially or completely.
+	 * <p>
+	 * Coordinates are given in <i>display coordinate system</i>, where the point (0;0) corresponds to
+	 * the upper-left corner of the screen, X axis is positive to the right and Y axis is positive to the bottom.
+	 * @param x the X coordinate of the upper-left corner of the rectangle
+	 * @param y the Y coordinate of the upper-left corner of the rectangle
+	 * @param width the width of the rectangle
+	 * @param height the height of the rectangle
+	 * @param color the {@link Color} to use
+	 */
 	public static void fillRectangle(int x, int y, int width, int height, Color color) {
 		width += x;
 		height += y;
@@ -297,18 +396,50 @@ public class GraphicsInterface {
 		glEnd();
 	}
 	
-	public static void fillRectangle(int x, int y, int width, int height, Color color, Color border, int borderThinkness) {
+	/**
+	 * Fills a rectangle with color {@code color} with a border of color {@code border} and thickness
+	 * {@code borderThickness}. The border is drawn inside the rectangle. The rectangle may not be visible,
+	 * partially or completely.
+	 * <p>
+	 * Coordinates are given in <i>display coordinate system</i>, where the point (0;0) corresponds to
+	 * the upper-left corner of the screen, X axis is positive to the right and Y axis is positive to the bottom.
+	 * @param x the X coordinate of the upper-left corner of the rectangle
+	 * @param y the Y coordinate of the upper-left corner of the rectangle
+	 * @param width the width of the rectangle
+	 * @param height the height of the rectangle
+	 * @param color the {@link Color} to use for the inside
+	 * @param border the {@link Color} to use for the border
+	 * @param borderThickness the width of the border
+	 */
+	public static void fillRectangle(int x, int y, int width, int height, Color color, Color border, int borderThickness) {
 		fillRectangle(x, y, width, height, border);
 		fillRectangle(
-				x + borderThinkness,
-				y + borderThinkness,
-				width - 2*borderThinkness,
-				height - 2*borderThinkness,
+				x + borderThickness,
+				y + borderThickness,
+				width - 2*borderThickness,
+				height - 2*borderThickness,
 				color);
 	}
 	
 	private static final int UL_X = 0, UL_Y = 1, LR_X = 2, LR_Y = 3;
 	
+	/**
+	 * Renders the given texture or one of its tiles. The upper-left corner of the rendered fragment
+	 * will be located at ({@code x};{@code y}). The dimensions of the fragment are determined by the
+	 * natural size of the texture or its tile size. A color filter may be applied with a non-null
+	 * {@code filter}. The fragment is rotated in {@code direction} (use {@link Direction#UP} to ignore rotation).
+	 * The fragment may not be visible, partially or completely.
+	 * <p>
+	 * Coordinates are given in <i>display coordinate system</i>, where the point (0;0) corresponds to
+	 * the upper-left corner of the screen, X axis is positive to the right and Y axis is positive to the bottom.
+	 * @param x the X coordinate of the upper-left corner of the fragment to render
+	 * @param y the Y coordinate of the upper-left corner of the fragment to render
+	 * @param texture the {@link Texture} to render
+	 * @param tileX the X coordinate of the tile. Ignored when {@code texture.getTileSize() == 0}
+	 * @param tileY the Y coordinate of the tile. Ignored when {@code texture.getTileSize() == 0}
+	 * @param filter the color filter to apply or {@code null} for none
+	 * @param direction the direction in which to rotate the texture
+	 */
 	public static void drawTexture(int x, int y, Texture texture, int tileX, int tileY, Color filter, Direction direction) {
 		double[] coords = new double[4];
 		int endX = texture.getWidth() + x,
@@ -345,6 +476,18 @@ public class GraphicsInterface {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
+	/**
+	 * Renders the given texture. The upper-left corner of the rendered fragment
+	 * will be located at ({@code x};{@code y}). The dimensions of the fragment are determined by the
+	 * natural size of the texture or its tile size. The fragment may not be visible, partially or completely.
+	 * <p>
+	 * Coordinates are given in <i>display coordinate system</i>, where the point (0;0) corresponds to
+	 * the upper-left corner of the screen, X axis is positive to the right and Y axis is positive to the bottom.
+	 * @param x the X coordinate of the upper-left corner of the fragment to render
+	 * @param y the Y coordinate of the upper-left corner of the fragment to render
+	 * @param texture the {@link Texture} to render
+	 * @see {@link #drawTexture(int, int, Texture, int, int, Color, Direction)}
+	 */
 	public static void drawTexture(int x, int y, Texture texture) {
 		drawTexture(x, y, texture, 0, 0, null, Direction.UP);
 	}
@@ -499,20 +642,42 @@ public class GraphicsInterface {
 				callable.toString(), callable.getClass().toString(), scheduler.getName());
 	}
 	
+	/**
+	 * Dumps the layer stack producing an indented hierarchical human-readable view of the current graphical structure.
+	 * This method is designed for debug purposes and may be computationally difficult.
+	 * @return a layer stack dump
+	 */
 	public static String dumpLayers() {
 		IndentedStringBuilder sb = new IndentedStringBuilder('\t', 1);
 		getLayers().forEach(layer -> layer.dump(sb));
 		return sb.toString();
 	}
 	
+	/**
+	 * Adds an {@link InputListener}. Layers must not be registered explicitly.
+	 * <p>
+	 * When dispatching input, the explicitly registered input listeners are notified
+	 * first, and only then layers that implement {@code InputListener} are notified
+	 * in the order <i>inverse</i> of their render order (from the top of the layer stack
+	 * to its bottom).
+	 * @param l the listener to add
+	 */
 	public static void addInputListener(InputListener l) {
 		LISTENERS_INPUT.add(l);
 	}
 	
+	/**
+	 * Adds an {@link WindowResizeListener}. Layers must not be registered explicitly.
+	 * @param l the listener to add
+	 */
 	public static void addWindowResizeListener(WindowResizeListener l) {
 		LISTENERS_WINDOW_RESIZE.add(l);
 	}
 	
+	/**
+	 * Checks whether the currently executing thread is the OpenGL render thread.
+	 * @return {@code true} when invoked from the render thread
+	 */
 	public static boolean isRenderThread() {
 		return Thread.currentThread() == renderThread;
 	}
@@ -521,6 +686,10 @@ public class GraphicsInterface {
 		GraphicsInterface.renderThread = thread;
 	}
 
+	/**
+	 * Checks whether {@link GraphicsInterface} has been set up.
+	 * @return {@code true} when all {@code GraphicsInterface} methods are ready to be invoked.
+	 */
 	public static boolean isGraphicsReady() {
 		return graphicsReady;
 	}
@@ -529,6 +698,11 @@ public class GraphicsInterface {
 		GraphicsInterface.graphicsReady = true;
 	}
 
+	/**
+	 * Gets the {@link GLCapabilities} object current in the render thread.
+	 * This object can be used to examine graphics capabilities of OpenGL.
+	 * @return the {@code GLCapabilities} used by the render threads
+	 */
 	public static GLCapabilities getGlCapabilities() {
 		return glCapabilities;
 	}
