@@ -19,23 +19,39 @@ package ru.windcorp.crystalfarm.logic.server;
 
 import java.io.DataInput;
 import java.io.DataInputStream;
-import java.io.DataOutput;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import ru.windcorp.crystalfarm.logic.Data;
 import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.logic.IslandFactory;
+import ru.windcorp.crystalfarm.logic.exception.UnknownVersionException;
+import ru.windcorp.crystalfarm.logic.exception.UnknownWorldDataException;
+import ru.windcorp.crystalfarm.logic.exception.WrongMagicValueException;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
+import ru.windcorp.tge2.util.grh.Resource;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
+import ru.windcorp.tge2.util.stream.CountingDataOutput;
 
 public class World {
+	
+	public static final long MAGIC_VALUE = 0xEDA_ACE_FEED_CABl;
+	public static final byte VERSION_EARTH_PONY = 0;
+	
+	private final Resource resource;
 	
 	private final WorldMeta meta = new WorldMeta();
 	private final Map<String, Island> islands = Collections.synchronizedMap(new HashMap<>());
 	private final Map<String, Data> data = Collections.synchronizedMap(new HashMap<>());
+	
+	protected World(Resource resource) {
+		this.resource = resource;
+	}
 	
 	public WorldMeta getMeta() {
 		return meta;
@@ -47,6 +63,10 @@ public class World {
 	
 	public Data getData(String name) {
 		return getData().get(name);
+	}
+	
+	public void addData(Collection<Data> data) {
+		data.forEach(datum -> getData().put(datum.getName(), datum));
 	}
 	
 	public Map<String, Island> getIslands() {
@@ -74,7 +94,7 @@ public class World {
 				String name = input.readUTF();
 				Data data = getData(name);
 				if (data == null) {
-					throw new SyntaxException("Data with name \"" + name + "\" has not been registered");
+					throw new UnknownWorldDataException("Data with name \"" + name + "\" has not been registered", name, this);
 				}
 				
 				input.pushCounter();
@@ -96,13 +116,14 @@ public class World {
 		synchronized (getIslands()) {
 			for (int i = 0; i < amount; ++i) {
 				String name = input.readUTF();
-				Island data = getIsland(name);
-				if (data == null) {
-					throw new SyntaxException("Island with name \"" + name + "\" has not been registered");
+				Island island = getIsland(name);
+				if (island == null) {
+					island = IslandFactory.createIsland(name);
+					getIslands().put(name, island);
 				}
 				
 				input.pushCounter();
-				data.read(input);
+				island.read(input);
 				
 				int read = (int) input.popCounter();
 				int length = input.readInt();
@@ -113,18 +134,75 @@ public class World {
 		}
 	}
 	
-	public WorldMeta readMeta(InputStream is) throws IOException, SyntaxException {
+	public static WorldMeta readMeta(InputStream is) throws IOException, SyntaxException {
 		WorldMeta result = new WorldMeta();
 		readMeta(new DataInputStream(is), result);
 		return result;
 	}
 	
-	private void readMeta(DataInput input, WorldMeta meta) throws IOException, SyntaxException {
+	private static void readMeta(DataInput input, WorldMeta meta) throws IOException, SyntaxException {
+		long presentMagicValue = input.readLong();
+		if (presentMagicValue != MAGIC_VALUE) {
+			throw new WrongMagicValueException("Wrong magic value, probably not a save file. Expected 0x"
+					+ Long.toHexString(MAGIC_VALUE) + ", got 0x" + Long.toHexString(presentMagicValue),
+					presentMagicValue,
+					MAGIC_VALUE);
+		}
+		
+		byte version = input.readByte();
+		if (version != VERSION_EARTH_PONY) {
+			throw new UnknownVersionException("Unknown version 0x" + Integer.toHexString(version & 0xFF) +
+					", 0x" + Integer.toHexString(VERSION_EARTH_PONY) + " (Earth Pony) known",
+					version);
+		}
+		
 		meta.readAll(input);
 	}
 	
-	public void write(DataOutput output) throws IOException {
+	public void write(OutputStream os) throws IOException {
+		CountingDataOutput output = new CountingDataOutput(os);
 		
+		output.writeLong(MAGIC_VALUE);
+		output.writeByte(VERSION_EARTH_PONY);
+		getMeta().writeAll(output);
+		
+		synchronized (getData()) {
+			output.writeInt(getData().size());
+			
+			for (Data data : getData().values()) {
+				output.writeUTF(data.getName());
+				
+				output.pushCounter();
+				data.writeAll(output);
+				output.writeInt((int) output.popCounter());
+			}
+		}
+		
+		synchronized (getIslands()) {
+			output.writeInt(getIslands().size());
+			
+			for (Island island : getIslands().values()) {
+				output.writeUTF(island.getName());
+				
+				output.pushCounter();
+				island.write(output);
+				output.writeInt((int) output.popCounter());
+			}
+		}
+	}
+
+	public Resource getResource() {
+		return resource;
+	}
+	
+	public void load() throws IOException, SyntaxException {
+		getResource().checkRead(problem -> { throw new IOException(problem); });
+		read(getResource().getInputStream());
+	}
+	
+	public void save() throws IOException {
+		getResource().checkWrite(problem -> { throw new IOException(problem); });
+		write(getResource().getOutputStream());
 	}
 
 }

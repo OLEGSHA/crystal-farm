@@ -21,6 +21,8 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import ru.windcorp.crystalfarm.logic.exception.UnknownIslandDataException;
+import ru.windcorp.crystalfarm.logic.exception.UnknownLevelException;
 import ru.windcorp.tge2.util.Nameable;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
@@ -32,7 +34,7 @@ public class Island extends Nameable {
 	private final Level[] levels;
 	private final Data[] data;
 	
-	public Island(String name, Level[] levels, Data[] data) {
+	protected Island(String name, Level[] levels, Data[] data) {
 		super(name);
 		this.levels = levels;
 		this.data = data;
@@ -88,7 +90,8 @@ public class Island extends Nameable {
 			Data data = getData(name);
 			
 			if (data == null) {
-				throw new SyntaxException("Data with name \"" + name + "\" has not been registered in island " + this);
+				throw new UnknownIslandDataException("Data with name \"" + name + "\" has not been registered in island " + this,
+						name, this);
 			}
 			
 			input.pushCounter();
@@ -112,7 +115,8 @@ public class Island extends Nameable {
 			Level level = getLevel(name);
 			
 			if (level == null) {
-				throw new SyntaxException("Level with name \"" + name + "\" has not been registered in island " + this);
+				throw new UnknownLevelException("Level with name \"" + name + "\" has not been registered in island " + this,
+						name, this);
 			}
 			
 			input.pushCounter();
