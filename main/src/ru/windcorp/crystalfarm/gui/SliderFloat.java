@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.StringUtil;
-import ru.windcorp.tge2.util.debug.Log;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
@@ -58,7 +57,6 @@ public class SliderFloat extends ArrowedComponent {
 		this.multiplier = (int) (value / step);
 		this.decimals = max(0, (int) -round(log10(step)));
 		this.power = pow10(decimals);
-		Log.info(power + "");
 		this.display = new TStringDisplay();
 		getDisplay().setText(display.toFont());
 	}

@@ -45,7 +45,7 @@ public class ModuleGraphicsInterface extends Module {
 			MIN_HEIGHT, 16000, MIN_HEIGHT, 1);
 	public static final SettingBoolean WINDOW_FULLSCREEN = new SettingBoolean("WindowFullscreen", "True when window is in fullscreen. Does not affect WindowMaximized", false);
 	static final SettingBoolean WINDOW_MAXIMIZED = new SettingBoolean("WindowMaximized", "True when window is maximized. Does not affect WindowFullscreen", false);
-	static final SettingBoolean SHOW_FPS = new SettingBoolean("ShowFPS", "When true, current FPS is displayed", false);
+	public static final SettingBoolean SHOW_FPS = new SettingBoolean("ShowFPS", "When true, current FPS is displayed", false);
 	public static final SettingBoolean VSYNC = new SettingBoolean("Vsync", "When true, vertical synchronization is enabled", true);
 	
 	public ModuleGraphicsInterface() {

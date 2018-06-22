@@ -30,6 +30,7 @@ public class CrystalFarmGLFWErrorHandler implements GLFWErrorCallbackI {
 	public void invoke(int error, long descriptionPointer) {
 		ExecutionReport.reportCriticalError(null, null,
 				"GLFW error encountered. Error code: %d, error name: %s, error name explanation: %s, provided description: %s",
+				error,
 				getErrorName(error),
 				getErrorDescription(error),
 				GLFWErrorCallback.getDescription(descriptionPointer));
