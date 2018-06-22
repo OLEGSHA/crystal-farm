@@ -20,7 +20,6 @@ package ru.windcorp.crystalfarm.gui.menu;
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.graphics.Color;
-import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Centerer;
@@ -61,9 +60,9 @@ public class MainMenu extends GuiLayer {
 						new Button(
 								"MainMenu.settings",
 								TString.translated("menu.MainMenu.settings").toFont(),
-								button -> Notifier.debug(TString.wrap("Open Settings menu from ru.windcorp.crystalfarm.gui.menu.MainMenu.MainMenu()"))
+								button -> new SettingsMenu().show()
 						));
-				
+
 				menu.addChild(
 						new Button(
 								"MainMenu.about",
