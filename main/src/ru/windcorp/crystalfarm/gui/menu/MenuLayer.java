@@ -18,10 +18,10 @@
 package ru.windcorp.crystalfarm.gui.menu;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 
 import org.lwjgl.glfw.GLFW;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Component;
@@ -69,7 +69,7 @@ public class MenuLayer extends GuiLayer {
 	
 	@Override
 	public void render() {
-		fillRectangle(0, 0, getWindowWidth(), getWindowHeight(), GraphicsDesign.COVER_COLOR);
+		fillRectangle(0, 0, getWindowWidth(), getWindowHeight(), gdGetCoverColor());
 		super.render();
 	}
 	

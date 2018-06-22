@@ -21,7 +21,7 @@ public class ConfigurationSyntaxException extends RuntimeException {
 
 	private static final long serialVersionUID = -9082099905124303713L;
 	
-	private final ConfigurationNode source;
+	private ConfigurationNode source;
 
 	public ConfigurationSyntaxException(String message, Throwable cause, ConfigurationNode source) {
 		super(message, cause);
@@ -32,9 +32,21 @@ public class ConfigurationSyntaxException extends RuntimeException {
 		super(message);
 		this.source = source;
 	}
+	
+	public ConfigurationSyntaxException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	public ConfigurationSyntaxException(String message) {
+		super(message);
+	}
 
 	public ConfigurationNode getSource() {
 		return source;
+	}
+	
+	public void setSource(ConfigurationNode source) {
+		this.source = source;
 	}
 
 }

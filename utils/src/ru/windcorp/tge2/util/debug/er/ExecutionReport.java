@@ -480,7 +480,7 @@ public class ExecutionReport {
 	 * <a href=http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax>format string</a>.
 	 * @param params Format string arguments.
 	 */
-	public static void reportError(Throwable e,
+	public static ProblemReport reportError(Throwable e,
 			DamagedResourceReport damagedResource,
 			String format,
 			Object... params) {
@@ -493,7 +493,7 @@ public class ExecutionReport {
 		}
 		
 		Log.error(String.format(format, params));
-		registerProblem(ProblemLevel.ERROR, e, damagedResource, format, params);
+		return registerProblem(ProblemLevel.ERROR, e, damagedResource, format, params);
 	}
 	
 	/**
@@ -504,7 +504,7 @@ public class ExecutionReport {
 	 * <a href=http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax>format string</a>.
 	 * @param params Format string arguments.
 	 */
-	public static void reportWarning(Throwable e,
+	public static ProblemReport reportWarning(Throwable e,
 			DamagedResourceReport damagedResource,
 			String format,
 			Object... params) {
@@ -517,7 +517,7 @@ public class ExecutionReport {
 		}
 		
 		Log.warn(String.format(format, params));
-		registerProblem(ProblemLevel.WARNING, e, damagedResource, format, params);
+		return registerProblem(ProblemLevel.WARNING, e, damagedResource, format, params);
 	}
 	
 	/**
@@ -528,7 +528,7 @@ public class ExecutionReport {
 	 * <a href=http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax>format string</a>.
 	 * @param params Format string arguments.
 	 */
-	public static void reportNotification(Throwable e,
+	public static ProblemReport reportNotification(Throwable e,
 			DamagedResourceReport damagedResource,
 			String format,
 			Object... params) {
@@ -541,7 +541,7 @@ public class ExecutionReport {
 		}
 		
 		Log.info(String.format(format, params));
-		registerProblem(ProblemLevel.NOTIFICATION, e, damagedResource, format, params);
+		return registerProblem(ProblemLevel.NOTIFICATION, e, damagedResource, format, params);
 	}
 	
 	/**
@@ -552,7 +552,7 @@ public class ExecutionReport {
 	 * <a href=http://docs.oracle.com/javase/6/docs/api/java/util/Formatter.html#syntax>format string</a>.
 	 * @param params Format string arguments.
 	 */
-	public static void reportDebugNotification(Throwable e,
+	public static ProblemReport reportDebugNotification(Throwable e,
 			DamagedResourceReport damagedResource,
 			String format,
 			Object... params) {
@@ -567,10 +567,12 @@ public class ExecutionReport {
 			}
 			
 			Log.debug(String.format(format, params));
-			registerProblem(ProblemLevel.NOTIFICATION, e, damagedResource, format, params);
+			return registerProblem(ProblemLevel.NOTIFICATION, e, damagedResource, format, params);
 		} else {
 			surpressedDebugProblems++;
 		}
+		
+		return null;
 	}
 	
 	public static void reportUncaughtThrowable(Throwable e, Thread t) {

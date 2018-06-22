@@ -19,15 +19,15 @@ package ru.windcorp.crystalfarm.gui;
 
 import java.util.function.Consumer;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.StringUtil;
 import ru.windcorp.tge2.util.debug.Log;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 import static java.lang.Math.*;
 
-public class SliderFloat extends ArrowedComponent implements GraphicsDesign {
+public class SliderFloat extends ArrowedComponent {
 	
 	private class TStringDisplay extends TString {
 		@Override
@@ -122,16 +122,16 @@ public class SliderFloat extends ArrowedComponent implements GraphicsDesign {
 				getY(),
 				getWidth(),
 				getHeight(),
-				isHovered() ? FOREGROUND_COLOR_LIGHTER : FOREGROUND_COLOR,
-				isFocused() ? BORDER_COLOR_DARKER : BORDER_COLOR,
-				LINE_THICKNESS);
+				isHovered() ? gdGetForegroundAltColor() : gdGetForegroundColor(),
+				isFocused() ? gdGetBorderFocusedColor() : gdGetBorderColor(),
+				gdGetLine());
 		
 		fillRectangle(
-				getX() + LINE_THICKNESS,
-				getY() + LINE_THICKNESS,
-				(int) ceil((getWidth() - 2*LINE_THICKNESS) * ((getValue() - min) / (double) (max - min))),
-				getHeight() - 2*LINE_THICKNESS,
-				isHovered() ? BORDER_COLOR_LIGHTER : BORDER_COLOR);
+				getX() + gdGetLine(),
+				getY() + gdGetLine(),
+				(int) ceil((getWidth() - 2*gdGetLine()) * ((getValue() - min) / (double) (max - min))),
+				getHeight() - 2*gdGetLine(),
+				isHovered() ? gdGetBorderHoveredColor() : gdGetBorderColor());
 	}
 
 	@Override

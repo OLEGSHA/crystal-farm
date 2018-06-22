@@ -18,7 +18,9 @@
 package ru.windcorp.crystalfarm.gui.menu;
 
 import ru.windcorp.crystalfarm.CrystalFarm;
+import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Centerer;
@@ -29,10 +31,10 @@ import ru.windcorp.crystalfarm.gui.Image;
 import ru.windcorp.crystalfarm.gui.Label;
 import ru.windcorp.crystalfarm.gui.Size;
 import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
+import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.translation.ModuleTranslation;
 import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.StringUtil;
-import ru.windcorp.tge2.util.debug.Log;
 
 public class MainMenu extends GuiLayer {
 
@@ -48,11 +50,40 @@ public class MainMenu extends GuiLayer {
 			
 			Component menu = new Menu("MainMenu", TString.translated("menu.MainMenu.title").toFont());
 				
-				menu.addChild(new Button("1.1", TString.translated("TMP_1.1").toFont(), button -> Log.info(button + " activated")).takeFocus());
-				menu.addChild(new Button("1.2", TString.translated("TMP_1.2").toFont(), button -> Log.info(button + " activated")));
-				menu.addChild(new Button("1.3", TString.translated("TMP_1.3").toFont(), button -> new AboutMenu().show()));
-				menu.addChild(new Button("1.5", TString.translated("TMP_1.5").toFont(), button -> new TestMenu().show()));
-				menu.addChild(new Button("1.4", TString.translated("TMP_1.4").toFont(), button -> CrystalFarm.exit("user request", 0)));
+				menu.addChild(
+						new Button(
+								"MainMenu.play",
+								TString.translated("menu.MainMenu.play").toFont(),
+								button -> GameManager.startLocalGame(CrystalFarmResourceManagers.RM_FILE_WD.getResource("testWorld.earthpony.cfsave"))
+						).takeFocus());
+				
+				menu.addChild(
+						new Button(
+								"MainMenu.settings",
+								TString.translated("menu.MainMenu.settings").toFont(),
+								button -> Notifier.debug(TString.wrap("Open Settings menu from ru.windcorp.crystalfarm.gui.menu.MainMenu.MainMenu()"))
+						));
+				
+				menu.addChild(
+						new Button(
+								"MainMenu.about",
+								TString.translated("menu.MainMenu.about").toFont(),
+								button -> new AboutMenu().show()
+						));
+				
+				menu.addChild(
+						new Button(
+								"MainMenu.guiTest",
+								TString.translated("TMP_1.5").toFont(),
+								button -> new TestMenu().show()
+						));
+				
+				menu.addChild(
+						new Button(
+								"MainMenu.exit",
+								TString.translated("menu.MainMenu.exit").toFont(),
+								button -> CrystalFarm.exit("User request", 0)
+						));
 			
 			centered.addChild(menu);
 			centered.setLayout(new LayoutVertical());

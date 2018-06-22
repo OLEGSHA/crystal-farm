@@ -17,7 +17,8 @@
  */
 package ru.windcorp.crystalfarm.gui.layout;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
+
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Layout;
 import ru.windcorp.crystalfarm.gui.Size;
@@ -36,13 +37,13 @@ public class LayoutVertical implements Layout {
 	}
 	
 	public LayoutVertical() {
-		this(GraphicsDesign.LINE_THICKNESS);
+		this(1);
 	}
 
 	@Override
 	public void layout(Component c) {
-		int x = c.getX() + margin,
-			y = c.getY() + margin;
+		int x = c.getX() + margin*gdGetLine(),
+			y = c.getY() + margin*gdGetLine();
 		
 		int height;
 		
@@ -50,8 +51,8 @@ public class LayoutVertical implements Layout {
 			for (Component child : c.getChildren()) {
 				
 				height = child.getPreferredSize().height;
-				child.setBounds(x, y, c.getWidth() - 2 * margin, height);
-				y += gap + height;
+				child.setBounds(x, y, c.getWidth() - 2 * margin*gdGetLine(), height);
+				y += gap*gdGetLine() + height;
 				
 			}
 		}
@@ -67,7 +68,7 @@ public class LayoutVertical implements Layout {
 				childPreferredSize = c.getChild(i).getPreferredSize();
 				
 				if (i > 0) {
-					size.height += gap;
+					size.height += gap*gdGetLine();
 				}
 				
 				size.width = Math.max(size.width, childPreferredSize.width);
@@ -75,8 +76,8 @@ public class LayoutVertical implements Layout {
 			}
 		}
 		
-		size.width += 2 * margin;
-		size.height += 2 * margin;
+		size.width += 2 * margin*gdGetLine();
+		size.height += 2 * margin*gdGetLine();
 		
 		return size;
 	}

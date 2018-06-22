@@ -17,10 +17,11 @@
  */
 package ru.windcorp.crystalfarm.graphics.notifier;
 
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
+
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.InputListener;
 import ru.windcorp.crystalfarm.graphics.Layer;
 import ru.windcorp.crystalfarm.input.Input;
@@ -30,7 +31,7 @@ public class NotifierLayer extends Layer implements InputListener {
 
 	private final Collection<Notification> notesOnScreen = new ConcurrentLinkedQueue<>();
 	
-	int nextY = GraphicsDesign.LINE_THICKNESS;
+	int nextY = gdGetLine();
 
 	public NotifierLayer() {
 		super("Notifier");
@@ -52,7 +53,7 @@ public class NotifierLayer extends Layer implements InputListener {
 
 	@Override
 	public void render() {
-		int targetY = GraphicsDesign.LINE_THICKNESS;
+		int targetY = gdGetLine();
 		for (Notification n : getNotesOnScreen()) {
 			targetY += n.render(targetY);
 		}

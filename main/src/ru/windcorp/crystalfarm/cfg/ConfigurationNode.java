@@ -59,13 +59,18 @@ public abstract class ConfigurationNode extends Describable {
 	}
 
 	public synchronized void load(Element element) throws ConfigurationSyntaxException {
-		this.element = element;
-		
-		if (element != null) {
-			updateElement(getElement());
+		try {
+			this.element = element;
+			
+			if (element != null) {
+				updateElement(getElement());
+			}
+			
+			loadImpl();
+		} catch (ConfigurationSyntaxException e) {
+			e.setSource(this);
+			throw e;
 		}
-		
-		loadImpl();
 	}
 	
 	protected abstract void loadImpl() throws ConfigurationSyntaxException;

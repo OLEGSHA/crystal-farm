@@ -15,26 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.audio;
+package ru.windcorp.crystalfarm.graphics;
 
-import ru.windcorp.crystalfarm.struct.modules.Module;
-import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
-import ru.windcorp.tge2.util.debug.Log;
+import java.util.Random;
 
-public class JobMusicInit extends ModuleJob {
+public class RandomColor extends Color {
+	
+	private static final Random RANDOM = new Random();
 
-	public JobMusicInit(Module module) {
-		super("MusicInit", "Initializes music thread", module);
-		
-		addDependency("Inbuilt:AudioInterface:AudioInterfaceInit");
-	}
-
-	@Override
-	protected void runImpl() {
-		Thread musicThread = new Thread(new Music(), "Music Thread");
-		musicThread.setDaemon(true);
-		musicThread.start();
-		Log.info("Started music");
+	public RandomColor() {
+		super(java.awt.Color.HSBtoRGB(RANDOM.nextFloat(), 1.0f, 0.75f) << Byte.SIZE | 0xFF);
 	}
 
 }

@@ -17,6 +17,9 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
+import ru.windcorp.tge2.util.NumberUtil;
+import ru.windcorp.tge2.util.StringUtil;
+
 /**
  * Represents a color in RGBA color model. The values are stored as {@code double}s.
  */
@@ -238,6 +241,44 @@ public class Color implements Cloneable {
 	@Override
 	public String toString() {
 		return r + "," + b + "," + g + "," + a;
+	}
+	
+	public String toRGBAString() {
+		return new String(NumberUtil.toFullHex(getRGBA()));
+	}
+	
+	public int getRGBA() {
+		return
+				((int) (r * 0xFF) << 3*Byte.SIZE) |
+				((int) (g * 0xFF) << 2*Byte.SIZE) |
+				((int) (b * 0xFF) << 1*Byte.SIZE) |
+				((int) (a * 0xFF) << 0*Byte.SIZE);
+	}
+	
+	public static Color parse(String declar) throws IllegalArgumentException {
+		if (declar.startsWith("0x")) {
+			try {
+				return new Color((int) (Long.parseLong(declar.substring("0x".length()), 0x10) & Integer.MAX_VALUE));
+			} catch (NumberFormatException e) {
+				throw new IllegalArgumentException("Could not parse \"" + declar + "\" as hex RGBA", e);
+			}
+		}
+		
+		String[] parts = StringUtil.split(declar, ',');
+		if (parts.length != 4) {
+			throw new IllegalArgumentException("Could not parse \"" + declar + "\" as double RGBA: incorrect value amount");
+		}
+		
+		try {
+			return new Color(
+					Double.parseDouble(parts[0].trim()),
+					Double.parseDouble(parts[1].trim()),
+					Double.parseDouble(parts[2].trim()),
+					Double.parseDouble(parts[3].trim())
+			);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Could not parse \"" + declar + "\" as double RGBA: not a double", e);
+		}
 	}
 	
 }

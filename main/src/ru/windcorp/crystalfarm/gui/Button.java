@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 import org.lwjgl.glfw.GLFW;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
 import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
@@ -29,9 +28,10 @@ import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.input.KeyInput;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 
-public class Button extends ActivatableComponent implements GraphicsDesign {
-
+public class Button extends ActivatableComponent {
+	
 	private final Label label;
 	
 	public Button(String name, FontString label, Consumer<?> action) {
@@ -78,9 +78,9 @@ public class Button extends ActivatableComponent implements GraphicsDesign {
 				getY(),
 				getWidth(),
 				getHeight(),
-				isHovered() ? FOREGROUND_COLOR_LIGHTER : FOREGROUND_COLOR,
-				isFocused() ? BORDER_COLOR_DARKER : BORDER_COLOR,
-				LINE_THICKNESS);
+				isHovered() ? gdGetForegroundAltColor() : gdGetForegroundColor(),
+				isFocused() ? gdGetBorderFocusedColor() : gdGetBorderColor(),
+				gdGetLine());
 	}
 
 }

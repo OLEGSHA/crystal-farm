@@ -17,7 +17,7 @@
  */
 package ru.windcorp.crystalfarm.gui.layout;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Layout;
 import ru.windcorp.crystalfarm.gui.Size;
@@ -35,7 +35,7 @@ public class LayoutBorderVertical implements Layout {
 	}
 	
 	public LayoutBorderVertical() {
-		this(GraphicsDesign.LINE_THICKNESS);
+		this(1);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class LayoutBorderVertical implements Layout {
 			for (Component child : c.getChildren()) {
 				if (child.getLayoutHint() == UP) {
 					childSize = child.getPreferredSize();
-					top = childSize.height + margin;
+					top = childSize.height + margin*gdGetLine();
 					child.setBounds(
 							c.getX(),
 							c.getY(),
@@ -56,7 +56,7 @@ public class LayoutBorderVertical implements Layout {
 							childSize.height);
 				} else if (child.getLayoutHint() == DOWN) {
 					childSize = child.getPreferredSize();
-					bottom = childSize.height + margin;
+					bottom = childSize.height + margin*gdGetLine();
 					child.setBounds(
 							c.getX(),
 							c.getY() + c.getHeight() - childSize.height,
@@ -90,11 +90,11 @@ public class LayoutBorderVertical implements Layout {
 				if (child.getLayoutHint() instanceof String) {
 					
 					if (child.getLayoutHint() == UP) {
-						up = Math.max(up, childSize.height + margin);
+						up = Math.max(up, childSize.height + margin*gdGetLine());
 						result.width = Math.max(result.width, childSize.width);
 						continue;
 					} else if (child.getLayoutHint() == DOWN) {
-						down = Math.max(down, childSize.height + margin);
+						down = Math.max(down, childSize.height + margin*gdGetLine());
 						result.width = Math.max(result.width, childSize.width);
 						continue;
 					}

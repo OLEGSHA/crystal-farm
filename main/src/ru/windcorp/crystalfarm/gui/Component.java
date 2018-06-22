@@ -28,7 +28,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.lwjgl.glfw.GLFW;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.gui.listener.ComponentFocusListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentHierarchyListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentInputListener;
@@ -37,7 +36,7 @@ import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.Nameable;
 
-public class Component extends Nameable implements GraphicsDesign {
+public class Component extends Nameable {
 
 	private final List<Component> children = Collections.synchronizedList(new CopyOnWriteArrayList<>());
 	private WeakReference<Component> parent = new WeakReference<>(null);

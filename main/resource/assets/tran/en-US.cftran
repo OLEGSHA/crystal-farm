@@ -6,6 +6,10 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.generic.close = Done
 	# Main menu
 		menu.MainMenu.title = Main Menu
+		menu.MainMenu.play = Play!
+		menu.MainMenu.settings = Settings
+		menu.MainMenu.about = About
+		menu.MainMenu.exit = Exit
 		menu.MainMenu.notice = %1$s version %2$s\n© %3$s %4$s\nLicensed under %5$s
 	# 'About' menu
 		menu.AboutMenu.title = About
@@ -30,18 +34,19 @@ welcome = I can now speak English just as they speak it in the US!
 		misc.debugInputListener.fps.disabled = FPS display turned off
 
 # Execution Report
-executionReport.notification.onProblem.debug = Debug notification reported:\nID: %1$s\nDescription: %2$s
-executionReport.notification.onProblem.notification = Notification:\nID: %1$s\nDescription: %2$s
-executionReport.notification.onProblem.warning = Warning!\nID: %1$s\nDescription: %2$s
-executionReport.notification.onProblem.error = An error has been reported!\nID: %1$s\nDescription: %2$s
-executionReport.notification.onProblem.critical_error = null
-executionReport.notification.onProblem.uncaught = A problem has been reported!\nID: %1$s\nDescription: %2$s
-executionReport.notification.onDamagedResource = A damaged resource reported!\nResource: %1$s\nDescription: %2$s
+	executionReport.notification.onProblem.debug = Debug notification reported:\nID: %1$s\nDescription: %2$s
+	executionReport.notification.onProblem.notification = Notification:\nID: %1$s\nDescription: %2$s
+	executionReport.notification.onProblem.warning = Warning!\nID: %1$s\nDescription: %2$s
+	executionReport.notification.onProblem.error = An error has been reported!\nID: %1$s\nDescription: %2$s
+	executionReport.notification.onProblem.critical_error = null
+	executionReport.notification.onProblem.uncaught = A problem has been reported!\nID: %1$s\nDescription: %2$s
+	executionReport.notification.onDamagedResource = A damaged resource reported!\nResource: %1$s\nDescription: %2$s
+
+# Failure screen
+	failure.title = An error has occurred
+	failure.subtitle.test = No errors have occurred, really. This is just a test.
+	failure.text.test = Could not load world from %s because I haven't written the code yet
 
 # Test
-TMP_1.1 = Play!
-TMP_1.2 = Settings
-TMP_1.3 = About
-TMP_1.4 = Exit
 TMP_1.5 = Test GUI
 TMP_notification = Notifications work!\nHooray!

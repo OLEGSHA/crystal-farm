@@ -17,18 +17,123 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
-public interface GraphicsDesign {
+import ru.windcorp.crystalfarm.cfg.Section;
+import ru.windcorp.crystalfarm.cfg.Setting;
+import ru.windcorp.crystalfarm.cfg.SettingInt;
 
-	public static final Color BACKGROUND_COLOR = Color.WHITE;
-	public static final Color BACKGROUND_COLOR_DARKER = Color.LIGHT_GRAY;
-	public static final Color FONT_COLOR = Color.WHITE;
-	public static final Color FOREGROUND_COLOR = new Color(0xBF_8D_6E_FF);
-	public static final Color FOREGROUND_COLOR_LIGHTER = FOREGROUND_COLOR.clone().multiply(1.25);
-	public static final Color BORDER_COLOR = new Color(0x7F_5D_49_FF);
-	public static final Color BORDER_COLOR_DARKER = BORDER_COLOR.clone().multiply(0.5);
-	public static final Color BORDER_COLOR_LIGHTER = BORDER_COLOR.clone().multiply(1.25);
-	public static final Color COVER_COLOR = new Color(0xFF_FF_FF_88);
+public class GraphicsDesign {
 	
-	public static final int LINE_THICKNESS = 5;
+	public static final Setting<Color> SETTING_BACKGROUND_COLOR = new Setting<Color>(
+			"Background", "Background color", Color.class,
+			Color.WHITE);
+	
+	public static final Setting<Color> SETTING_BACKGROUND_ALT_COLOR = new Setting<Color>(
+			"BackgroundAlt", "Alternative background color", Color.class,
+			gdDarker(SETTING_BACKGROUND_COLOR.getDefaultValue()));
+	
+	public static final Setting<Color> SETTING_FOREGROUND_COLOR = new Setting<Color>(
+			"Foreground", "Foreground color", Color.class,
+			new RandomColor());
+	
+	public static final Setting<Color> SETTING_FOREGROUND_ALT_COLOR = new Setting<Color>(
+			"ForegroundAlt", "Alternative foreground color", Color.class,
+			gdLighter(SETTING_FOREGROUND_COLOR.getDefaultValue()));
+	
+	public static final Setting<Color> SETTING_FONT_COLOR = new Setting<Color>(
+			"Font", "Font color", Color.class,
+			Color.WHITE);
+	
+	public static final Setting<Color> SETTING_COVER_COLOR = new Setting<Color>(
+			"Cover", "Cover color", Color.class,
+			new Color(0xFF_FF_FF_88));
+	
+	public static final Setting<Color> SETTING_BORDER_COLOR = new Setting<Color>(
+			"Border", "Border color", Color.class,
+			gdDarker(SETTING_FOREGROUND_COLOR.getDefaultValue()));
+	
+	public static final Setting<Color> SETTING_BORDER_FOCUSED_COLOR = new Setting<Color>(
+			"BorderFocused", "Focused border color", Color.class,
+			SETTING_BORDER_COLOR.getDefaultValue().clone().multiply(0.5));
+	
+	public static final Setting<Color> SETTING_BORDER_HOVERED_COLOR = new Setting<Color>(
+			"BorderHovered", "Hovered border color", Color.class,
+			gdLighter(SETTING_BORDER_COLOR.getDefaultValue()));
+	
+	public static final SettingInt SETTING_LINE = new SettingInt(
+			"Line", "Line thickness, in pixels",
+			5, 20, 1, 1);
+	
+	static {
+		SETTING_LINE.addListener(listener -> GraphicsInterface.invalidateEverything());
+	}
+	
+	static final double DARKER_MULTIPLIER = 0.75;
+	static final double LIGHTER_MULTIPLIER = 1.25;
+	
+	static Section registerConfig() {
+		Section section = new Section("Design", "Graphics design configuration");
+		
+		section.add(
+				SETTING_BACKGROUND_COLOR,
+				SETTING_BACKGROUND_ALT_COLOR,
+				SETTING_FOREGROUND_COLOR,
+				SETTING_FOREGROUND_ALT_COLOR,
+				SETTING_BORDER_COLOR,
+				SETTING_BORDER_FOCUSED_COLOR,
+				SETTING_BORDER_HOVERED_COLOR,
+				SETTING_FONT_COLOR,
+				SETTING_COVER_COLOR,
+				SETTING_LINE);
+		
+		return section;
+	}
+	
+	public static Color gdGetBackgroundColor() {
+		return SETTING_BACKGROUND_COLOR.get();
+	}
+	
+	public static Color gdGetBackgroundAltColor() {
+		return SETTING_BACKGROUND_ALT_COLOR.get();
+	}
+	
+	public static Color gdGetForegroundColor() {
+		return SETTING_FOREGROUND_COLOR.get();
+	}
+	
+	public static Color gdGetForegroundAltColor() {
+		return SETTING_FOREGROUND_ALT_COLOR.get();
+	}
+	
+	public static Color gdGetFontColor() {
+		return SETTING_FONT_COLOR.get();
+	}
+	
+	public static Color gdGetCoverColor() {
+		return SETTING_COVER_COLOR.get();
+	}
+	
+	public static Color gdGetBorderColor() {
+		return SETTING_BORDER_COLOR.get();
+	}
+	
+	public static Color gdGetBorderFocusedColor() {
+		return SETTING_BORDER_FOCUSED_COLOR.get();
+	}
+	
+	public static Color gdGetBorderHoveredColor() {
+		return SETTING_BORDER_HOVERED_COLOR.get();
+	}
+	
+	public static int gdGetLine() {
+		return SETTING_LINE.get();
+	}
+	
+	public static Color gdDarker(Color src) {
+		return src.clone().multiply(DARKER_MULTIPLIER);
+	}
+	
+	public static Color gdLighter(Color src) {
+		return src.clone().multiply(LIGHTER_MULTIPLIER);
+	}
 	
 }

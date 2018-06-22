@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.graphics;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,11 +40,9 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 	private static final int BAR_MARGIN_X = 100;
 	private static final int BAR_MARGIN_Y = 20;
 	private static final int BAR_HEIGHT = 20;
-	private static final int BAR_THICKNESS = 5;
+	private static final int BAR_THICKNESS = gdGetLine();
 	
 	private static final int TABLE_MARGIN_X = 50;
-	
-	private static final Color MAIN_COLOR = Color.fromHsba((float) Math.random(), 1.0f, 0.75f, 0xFF);//new Color(0xBF4C00FF);
 	
 	private final SimpleTexture logo = SimpleTexture.get("load/logo");
 	private final SimpleTexture iconThreadLoadWork = SimpleTexture.get("mascot/work");
@@ -86,7 +85,7 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 	}
 
 	private void renderBackground() {
-		fillRectangle(0, 0, getWindowWidth(), getWindowHeight(), GraphicsDesign.BACKGROUND_COLOR);
+		fillRectangle(0, 0, getWindowWidth(), getWindowHeight(), gdGetBackgroundColor());
 	}
 
 	private void renderLogo() {
@@ -106,7 +105,7 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 		font.render(chars,
 				(getWindowWidth() - font.getLength(chars, true)) / 2,
 				(getWindowHeight()/2 + BAR_MARGIN_Y) - font.getHeight(),
-				true, FontStyle.PLAIN, MAIN_COLOR);
+				true, FontStyle.PLAIN, gdGetForegroundColor());
 	}
 
 	private void renderBar(int left, int total) {
@@ -115,7 +114,7 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 				getWindowHeight()/2 + BAR_MARGIN_Y,
 				getWindowWidth() - BAR_MARGIN_X*2,
 				BAR_HEIGHT,
-				MAIN_COLOR);
+				gdGetForegroundColor());
 		
 		float coeff = left / (float) total;
 		fillRectangle(
@@ -123,7 +122,7 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 				getWindowHeight()/2 + BAR_MARGIN_Y + BAR_THICKNESS,
 				(int) ((getWindowWidth() - BAR_MARGIN_X*2 - 2*BAR_THICKNESS) * coeff),
 				BAR_HEIGHT - 2*BAR_THICKNESS,
-				Color.WHITE);
+				gdGetBackgroundColor());
 		
 	}
 
@@ -135,18 +134,17 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 				drawTexture(TABLE_MARGIN_X, y,
 						job == null ? iconThreadLoadSleep : iconThreadLoadWork,
 								0, 0,
-								Color.WHITE,
-								Direction.UP);
+								null, Direction.UP);
 				
 				if (font != null) {
 					font.render(job == null ? "Idling" : job.getName(),
 							TABLE_MARGIN_X + iconThreadLoadSleep.getWidth(), y,
 							true, FontStyle.PLAIN,
-							MAIN_COLOR);
+							gdGetForegroundColor());
 					font.render(job == null ? "Waiting for available jobs" : job.getDescription(),
 							TABLE_MARGIN_X*2 +  + iconThreadLoadSleep.getWidth(), y + font.getHeight(),
 							false, FontStyle.PLAIN,
-							MAIN_COLOR);
+							gdGetForegroundColor());
 				}
 	
 				y += maxThreadHeight;

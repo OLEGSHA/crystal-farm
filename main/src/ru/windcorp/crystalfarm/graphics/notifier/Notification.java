@@ -143,8 +143,8 @@ public class Notification {
 	private void layout() {
 		Size textSize = getLabel().getBounds();
 		
-		width = 5*LINE_THICKNESS + getType().getIcon().getWidth() + textSize.width;
-		height = 4*LINE_THICKNESS + Math.max(getType().getIcon().getHeight(), textSize.height);
+		width = 5*gdGetLine() + getType().getIcon().getWidth() + textSize.width;
+		height = 4*gdGetLine() + Math.max(getType().getIcon().getHeight(), textSize.height);
 	}
 	
 	public Type getType() {
@@ -193,9 +193,9 @@ public class Notification {
 	}
 	
 	public int render(int targetY) {
-		x = Math.min(LINE_THICKNESS, (int) (x + vx * frame()));
+		x = Math.min(gdGetLine(), (int) (x + vx * frame()));
 		
-		if (x == LINE_THICKNESS) {
+		if (x == gdGetLine()) {
 			if (!soundPlayed) {
 				AudioInterface.play(getType().getSound(), ModuleNotifier.SETTING_ALERT_GAIN.get());
 				soundPlayed = true;
@@ -244,18 +244,18 @@ public class Notification {
 		fillRectangle(x, y, width, height,
 				getType().getColor(),
 				getType().getBorderColor(),
-				LINE_THICKNESS);
+				gdGetLine());
 		
 		if (hasCursor()) {
-			fillRectangle(x, y, width, height, COVER_COLOR);
+			fillRectangle(x, y, width, height, gdGetCoverColor());
 		}
 		
 		drawTexture(
-				x + 2*LINE_THICKNESS,
-				y + 2*LINE_THICKNESS,
+				x + 2*gdGetLine(),
+				y + 2*gdGetLine(),
 				getType().getIcon());
 		
-		getLabel().render(x + 3*LINE_THICKNESS + getType().getIcon().getWidth(), y + 2*LINE_THICKNESS);
+		getLabel().render(x + 3*gdGetLine() + getType().getIcon().getWidth(), y + 2*gdGetLine());
 		
 		return advance;
 	}

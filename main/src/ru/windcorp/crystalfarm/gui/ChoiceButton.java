@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.gui;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.fillRectangle;
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -93,9 +94,9 @@ public class ChoiceButton<T> extends ArrowedComponent {
 				getY(),
 				getWidth(),
 				getHeight(),
-				isHovered() ? FOREGROUND_COLOR_LIGHTER : FOREGROUND_COLOR,
-				isFocused() ? BORDER_COLOR_DARKER : BORDER_COLOR,
-				LINE_THICKNESS);
+				isHovered() ? gdGetForegroundAltColor() : gdGetForegroundColor(),
+				isFocused() ? gdGetBorderFocusedColor() : gdGetBorderColor(),
+				gdGetLine());
 	}
 	
 }

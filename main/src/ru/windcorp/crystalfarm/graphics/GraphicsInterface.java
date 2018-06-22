@@ -35,6 +35,8 @@ import org.lwjgl.opengl.GLCapabilities;
 
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
+import ru.windcorp.crystalfarm.gui.Component;
+import ru.windcorp.crystalfarm.gui.GuiLayer;
 import ru.windcorp.crystalfarm.input.CursorMoveInput;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
@@ -129,6 +131,20 @@ public class GraphicsInterface {
 	}
 	
 	/**
+	 * Removes all normal layers from the layer stack.
+	 * @see {@link #getLayers()}
+	 */
+	public static void removeAllNormalLayers() {
+		synchronized (LAYERS) {
+			for (int i = 0; i < firstStickyLayer; ++i) {
+				getLayers().remove(0);
+			}
+			
+			firstStickyLayer = 0;
+		}
+	}
+	
+	/**
 	 * Gets the graphics layer stack.
 	 * <p>
 	 * Graphics render is organized in {@link Layer}s. Each layer is responsible
@@ -145,6 +161,21 @@ public class GraphicsInterface {
 	 */
 	public static List<Layer> getLayers() {
 		return LAYERS;
+	}
+	
+	/**
+	 * Invalidates all root components of all {@link GuiLayer}s present in the layer stack.
+	 * @see {@link #getLayers()}
+	 */
+	public static void invalidateEverything() {
+		LAYERS.forEach(layer -> {
+			if (layer instanceof GuiLayer) {
+				Component root = ((GuiLayer) layer).getRoot();
+				if (root != null) {
+					root.invalidate();
+				}
+			}
+		});
 	}
 	
 	/*

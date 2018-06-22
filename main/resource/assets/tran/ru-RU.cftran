@@ -6,6 +6,10 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		menu.generic.close = Готово
 	# Главное меню
 		menu.MainMenu.title = Главное меню
+		menu.MainMenu.play = Играть!
+		menu.MainMenu.settings = Настройки
+		menu.MainMenu.about = Об игре
+		menu.MainMenu.exit = Выход
 		menu.MainMenu.notice = %1$s версия %2$s\n© %3$s %4$s\nЛицензия %5$s
 	# Меню "Об игре"
 		menu.AboutMenu.title = Об игре
@@ -30,18 +34,19 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		misc.debugInputListener.fps.disabled = Счётчик FPS выкл.
 
 # Execution Report
-executionReport.notification.onProblem.debug = Отладочное уведомление:\nID: %1$s\nОписание: %2$s
-executionReport.notification.onProblem.notification = Уведомление:\nID: %1$s\nОписание: %2$s
-executionReport.notification.onProblem.warning = Внимание!\nID: %1$s\nОписание: %2$s
-executionReport.notification.onProblem.error = Обнаружена ошибка!\nID: %1$s\nОписание: %2$s
-executionReport.notification.onProblem.critical_error = null
-executionReport.notification.onProblem.uncaught = Обнаружена проблема!\nID: %1$s\nОписание: %2$s
-executionReport.notification.onDamagedResource = Обнаружен повреждённый ресурс!\Ресурс: %1$s\Описание: %2$s
+	executionReport.notification.onProblem.debug = Отладочное уведомление:\nID: %1$s\nОписание: %2$s
+	executionReport.notification.onProblem.notification = Уведомление:\nID: %1$s\nОписание: %2$s
+	executionReport.notification.onProblem.warning = Внимание!\nID: %1$s\nОписание: %2$s
+	executionReport.notification.onProblem.error = Обнаружена ошибка!\nID: %1$s\nОписание: %2$s
+	executionReport.notification.onProblem.critical_error = null
+	executionReport.notification.onProblem.uncaught = Обнаружена проблема!\nID: %1$s\nОписание: %2$s
+	executionReport.notification.onDamagedResource = Обнаружен повреждённый ресурс!\Ресурс: %1$s\Описание: %2$s
+	
+# Failure screen
+	failure.title = Произошла ошибка
+	failure.subtitle.test = Ну, не совсем. Ошибок не было. Это просто тест.
+	failure.text.test = Не удалось загрузить мир из %s потому что я ещё не написал для этого код
 
 # Тест
-TMP_1.1 = Играть!
-TMP_1.2 = Настройки
-TMP_1.3 = Об игре
-TMP_1.4 = Выход
 TMP_1.5 = Тест GUI
 TMP_notification = Уведомления работают!\nУра!

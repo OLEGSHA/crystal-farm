@@ -24,11 +24,13 @@ import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Label;
 import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
 
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
+
 public class Menu extends Component {
 
 	public Menu(String name, FontString title) {
 		super(name);
-		setLayout(new LayoutVertical(3*LINE_THICKNESS));
+		setLayout(new LayoutVertical(3));
 		addChild(new Label(name + ".label", title.setBold(true).setStyle(FontStyle.ENGRAVED)));
 	}
 	
@@ -39,9 +41,9 @@ public class Menu extends Component {
 				getY(),
 				getWidth(),
 				getHeight(),
-				BACKGROUND_COLOR,
-				BACKGROUND_COLOR_DARKER,
-				LINE_THICKNESS);
+				gdGetBackgroundColor(),
+				gdGetBackgroundAltColor(),
+				gdGetLine());
 	}
 
 }
