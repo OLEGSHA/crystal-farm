@@ -82,14 +82,13 @@ public class RenderThread implements Runnable {
 	}
 
 	private void doRender() {
-		drawFps();
-		
 		synchronized (GraphicsInterface.getLayers()) {
 			for (Layer l : GraphicsInterface.getLayers()) {
 				l.render();
 			}
 		}
 		
+		drawFps();
 	}
 
 	private void drawFps() {

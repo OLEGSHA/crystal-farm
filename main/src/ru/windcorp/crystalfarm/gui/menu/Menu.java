@@ -31,7 +31,7 @@ public class Menu extends Component {
 	public Menu(String name, FontString title) {
 		super(name);
 		setLayout(new LayoutVertical(3));
-		addChild(new Label(name + ".label", title.setBold(true).setStyle(FontStyle.ENGRAVED)));
+		addChild(new Label(name + ".label", title.setBold(true).setStyle(FontStyle.ENGRAVED)).center());
 	}
 	
 	@Override

@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import org.lwjgl.glfw.GLFW;
 
 import ru.windcorp.crystalfarm.graphics.fonts.FontString;
-import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
+import ru.windcorp.crystalfarm.gui.layout.LayoutAlign;
 import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.input.KeyInput;
@@ -37,7 +37,7 @@ public class Button extends ActivatableComponent {
 	public Button(String name, FontString label, Consumer<?> action) {
 		super(name, action);
 		setFocusable(true);
-		setLayout(new LayoutCenter());
+		setLayout(new LayoutAlign());
 		
 		this.label = new Label(name + ".label", label);
 		

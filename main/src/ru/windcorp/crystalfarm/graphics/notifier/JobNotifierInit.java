@@ -18,10 +18,8 @@
 package ru.windcorp.crystalfarm.graphics.notifier;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
-import ru.windcorp.crystalfarm.graphics.notifier.Notification.Type;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
-import ru.windcorp.crystalfarm.translation.TString;
 
 public class JobNotifierInit extends ModuleJob {
 
@@ -38,11 +36,6 @@ public class JobNotifierInit extends ModuleJob {
 		Notifier.setLayer(layer);
 		GraphicsInterface.addStickyLayer(layer);
 		Notifier.postQueuedNotifications();
-		showNote(null);
-	}
-	
-	private static void showNote(Object arg) {
-		Notifier.postNotification(new Notification(Type.INFO_POSITIVE, true, JobNotifierInit::showNote, TString.translated("TMP_notification")));
 	}
 
 }

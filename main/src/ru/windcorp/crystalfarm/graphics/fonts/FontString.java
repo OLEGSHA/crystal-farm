@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.function.Consumer;
 
 import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.gui.Label;
 import ru.windcorp.crystalfarm.gui.Size;
 import ru.windcorp.crystalfarm.translation.TString;
 
@@ -164,6 +165,10 @@ public class FontString implements Consumer<TString> {
 		if (changeListeners != null) {
 			changeListeners.forEach(listener -> listener.accept(this));
 		}
+	}
+	
+	public Label toLabel(String name) {
+		return new Label(name, this);
 	}
 
 }

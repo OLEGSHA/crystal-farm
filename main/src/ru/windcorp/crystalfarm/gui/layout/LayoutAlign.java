@@ -22,15 +22,22 @@ import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Layout;
 import ru.windcorp.crystalfarm.gui.Size;
 
-public class LayoutCenter implements Layout {
+public class LayoutAlign implements Layout {
 
 	private final int margin;
+	private double alignX, alignY;
 	
-	public LayoutCenter(int margin) {
+	public LayoutAlign(double alignX, double alignY, int margin) {
+		this.alignX = alignX;
+		this.alignY = alignY;
 		this.margin = margin;
 	}
 	
-	public LayoutCenter() {
+	public LayoutAlign(int margin) {
+		this(0.5, 0.5, margin);
+	}
+	
+	public LayoutAlign() {
 		this(1);
 	}
 
@@ -41,8 +48,8 @@ public class LayoutCenter implements Layout {
 			Size size = child.getPreferredSize();
 			
 			child.setBounds(
-					c.getX() + (c.getWidth() - size.width) / 2,
-					c.getY() + (c.getHeight() - size.height) / 2,
+					c.getX() + (int) ((c.getWidth() - size.width) * alignX),
+					c.getY() + (int) ((c.getHeight() - size.height) * alignY),
 					size);
 			
 		});

@@ -21,11 +21,14 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.test.switchButton.text = "State: "
 		menu.test.sliderInt = Integer Slider
 		menu.test.sliderFloat = Floating-point Number Slider
+		menu.test.gain = Master volume
+		menu.test.fullscreen = Fullscreen
 
 # Misc
 	# Generic
 		misc.gen.enabled = Enabled
 		misc.gen.disabled = Disabled
+		misc.gen.reset = Reset
 	# DebugInputListener
 		misc.debugInputListener.shortcuts.enabled = Debug shortcuts enabled
 		misc.debugInputListener.shortcuts.disabled = Debug shortcuts disabled

@@ -30,6 +30,8 @@ public class TestMenu extends MenuLayer {
 	public TestMenu() {
 		super("TestMenu", true);
 		
+		Table table = new Table(getName() + ".table", 3);
+		
 		Button button = new Button("ExampleButton", TString.translated("menu.test.button").toFont(),
 				x -> Notifier.positive(TString.translated("menu.test.button").append("!")));
 		ChoiceButton<String> choiceButton = new ChoiceButton<String>("ExampleChoiceButton",
@@ -49,10 +51,20 @@ public class TestMenu extends MenuLayer {
 				0.0005f, 0.001f, 0.00001f, 0.0008f,
 				x -> Notifier.positive(TString.translated("menu.test.sliderFloat").append("!")));
 		
-		add(button, choiceButton, switchButton, sliderInt, sliderFloat,
-				GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),
-				GuiSettingEditors.createEditor(ModuleGraphicsInterface.WINDOW_FULLSCREEN));
+		table.addRow("menu.test.button", button);
+		table.addRow("menu.test.choiceButton", choiceButton);
+		table.addRow("menu.test.switchButton.text", switchButton);
+		table.addRow("menu.test.sliderInt", sliderInt);
+		table.addRow("menu.test.sliderFloat", sliderFloat);
 		
+		table.addRow("menu.test.gain",
+				GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),
+				GuiSettingEditors.createResetter(ModuleAudioInterface.GAIN));
+		table.addRow("menu.test.fullscreen",
+				GuiSettingEditors.createEditor(ModuleGraphicsInterface.WINDOW_FULLSCREEN),
+				GuiSettingEditors.createResetter(ModuleGraphicsInterface.WINDOW_FULLSCREEN));
+		
+		add(table);
 		button.takeFocus();
 	}
 

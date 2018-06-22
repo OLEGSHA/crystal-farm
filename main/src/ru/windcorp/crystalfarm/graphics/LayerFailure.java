@@ -17,6 +17,9 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
+import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.gdGetLine;
+import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.fillRectangle;
+
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Component;
@@ -44,7 +47,7 @@ public class LayerFailure extends GuiLayer {
 						getY(),
 						getWidth(),
 						getHeight(),
-						Color.RED);
+						Color.BLUE);
 			}
 		};
 		root.setLayout(new LayoutBorderVertical());
@@ -59,7 +62,21 @@ public class LayerFailure extends GuiLayer {
 		
 		root.addChild(centered.center().setLayoutHint(LayoutBorderVertical.CENTER));
 		root.addChild(new Button(getName() + ".close", TString.translated("menu.generic.close").toFont(),
-				x -> GraphicsInterface.removeLayer(this)).center().setLayoutHint(LayoutBorderVertical.DOWN));
+				x -> GraphicsInterface.removeLayer(this)) {
+			
+			@Override
+			protected void renderSelf() {
+				fillRectangle(
+						getX(),
+						getY(),
+						getWidth(),
+						getHeight(),
+						Color.BLUE,
+						Color.WHITE,
+						gdGetLine());
+			}
+			
+		}.center().setLayoutHint(LayoutBorderVertical.DOWN));
 		
 		setRoot(root);
 	}

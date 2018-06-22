@@ -35,8 +35,8 @@ import ru.windcorp.tge2.util.unixarg.UnixArgumentInvalidSyntaxException;
 
 public class ModuleGraphicsInterface extends Module {
 	
-	public static final int MIN_WIDTH = 1280;
-	public static final int MIN_HEIGHT = 720;
+	public static final int MIN_WIDTH = 800;
+	public static final int MIN_HEIGHT = 600;
 	
 	static final SettingInt WINDOW_WIDTH = new SettingInt(
 			"WindowWidth", "Width of the game window at startup. Has no effect in fullscreen mode",

@@ -43,6 +43,10 @@ public class GraphicsDesign {
 			"Font", "Font color", Color.class,
 			Color.WHITE);
 	
+	public static final Setting<Color> SETTING_FONT_ALT_COLOR = new Setting<Color>(
+			"FontAlt", "Alternative font color", Color.class,
+			Color.BLACK);
+	
 	public static final Setting<Color> SETTING_COVER_COLOR = new Setting<Color>(
 			"Cover", "Cover color", Color.class,
 			new Color(0xFF_FF_FF_88));
@@ -82,6 +86,7 @@ public class GraphicsDesign {
 				SETTING_BORDER_FOCUSED_COLOR,
 				SETTING_BORDER_HOVERED_COLOR,
 				SETTING_FONT_COLOR,
+				SETTING_FONT_ALT_COLOR,
 				SETTING_COVER_COLOR,
 				SETTING_LINE);
 		
@@ -106,6 +111,10 @@ public class GraphicsDesign {
 	
 	public static Color gdGetFontColor() {
 		return SETTING_FONT_COLOR.get();
+	}
+	
+	public static Color gdGetFontAltColor() {
+		return SETTING_FONT_ALT_COLOR.get();
 	}
 	
 	public static Color gdGetCoverColor() {

@@ -635,10 +635,18 @@ public class Component extends Nameable {
 	
 	/**
 	 * Returns a component that displays this component in its center.
-	 * @return a {@link Centerer} initialized with this component
+	 * @return a {@link Aligner} initialized to center this component
 	 */
 	public Component center() {
-		return new Centerer(this);
+		return new Aligner(this);
+	}
+	
+	/**
+	 * Returns a component that aligns this component.
+	 * @return a {@link Aligner} initialized with this component
+	 */
+	public Component align(double x, double y) {
+		return new Aligner(this, x, y);
 	}
 
 }

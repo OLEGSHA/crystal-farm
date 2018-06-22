@@ -21,11 +21,14 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		menu.test.switchButton.text = "Состояние: "
 		menu.test.sliderInt = Целочисленный ползунок
 		menu.test.sliderFloat = Ползунок с плавающей запятой
+		menu.test.gain = Общая громкость
+		menu.test.fullscreen = Полноэкранный режим
 		
 # Разное
 	# Generic
 		misc.gen.enabled = Вкл.
 		misc.gen.disabled = Выкл.
+		misc.gen.reset = Сброс
 	# DebugInputListener
 		misc.debugInputListener.shortcuts.enabled = Отладочные комбинации вкл.
 		misc.debugInputListener.shortcuts.disabled = Отладочные комбинации выкл.

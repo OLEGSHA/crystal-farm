@@ -78,6 +78,41 @@ public class GuiSettingEditors {
 		setting.addListener(x -> button.setStateSilently(setting.get()));
 		return button;
 	}
+	
+	public static Button createResetter(ConfigurationNode setting) {
+		if (setting instanceof SettingInt) {
+			return createIntResetter((SettingInt) setting);
+		}
+		if (setting instanceof SettingFloat) {
+			return createFloatResetter((SettingFloat) setting);
+		}
+		if (setting instanceof SettingBoolean) {
+			return createBooleanResetter((SettingBoolean) setting);
+		}
+		
+		return null;
+	}
+
+	private static Button createIntResetter(SettingInt setting) {
+		return new Button(
+				setting.getName() + ".resetter",
+				TString.translated("misc.gen.reset").toFont(),
+				x -> setting.set(setting.getDefaultValue()));
+	}
+
+	private static Button createFloatResetter(SettingFloat setting) {
+		return new Button(
+				setting.getName() + ".resetter",
+				TString.translated("misc.gen.reset").toFont(),
+				x -> setting.set(setting.getDefaultValue()));
+	}
+
+	private static Button createBooleanResetter(SettingBoolean setting) {
+		return new Button(
+				setting.getName() + ".resetter",
+				TString.translated("misc.gen.reset").toFont(),
+				x -> setting.set(setting.getDefaultValue()));
+	}
 
 	public static <T> Component createLimitedChoiceEditor(Setting<T> setting, List<T> choices) {
 		ChoiceButton<T> button = new ChoiceButton<T>(

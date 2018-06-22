@@ -17,15 +17,19 @@
  */
 package ru.windcorp.crystalfarm.gui;
 
-import ru.windcorp.crystalfarm.gui.layout.LayoutCenter;
+import ru.windcorp.crystalfarm.gui.layout.LayoutAlign;
 
-public class Centerer extends Component {
+public class Aligner extends Component {
 
-	public Centerer(Component target) {
+	public Aligner(Component target, double alignX, double alignY) {
 		super(target.getName() + "Centerer");
 		
-		setLayout(new LayoutCenter());
+		setLayout(new LayoutAlign(alignX, alignY, 1));
 		addChild(target);
+	}
+	
+	public Aligner(Component target) {
+		this(target, 0.5, 0.5);
 	}
 
 }

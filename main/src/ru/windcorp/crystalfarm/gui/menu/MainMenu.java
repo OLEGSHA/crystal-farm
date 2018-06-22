@@ -21,8 +21,8 @@ import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
+import ru.windcorp.crystalfarm.gui.Aligner;
 import ru.windcorp.crystalfarm.gui.Button;
-import ru.windcorp.crystalfarm.gui.Centerer;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.GuiLayer;
 import ru.windcorp.crystalfarm.gui.GuiSettingEditors;
@@ -85,9 +85,9 @@ public class MainMenu extends GuiLayer {
 						));
 			
 			centered.addChild(menu);
-			centered.setLayout(new LayoutVertical());
+			centered.setLayout(new LayoutVertical(3));
 		
-		root.addChild(new Centerer(centered) {
+		root.addChild(new Aligner(centered) {
 			@Override
 			protected synchronized void layoutSelf() {
 				setBounds(
@@ -100,7 +100,7 @@ public class MainMenu extends GuiLayer {
 			}
 		});
 		
-		root.addChild(new Centerer(GuiSettingEditors.createLimitedChoiceEditor(ModuleTranslation.LANGUAGE, ModuleTranslation.getAvailableLanguages())) {
+		root.addChild(new Aligner(GuiSettingEditors.createLimitedChoiceEditor(ModuleTranslation.LANGUAGE, ModuleTranslation.getAvailableLanguages())) {
 			@Override
 			protected synchronized void layoutSelf() {
 				Size preferred = getPreferredSize();
