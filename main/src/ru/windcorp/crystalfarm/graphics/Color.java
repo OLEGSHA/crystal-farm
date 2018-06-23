@@ -80,6 +80,14 @@ public class Color implements Cloneable {
 	}
 	
 	/**
+	 * Creates a new color initialized with the RGBA channels of the given color.
+	 * @param the color to copy
+	 */
+	public Color(Color src) {
+		this(src.r, src.g, src.b, src.a);
+	}
+	
+	/**
 	 * Creates a new color with the given RGBA integer.
 	 * The 32-bit integer must have the following layout:
 	 * {@code 0xRRGGBBAA}.
@@ -139,6 +147,17 @@ public class Color implements Cloneable {
 		r *= coef;
 		g *= coef;
 		b *= coef;
+		return this;
+	}
+	
+	/**
+	 * Sets the alpha channel to the given value.
+	 * @return this color
+	 * @see {@link #save()} - to save current color state so it can be reverted to later
+	 * @see {@link #clone()} - to create a copy of this color independent of this color
+	 */
+	public Color setAlpha(double a) {
+		this.a = a;
 		return this;
 	}
 	
@@ -258,7 +277,7 @@ public class Color implements Cloneable {
 	public static Color parse(String declar) throws IllegalArgumentException {
 		if (declar.startsWith("0x")) {
 			try {
-				return new Color((int) (Long.parseLong(declar.substring("0x".length()), 0x10) & Integer.MAX_VALUE));
+				return new Color(Integer.parseUnsignedInt(declar.substring("0x".length()), 0x10));
 			} catch (NumberFormatException e) {
 				throw new IllegalArgumentException("Could not parse \"" + declar + "\" as hex RGBA", e);
 			}

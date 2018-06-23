@@ -20,6 +20,8 @@ package ru.windcorp.crystalfarm.gui.menu;
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
+import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Aligner;
 import ru.windcorp.crystalfarm.gui.Button;
@@ -136,6 +138,16 @@ public class MainMenu extends GuiLayer {
 		
 		setRoot(root);
 		
+	}
+	
+	@Override
+	public void render() {
+		GraphicsInterface.fillRectangle(
+				0, 0,
+				GraphicsInterface.getWindowWidth(),
+				GraphicsInterface.getWindowHeight(),
+				GraphicsDesign.gdGetBackgroundColor());
+		super.render();
 	}
 
 }

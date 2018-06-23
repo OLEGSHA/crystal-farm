@@ -22,7 +22,7 @@ import java.nio.charset.Charset;
 
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
-import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Image;
 import ru.windcorp.crystalfarm.gui.Label;
@@ -43,7 +43,7 @@ public class AboutMenu extends MenuLayer {
 				StringUtil.iteratorToString(CrystalFarm.DEVELOPERS.iterator(), ", "),
 				CrystalFarm.YEARS,
 				CrystalFarm.LICENSE)
-				.toFont().setColor(Color.BLACK).setBold(true)));
+				.toFont().setColor(GraphicsDesign.gdGetFontAltColor()).setBold(true)));
 		
 		try {
 			add(new Label(getName() + ".mcleod",
@@ -53,7 +53,7 @@ public class AboutMenu extends MenuLayer {
 									Charset.forName("UTF-8"),
 									1024)
 							)
-					.toFont().setColor(Color.BLACK)));
+					.toFont().setColor(GraphicsDesign.gdGetFontAltColor())));
 		} catch (IOException e) {
 			ExecutionReport.reportError(e,
 					ExecutionReport.rscCorrupt(CrystalFarmResourceManagers.RM_ASSETS.getCanonicalPath("audio/music/mcleodcredit.txt"),

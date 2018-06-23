@@ -27,7 +27,7 @@ public class Setting<T> extends ConfigurationNode {
 	
 	private final Class<T> type;
 	
-	private T defaultValue;
+	private final T defaultValue;
 	private T value;
 	
 	private final SettingReader<T> reader;
@@ -66,10 +66,6 @@ public class Setting<T> extends ConfigurationNode {
 
 	public synchronized T getDefaultValue() {
 		return defaultValue;
-	}
-
-	public synchronized void setDefaultValue(T defaultValue) {
-		this.defaultValue = defaultValue;
 	}
 
 	public synchronized T get() {

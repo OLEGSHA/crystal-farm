@@ -69,6 +69,7 @@ public class JobLoadConfig extends ModuleJob {
 		}
 		
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 		
 		defaultTransformer = transformer;
 		

@@ -72,7 +72,7 @@ public class ModuleGraphicsInterface extends Module {
 		addConfig(SHOW_FPS);
 		addConfig(VSYNC);
 		
-		//addConfig(GraphicsDesign.registerConfig());
+		addConfig(GraphicsDesign.registerConfig());
 		
 		addArgument(new UnixArgument<Void>(
 				"debugTextureLoading", null,

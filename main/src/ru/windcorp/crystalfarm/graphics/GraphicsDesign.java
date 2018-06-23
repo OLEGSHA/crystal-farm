@@ -19,49 +19,50 @@ package ru.windcorp.crystalfarm.graphics;
 
 import ru.windcorp.crystalfarm.cfg.Section;
 import ru.windcorp.crystalfarm.cfg.Setting;
+import ru.windcorp.crystalfarm.cfg.SettingDerived;
 import ru.windcorp.crystalfarm.cfg.SettingInt;
 
 public class GraphicsDesign {
 	
-	public static final Setting<Color> SETTING_BACKGROUND_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_BACKGROUND_COLOR = new Setting<>(
 			"Background", "Background color", Color.class,
 			Color.WHITE);
 	
-	public static final Setting<Color> SETTING_BACKGROUND_ALT_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_BACKGROUND_ALT_COLOR = new SettingDerived<Color, Color>(
 			"BackgroundAlt", "Alternative background color", Color.class,
-			gdDarker(SETTING_BACKGROUND_COLOR.getDefaultValue()));
+			null, SETTING_BACKGROUND_COLOR, c -> gdDarker(c));
 	
-	public static final Setting<Color> SETTING_FOREGROUND_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_FOREGROUND_COLOR = new Setting<>(
 			"Foreground", "Foreground color", Color.class,
 			new RandomColor());
 	
-	public static final Setting<Color> SETTING_FOREGROUND_ALT_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_FOREGROUND_ALT_COLOR = new SettingDerived<Color, Color>(
 			"ForegroundAlt", "Alternative foreground color", Color.class,
-			gdLighter(SETTING_FOREGROUND_COLOR.getDefaultValue()));
+			null, SETTING_FOREGROUND_COLOR, c -> gdLighter(c));
 	
-	public static final Setting<Color> SETTING_FONT_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_FONT_COLOR = new Setting<>(
 			"Font", "Font color", Color.class,
 			Color.WHITE);
 	
-	public static final Setting<Color> SETTING_FONT_ALT_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_FONT_ALT_COLOR = new Setting<>(
 			"FontAlt", "Alternative font color", Color.class,
 			Color.BLACK);
 	
-	public static final Setting<Color> SETTING_COVER_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_COVER_COLOR = new SettingDerived<Color, Color>(
 			"Cover", "Cover color", Color.class,
-			new Color(0xFF_FF_FF_88));
+			null, SETTING_BACKGROUND_COLOR, c -> new Color(c).setAlpha(0.5));
 	
-	public static final Setting<Color> SETTING_BORDER_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_BORDER_COLOR = new SettingDerived<Color, Color>(
 			"Border", "Border color", Color.class,
-			gdDarker(SETTING_FOREGROUND_COLOR.getDefaultValue()));
+			null, SETTING_FOREGROUND_COLOR, c -> gdDarker(c));
 	
-	public static final Setting<Color> SETTING_BORDER_FOCUSED_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_BORDER_FOCUSED_COLOR = new SettingDerived<Color, Color>(
 			"BorderFocused", "Focused border color", Color.class,
-			SETTING_BORDER_COLOR.getDefaultValue().clone().multiply(0.5));
+			null, SETTING_BORDER_COLOR, c -> new Color(c).multiply(0.5));
 	
-	public static final Setting<Color> SETTING_BORDER_HOVERED_COLOR = new Setting<Color>(
+	public static final Setting<Color> SETTING_BORDER_HOVERED_COLOR = new SettingDerived<Color, Color>(
 			"BorderHovered", "Hovered border color", Color.class,
-			gdLighter(SETTING_BORDER_COLOR.getDefaultValue()));
+			null, SETTING_BORDER_COLOR, c -> gdLighter(c));
 	
 	public static final SettingInt SETTING_LINE = new SettingInt(
 			"Line", "Line thickness, in pixels",
@@ -138,11 +139,11 @@ public class GraphicsDesign {
 	}
 	
 	public static Color gdDarker(Color src) {
-		return src.clone().multiply(DARKER_MULTIPLIER);
+		return new Color(src).multiply(DARKER_MULTIPLIER);
 	}
 	
 	public static Color gdLighter(Color src) {
-		return src.clone().multiply(LIGHTER_MULTIPLIER);
+		return new Color(src).multiply(LIGHTER_MULTIPLIER);
 	}
 	
 }

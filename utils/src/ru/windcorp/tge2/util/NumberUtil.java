@@ -36,8 +36,8 @@ public class NumberUtil {
 	public static char[] toFullHex(byte x) {
 		char[] result = new char[] { '0', 'x', 0, 0 };
 		
-		result[2] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[3] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
+		result[3] = hexDigit((x       ) & 0xF);
+		result[2] = hexDigit((x >>>  4) & 0xF);
 		
 		return result;
 	}
@@ -45,10 +45,10 @@ public class NumberUtil {
 	public static char[] toFullHex(short x) {
 		char[] result = new char[] { '0', 'x', 0, 0, 0, 0 };
 		
-		result[2] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[3] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[4] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[5] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
+		result[5] = hexDigit((x       ) & 0xF);
+		result[4] = hexDigit((x >>>= 4) & 0xF);
+		result[3] = hexDigit((x >>>= 4) & 0xF);
+		result[2] = hexDigit((x >>>  4) & 0xF);
 		
 		return result;
 	}
@@ -56,15 +56,15 @@ public class NumberUtil {
 	public static char[] toFullHex(int x) {
 		char[] result = new char[] { '0', 'x', 0, 0, 0, 0,  0, 0, 0, 0 };
 		
-		result[2] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[3] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[4] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[5] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-
-		result[6] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[7] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[8] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
-		result[9] = Character.forDigit((x >>>= 4) & 0xF, 0x10);
+		result[9] = hexDigit((x       ) & 0xF);
+		result[8] = hexDigit((x >>>= 4) & 0xF);
+		result[7] = hexDigit((x >>>= 4) & 0xF);
+		result[6] = hexDigit((x >>>= 4) & 0xF);
+		
+		result[5] = hexDigit((x >>>= 4) & 0xF);
+		result[4] = hexDigit((x >>>= 4) & 0xF);
+		result[3] = hexDigit((x >>>= 4) & 0xF);
+		result[2] = hexDigit((x >>>  4) & 0xF);
 		
 		return result;
 	}
@@ -72,27 +72,36 @@ public class NumberUtil {
 	public static char[] toFullHex(long x) {
 		char[] result = new char[] { '0', 'x', 0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0 };
 		
-		result[ 2] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[ 3] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[ 4] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[ 5] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
+		result[17] = hexDigit((int) (x       ) & 0xF);
+		result[16] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[15] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[14] = hexDigit((int) (x >>>= 4) & 0xF);
 
-		result[ 6] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[ 7] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[ 8] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[ 9] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
+		result[13] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[12] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[11] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[10] = hexDigit((int) (x >>>= 4) & 0xF);
 		
-		result[10] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[11] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[12] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[13] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
+		result[ 9] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[ 8] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[ 7] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[ 6] = hexDigit((int) (x >>>= 4) & 0xF);
 
-		result[14] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[15] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[16] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
-		result[17] = Character.forDigit((int) (x >>>= 4) & 0xF, 0x10);
+		result[ 5] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[ 4] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[ 3] = hexDigit((int) (x >>>= 4) & 0xF);
+		result[ 2] = hexDigit((int) (x >>>  4) & 0xF);
 		
 		return result;
+	}
+	
+	public static char hexDigit(int value) {
+		if (value < 0xA) {
+			return (char) ('0' + value);
+		} else {
+			return (char) ('A' - 0xA + value);
+		}
+		
 	}
 
 }

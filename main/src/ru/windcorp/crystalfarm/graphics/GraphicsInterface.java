@@ -44,7 +44,6 @@ import ru.windcorp.crystalfarm.input.MouseButtonInput;
 import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.collections.ReverseListView;
-import ru.windcorp.tge2.util.debug.Debug;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
 /**
@@ -361,10 +360,6 @@ public class GraphicsInterface {
 				return;
 			}
 			
-			Debug.debugObj(maximized ? 0 : (vidmode.width() - getWindowWidth()) / 2,
-					maximized ? 0 : (vidmode.height() - getWindowHeight()) / 2,
-					getWindowWidth(),
-					getWindowHeight());
 			glfwSetWindowMonitor(
 					getWindow(),
 					0,
