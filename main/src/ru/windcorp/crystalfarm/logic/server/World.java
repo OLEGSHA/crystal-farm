@@ -77,6 +77,11 @@ public class World {
 		return getIslands().get(name);
 	}
 	
+	public void addIsland(Island island) {
+		island.setWorld(this);
+		getIslands().put(island.getName(), island);
+	}
+	
 	public void read(InputStream is) throws IOException, SyntaxException {
 		CountingDataInput input = new CountingDataInput(is);
 		
@@ -119,7 +124,7 @@ public class World {
 				Island island = getIsland(name);
 				if (island == null) {
 					island = IslandFactory.createIsland(name);
-					getIslands().put(name, island);
+					addIsland(island);
 				}
 				
 				input.pushCounter();

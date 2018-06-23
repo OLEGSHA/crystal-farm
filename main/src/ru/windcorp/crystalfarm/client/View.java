@@ -15,40 +15,58 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.server;
+package ru.windcorp.crystalfarm.client;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArrayList;
+import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 
-public class Server {
+public class View {
 	
-	private static Server current;
-	
-	public static Server getCurrent() {
-		return current;
+	private int x, y;
+	private double scale = 1;
+
+	public View(int x, int y) {
+		this.x = x;
+		this.y = y;
 	}
 	
-	private final World world;
-	
-	private final Collection<Agent> agents = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
-	
-	public Server(World world) {
-		this.world = world;
-		
-		current = this;
+	public int getX() {
+		return x;
 	}
 
-	public World getWorld() {
-		return world;
+	public void setX(int x) {
+		this.x = x;
 	}
 
-	public Collection<Agent> getAgents() {
-		return agents;
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public double getScale() {
+		return scale;
+	}
+
+	public void setScale(double scale) {
+		this.scale = scale;
+	}
+
+	public int getWidth() {
+		return GraphicsInterface.getWindowWidth();
 	}
 	
-	public void start() {
-		// TODO: start ticking
+	public int getHeight() {
+		return GraphicsInterface.getWindowHeight();
+	}
+	
+	public int getXEnd() {
+		return getX() + getWidth();
+	}
+	
+	public int getYEnd() {
+		return getY() + getHeight();
 	}
 
 }

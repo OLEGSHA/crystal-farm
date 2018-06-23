@@ -22,24 +22,47 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public class IslandMeta extends Data {
+
+	private String displayName;
+	private Biome biome;
 	
 	public IslandMeta() {
 		super(InbuiltMod.INST, "IslandMeta");
 	}
 
-	private String displayName; 
-
 	@Override
 	public void read(DataInput input, int change) throws IOException, SyntaxException {
 		displayName		= input.readUTF();
+		biome			= readBiome(input);
+	}
+
+	private Biome readBiome(DataInput input) throws IOException, SyntaxException {
+		String name = input.readUTF();
+		Biome result = BiomeRegistry.get(name);
+		
+		if (result == null) {
+			ExecutionReport.reportWarning(null, null, "Biome with name %s has not been registered",
+					name);
+			
+			result = BiomeRegistry.getFallback();
+			
+			if (result == null) {
+				throw new SyntaxException("Biome with name " + name + " has not been registered"
+						+ " and no fallback tile specified");
+			}
+		}
+		
+		return result;
 	}
 
 	@Override
 	public void write(DataOutput output, int change) throws IOException {
 		output.writeUTF(displayName);
+		output.writeUTF(biome.getName());
 	}
 
 	public String getDisplayName() {
@@ -49,6 +72,14 @@ public class IslandMeta extends Data {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 		setChangeAll();
+	}
+
+	public Biome getBiome() {
+		return biome;
+	}
+
+	public void setBiome(Biome biome) {
+		this.biome = biome;
 	}
 
 }

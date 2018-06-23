@@ -15,40 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.server;
+package ru.windcorp.crystalfarm.content.basic.test;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
-public class Server {
-	
-	private static Server current;
-	
-	public static Server getCurrent() {
-		return current;
-	}
-	
-	private final World world;
-	
-	private final Collection<Agent> agents = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
-	
-	public Server(World world) {
-		this.world = world;
+import ru.windcorp.crystalfarm.logic.GridTileLevel;
+import ru.windcorp.crystalfarm.logic.Level;
+
+public class TestLevelProvider implements Consumer<Collection<Level>> {
+
+	@Override
+	public void accept(Collection<Level> arg0) {
+		GridTileLevel<TestTile> testLevel = new GridTileLevel<>("TestLevel", TestTile.class, 50, 64);
+		testLevel.getTileRegistry().register(new TestTile());
 		
-		current = this;
-	}
-
-	public World getWorld() {
-		return world;
-	}
-
-	public Collection<Agent> getAgents() {
-		return agents;
-	}
-	
-	public void start() {
-		// TODO: start ticking
+		arg0.add(testLevel);
 	}
 
 }

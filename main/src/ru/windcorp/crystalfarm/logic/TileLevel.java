@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.logic;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
@@ -27,16 +28,16 @@ import ru.windcorp.tge2.util.stream.CountingDataOutput;
 public abstract class TileLevel<T extends Tile> extends Level {
 	
 	private final TileRegistry<T> tileRegistry = new TileRegistry<>(getName());
+	private final Class<T> clazz;
 
-	public TileLevel(String name) {
+	public TileLevel(String name, Class<T> clazz) {
 		super(name);
+		this.clazz = clazz;
 	}
 	
 	public TileRegistry<T> getTileRegistry() {
 		return tileRegistry;
 	}
-
-	public abstract void render();
 	
 	@Override
 	public void read(CountingDataInput input) throws IOException, SyntaxException {
@@ -46,7 +47,7 @@ public abstract class TileLevel<T extends Tile> extends Level {
 		}
 		
 		@SuppressWarnings("unchecked")
-		T[] tileMap = (T[]) new Tile[tileMapSize];
+		T[] tileMap = (T[]) Array.newInstance(clazz, tileMapSize);
 		
 		for (int i = 0; i < tileMapSize; ++i) {
 			
@@ -69,7 +70,7 @@ public abstract class TileLevel<T extends Tile> extends Level {
 		readTiles(input, tileMap);
 	}
 	
-	protected abstract void readTiles(CountingDataInput input, T[] tileMap);
+	protected abstract void readTiles(CountingDataInput input, T[] tileMap) throws IOException, SyntaxException;
 	
 	@Override
 	public void write(CountingDataOutput output) throws IOException {
@@ -83,7 +84,7 @@ public abstract class TileLevel<T extends Tile> extends Level {
 		writeTiles(output);
 	}
 	
-	protected abstract void writeTiles(CountingDataOutput output);
+	protected abstract void writeTiles(CountingDataOutput output) throws IOException;
 	
 	protected T readTile(CountingDataInput input, T[] tileMap) throws IOException, SyntaxException {
 		int nid = input.readInt();

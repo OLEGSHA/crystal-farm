@@ -20,19 +20,46 @@ package ru.windcorp.crystalfarm.logic;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
+import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.tge2.util.Nameable;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
 import ru.windcorp.tge2.util.stream.CountingDataOutput;
 
 public abstract class Level extends Nameable implements Cloneable {
+	
+	private WeakReference<Island> island = null;
 
 	public Level(String name) {
 		super(name);
 	}
 	
-	public abstract void render();
+	void setIsland(Island island) {
+		if (island == null) this.island = null;
+		this.island = new WeakReference<Island>(island);
+	}
+	
+	public Island getIsland() {
+		if (this.island == null) {
+			return null;
+		}
+		
+		return this.island.get();
+	}
+	
+	public World getWorld() {
+		Island island = getIsland();
+		if (island == null) {
+			return null;
+		}
+		
+		return island.getWorld();
+	}
+	
+	public abstract void render(View view);
 	
 	@Override
 	protected Level clone() {

@@ -17,6 +17,8 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-public interface Shareable {
+public interface BiomeProcessor {
 
+	public void process(Island island, Biome biome);
+	
 }

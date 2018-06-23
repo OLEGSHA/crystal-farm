@@ -22,6 +22,7 @@ import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Aligner;
 import ru.windcorp.crystalfarm.gui.Button;
@@ -58,8 +59,20 @@ public class MainMenu extends GuiLayer {
 						new Button(
 								"MainMenu.play",
 								TString.translated("menu.MainMenu.play").toFont(),
-								button -> GameManager.startLocalGame(CrystalFarmResourceManagers.RM_FILE_WD.getResource("testWorld.earthpony.cfsave"))
+								button -> GameManager.startLocalGame(
+										CrystalFarmResourceManagers.RM_FILE_WD.getResource("testWorld.earthpony.cfsave"))
 						).takeFocus());
+				
+				menu.addChild(
+						new Button(
+								"MainMenu.TMP_gen",
+								TString.translated("TMP_gen").toFont(),
+								button -> {
+									if (GameManager.generateNewWorld(
+											CrystalFarmResourceManagers.RM_FILE_WD.getResource("testWorld.earthpony.cfsave"))) return;
+									Notifier.positive(TString.translated("TMP_gen.success"));
+								}
+						));
 				
 				menu.addChild(
 						new Button(

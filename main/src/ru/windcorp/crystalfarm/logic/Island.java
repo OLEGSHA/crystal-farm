@@ -20,9 +20,12 @@ package ru.windcorp.crystalfarm.logic;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
+import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.logic.exception.UnknownIslandDataException;
 import ru.windcorp.crystalfarm.logic.exception.UnknownLevelException;
+import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.tge2.util.Nameable;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
@@ -34,10 +37,29 @@ public class Island extends Nameable {
 	private final Level[] levels;
 	private final Data[] data;
 	
+	private WeakReference<World> world = null;
+	
 	protected Island(String name, Level[] levels, Data[] data) {
 		super(name);
 		this.levels = levels;
 		this.data = data;
+		
+		for (Level l : levels) {
+			l.setIsland(this);
+		}
+	}
+	
+	public void setWorld(World world) {
+		if (world == null) this.world = null;
+		this.world = new WeakReference<World>(world);
+	}
+	
+	public World getWorld() {
+		if (this.world == null) {
+			return null;
+		}
+		
+		return this.world.get();
 	}
 	
 	public IslandMeta getMeta() {
@@ -57,6 +79,10 @@ public class Island extends Nameable {
 		
 		return null;
 	}
+	
+	public <T extends Level> T getLevel(String name, Class<T> clazz) {
+		return clazz.cast(getLevel(name));
+	}
 
 	public Data[] getData() {
 		return data;
@@ -72,8 +98,10 @@ public class Island extends Nameable {
 		return null;
 	}
 
-	public void render() {
-		
+	public void render(View view) {
+		for (Level l : getLevels()) {
+			l.render(view);
+		}
 	}
 	
 	public void read(CountingDataInput input) throws IOException, SyntaxException {

@@ -15,40 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.server;
+package ru.windcorp.crystalfarm.content.basic;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArrayList;
+import ru.windcorp.crystalfarm.content.basic.test.TestBiome;
+import ru.windcorp.crystalfarm.content.basic.test.TestLevelProvider;
+import ru.windcorp.crystalfarm.logic.BiomeRegistry;
+import ru.windcorp.crystalfarm.logic.IslandFactory;
+import ru.windcorp.crystalfarm.struct.modules.Module;
+import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 
-public class Server {
-	
-	private static Server current;
-	
-	public static Server getCurrent() {
-		return current;
-	}
-	
-	private final World world;
-	
-	private final Collection<Agent> agents = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
-	
-	public Server(World world) {
-		this.world = world;
-		
-		current = this;
+public class JobRegisterContentBasic extends ModuleJob {
+
+	public JobRegisterContentBasic(Module module) {
+		super("RegisterContentBasic", "Registers basic content", module);
 	}
 
-	public World getWorld() {
-		return world;
-	}
-
-	public Collection<Agent> getAgents() {
-		return agents;
-	}
-	
-	public void start() {
-		// TODO: start ticking
+	@Override
+	protected void runImpl() {
+		IslandFactory.registerIslandLevelProvider(new TestLevelProvider());
+		BiomeRegistry.register(new TestBiome());
 	}
 
 }

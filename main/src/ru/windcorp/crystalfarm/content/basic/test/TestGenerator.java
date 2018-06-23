@@ -15,40 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.server;
+package ru.windcorp.crystalfarm.content.basic.test;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArrayList;
+import ru.windcorp.crystalfarm.logic.Biome;
+import ru.windcorp.crystalfarm.logic.BiomeProcessor;
+import ru.windcorp.crystalfarm.logic.GridTileLevel;
+import ru.windcorp.crystalfarm.logic.Island;
 
-public class Server {
-	
-	private static Server current;
-	
-	public static Server getCurrent() {
-		return current;
-	}
-	
-	private final World world;
-	
-	private final Collection<Agent> agents = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
-	
-	public Server(World world) {
-		this.world = world;
+public class TestGenerator implements BiomeProcessor {
+
+	@Override
+	public void process(Island island, Biome biome) {
+		@SuppressWarnings("unchecked")
+		GridTileLevel<TestTile> level = island.getLevel("TestLevel", GridTileLevel.class);
 		
-		current = this;
-	}
-
-	public World getWorld() {
-		return world;
-	}
-
-	public Collection<Agent> getAgents() {
-		return agents;
-	}
-	
-	public void start() {
-		// TODO: start ticking
+		for (int x = 0; x < level.getSize(); ++x) {
+			for (int y = 0; y < level.getSize(); ++y) {
+				level.setTile(new TestTile(), x, y);
+			}
+		}
 	}
 
 }

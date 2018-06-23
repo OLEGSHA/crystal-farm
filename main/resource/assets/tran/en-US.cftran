@@ -47,9 +47,33 @@ welcome = I can now speak English just as they speak it in the US!
 
 # Failure screen
 	failure.title = An error has occurred
-	failure.subtitle.test = No errors have occurred, really. This is just a test.
-	failure.text.test = Could not load world from %s because I haven't written the code yet
+	
+	# GameManager
+		failure.subtitle.gm.ioException =			Could not read world save file
+		failure.text.gm.ioException =					Could not read %s due to an IO issue
+		failure.subtitle.gm.wrongMagicValue =		Attempted to read a file that is not a world save
+		failure.text.gm.wrongMagicValue =				%s is probably not a world save: wrong magic value (expected %s, got %s)
+		failure.subtitle.gm.unknownWorldData =		World save references unknown content
+		failure.text.gm.unknownWorldData =				%s contains an unknown World Data entry: %s
+		failure.subtitle.gm.unknownIslandData =		World save references unknown content
+		failure.text.gm.unknownIslandData =				%s contains an unknown Island Data entry: %s in island %s
+		failure.subtitle.gm.unknownIslandLevel =	World save references unknown content
+		failure.text.gm.unknownIslandLevel =			%s contains an unknown Island Level entry: %s in island %s
+		failure.subtitle.gm.unknownVersion =		World save is too old or too new for this game version
+		failure.text.gm.unknownVersion =				%s uses an unknown version %s
+		failure.subtitle.gm.other =					Could not parse world save file
+		failure.text.gm.other =							Could not load %s: %s
+		failure.subtitle.gm.exception =				Unhandled error while trying to read world save file
+		failure.text.gm.exception =						Could not read %s due to a runtime exception: %s
+		failure.subtitle.gm.gen.ioException =		Could not save the world
+		failure.text.gm.gen.ioException =				Could not write %s due to an IO issue
+		failure.subtitle.gm.gen.exception =			Unhandled error while trying to save the world
+		failure.text.gm.gen.exception =					Could not write %s due to a runtime exception: %s
+	# Test
+		failure.subtitle.test = No errors have occurred, really. This is just a test.
+		failure.text.test = Could not load world from %s because I haven't written the code yet
 
 # Test
 TMP_1.5 = Test GUI
-TMP_notification = Notifications work!\nHooray!
+TMP_gen = New World
+TMP_gen.success = Generated new world successfully

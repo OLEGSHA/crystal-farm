@@ -17,76 +17,142 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-//import java.io.IOException;
+import java.io.IOException;
 
+import ru.windcorp.crystalfarm.client.GameLayer;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.LayerFailure;
 import ru.windcorp.crystalfarm.gui.menu.MainMenu;
-//import ru.windcorp.crystalfarm.logic.exception.UnknownWorldDataException;
-//import ru.windcorp.crystalfarm.logic.exception.WrongMagicValueException;
-//import ru.windcorp.crystalfarm.logic.server.Server;
-//import ru.windcorp.crystalfarm.logic.server.World;
-//import ru.windcorp.crystalfarm.logic.server.WorldFactory;
-//import ru.windcorp.tge2.util.debug.Log;
-//import ru.windcorp.tge2.util.debug.er.ExecutionReport;
-//import ru.windcorp.tge2.util.exceptions.SyntaxException;
+import ru.windcorp.crystalfarm.logic.exception.*;
+import ru.windcorp.crystalfarm.logic.server.*;
+import ru.windcorp.tge2.util.NumberUtil;
+import ru.windcorp.tge2.util.debug.Log;
+import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.grh.Resource;
 
 public class GameManager {
-
-	public static void startLocalGame(Resource resource) {
+	
+	public static boolean generateNewWorld(Resource resource) {
+		Log.topic("Worldgen");
 		
-		startLocalServer(resource);
-		joinLocalServer();
+		try {
+			Log.info("Generating island Test");
+			Island island = IslandFactory.createIsland("TestIsland");
+			island.getMeta().setDisplayName("Test Island");
+			BiomeRegistry.get("TestBiome").generate(island);
+			
+			Log.info("Saving world");
+			World world = WorldFactory.createWorld(resource);
+			world.getMeta().setDisplayName("Test World");
+			world.addIsland(island);
+			
+			world.save();
+			return false;
+		} catch (IOException e) {
+			failWorldLoad(e, "gm.gen.ioException",
+					"Could not write %s due to an IO issue",
+					resource.toString());
+		} catch (Exception e) {
+			failWorldLoad(e, "gm.gen.exception",
+					"Could not write %s due to a runtime exception: %s",
+					resource.toString(),
+					e.toString());
+		} finally {
+			Log.end("Worldgen");
+		}
 		
+		return true;
 	}
 
-	public static void startLocalServer(Resource resource) {
+	public static void startLocalGame(Resource resource) {
+		if (startLocalServer(resource)) return;
+		joinLocalServer();
+	}
+
+	public static boolean startLocalServer(Resource resource) {
+		Log.topic("Server Init");
 		
-		failWorldLoad(new IllegalStateException(), "test", "Could not load world from %s because I haven't written the code yet", resource.toString());
-		return;
-//		Log.topic("Server Init");
-//		
-//		Log.info("Initializing server");
-//		World world = WorldFactory.createWorld(resource);
-//		Server server = new Server(world);
-//		
-//		Log.info("Loading world");
-//		try {
-//			world.load();
-//			
-//			return;
-//		} catch (IOException e) {
-//			//failWorldLoad();
-//			ExecutionReport.reportError(e,
-//					ExecutionReport.rscCorrupt(resource.toString(),
-//							"Could not read world save due to an IO issue"),
-//					null);
-//		} catch (WrongMagicValueException e) {
-//			ExecutionReport.reportWarning(e,
-//					ExecutionReport.rscCorrupt(resource.toString(),
-//							"The given file is either not a world save or is corrupted"),
-//					null);
-//		} catch (UnknownWorldDataException e) {
-//			
-//		} catch (SyntaxException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.err.println("Called auto-generated catch block in method GameManager.startLocalServer for SyntaxException");
-//		}
+		Log.info("Initializing server");
+		World world = WorldFactory.createWorld(resource);
+		Server server = new Server(world);
+		
+		Log.info("Loading world");
+		try {
+			world.load();
+			
+			Log.info("Starting server");
+			server.start();
+			Log.info("Server started");
+			return false;
+			
+		} catch (IOException e) {
+			failWorldLoad(e, "gm.ioException",
+					"Could not read %s due to an IO issue",
+					resource.toString());
+			
+		} catch (WrongMagicValueException e) {
+			failWorldLoad(e, "gm.wrongMagicValue",
+					"%s is probably not a world save: wrong magic value (expected %s, got %s)",
+					resource.toString(),
+					NumberUtil.toFullHex(e.getCorrectMagicValue()),
+					NumberUtil.toFullHex(e.getWrongMagicValue()));
+			
+		} catch (UnknownWorldDataException e) {
+			failWorldLoad(e, "gm.unknownWorldData",
+					"%s contains an unknown World Data entry: %s",
+					resource.toString(),
+					e.getName());
+			
+		} catch (UnknownIslandDataException e) {
+			failWorldLoad(e, "gm.unknownIslandData",
+					"%s contains an unknown Island Data entry: %s in island %s",
+					resource.toString(),
+					e.getName(),
+					e.getIsland().getName());
+			
+		} catch (UnknownLevelException e) {
+			failWorldLoad(e, "gm.unknownIslandLevel",
+					"%s contains an unknown Island Level entry: %s in island %s",
+					resource.toString(),
+					e.getName(),
+					e.getIsland().getName());
+			
+		} catch (UnknownVersionException e) {
+			failWorldLoad(e, "gm.unknownVersion",
+					"%s uses an unknown version %s",
+					resource.toString(),
+					NumberUtil.toFullHex(e.getUnknownVersion()));
+			
+		} catch (SyntaxException e) {
+			failWorldLoad(e, "gm.other",
+					"Could not load %s: %s",
+					resource.toString(),
+					e.toString());
+			
+		} catch (Exception e) {
+			failWorldLoad(e, "gm.exception",
+					"Could not read %s due to a runtime exception: %s",
+					resource.toString(),
+					e.toString());
+			
+		} finally {
+			Log.end("Server Init");
+		}
+		
+		return true;
 	}
 
 	private static void failWorldLoad(Exception e, String code, String format, Object... args) {
 		GraphicsInterface.removeAllNormalLayers();
 		GraphicsInterface.addLayer(new MainMenu());
 		LayerFailure.displayFailure(e, code, format, args);
-		
 	}
 
 	public static void joinLocalServer() {
-		// TODO Auto-generated method stub
-		System.err.println("Called auto-generated method GameManager.GameManager");
-		
+		GameLayer layer = new GameLayer();
+		layer.setIsland(Server.getCurrent().getWorld().getIsland("TestIsland"));
+		GraphicsInterface.removeAllNormalLayers();
+		GraphicsInterface.addLayerToBottom(layer);
 	}
 	
 }

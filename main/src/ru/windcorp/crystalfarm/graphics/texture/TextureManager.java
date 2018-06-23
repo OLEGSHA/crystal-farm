@@ -39,6 +39,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.imageio.ImageIO;
 
+import org.lwjgl.opengl.GL12;
+
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.tge2.util.debug.Log;
@@ -142,8 +144,11 @@ public class TextureManager {
 		int textureId = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);
 		
 		glTexImage2D(
 				GL_TEXTURE_2D,				// Load 2D image

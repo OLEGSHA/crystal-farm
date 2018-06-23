@@ -20,7 +20,10 @@ package ru.windcorp.crystalfarm.logic;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
+import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
@@ -31,12 +34,44 @@ public abstract class Tile extends Updateable {
 	private final String id;
 	private final TString name;
 	
+	private WeakReference<TileLevel<?>> level = null;
 	private int nid;
 
 	public Tile(Mod mod, String id, TString name) {
 		this.mod = mod;
-		this.id = mod + ":" + id;
+		this.id = mod.getName() + ":" + id;
 		this.name = name;
+	}
+	
+	void setLevel(TileLevel<?> level) {
+		if (level == null) this.level = null;
+		this.level = new WeakReference<TileLevel<?>>(level);
+	}
+	
+	public TileLevel<?> getLevel() {
+		if (this.level == null) {
+			return null;
+		}
+		
+		return this.level.get();
+	}
+	
+	public Island getIsland() {
+		Level level = getLevel();
+		if (level == null) {
+			return null;
+		}
+		
+		return level.getIsland();
+	}
+	
+	public World getWorld() {
+		Level level = getLevel();
+		if (level == null) {
+			return null;
+		}
+		
+		return level.getWorld();
 	}
 	
 	void setNid(int nid) {
@@ -73,5 +108,7 @@ public abstract class Tile extends Updateable {
 	public void write(DataOutput output, int change) throws IOException {
 		// Do nothing
 	}
+	
+	public abstract void render(View view, int x, int y, int size);
 
 }

@@ -15,40 +15,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.server;
+package ru.windcorp.crystalfarm.logic;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.List;
 
-public class Server {
+import ru.windcorp.tge2.util.Nameable;
+
+public class Biome extends Nameable {
 	
-	private static Server current;
-	
-	public static Server getCurrent() {
-		return current;
+	private final List<BiomeProcessor> processors = Collections.synchronizedList(new ArrayList<>());
+
+	public Biome(String name, BiomeProcessor... processors) {
+		super(name);
+		for (BiomeProcessor processor : processors) {
+			addProcessor(processor);
+		}
 	}
 	
-	private final World world;
-	
-	private final Collection<Agent> agents = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
-	
-	public Server(World world) {
-		this.world = world;
-		
-		current = this;
-	}
-
-	public World getWorld() {
-		return world;
+	public List<BiomeProcessor> getProcessors() {
+		return processors;
 	}
 
-	public Collection<Agent> getAgents() {
-		return agents;
+	public void addProcessor(BiomeProcessor e) {
+		getProcessors().add(e);
 	}
-	
-	public void start() {
-		// TODO: start ticking
+
+	public void generate(Island island) {
+		island.getMeta().setBiome(this);
+		getProcessors().forEach(p -> p.process(island, this));
 	}
 
 }
