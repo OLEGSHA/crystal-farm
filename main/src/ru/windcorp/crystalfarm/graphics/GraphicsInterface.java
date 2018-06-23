@@ -214,6 +214,9 @@ public class GraphicsInterface {
 		if (isWindowed()) {
 			ModuleGraphicsInterface.WINDOW_WIDTH.set(width);
 			ModuleGraphicsInterface.WINDOW_HEIGHT.set(height);
+		} else {
+			unsavedWidth = width;
+			unsavedHeight = height;
 		}
 		
 		glViewport(0, 0, width, height);
