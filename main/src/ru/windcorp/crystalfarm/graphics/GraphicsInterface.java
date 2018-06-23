@@ -463,12 +463,10 @@ public class GraphicsInterface {
 				color);
 	}
 	
-	private static final int UL_X = 0, UL_Y = 1, LR_X = 2, LR_Y = 3;
-	
 	/**
 	 * Renders the given texture or one of its tiles. The upper-left corner of the rendered fragment
-	 * will be located at ({@code x};{@code y}). The dimensions of the fragment are determined by the
-	 * natural size of the texture or its tile size. A color filter may be applied with a non-null
+	 * will be located at ({@code x};{@code y}). The dimensions of the fragment are ({@code width};{@code height}).
+	 * The texture's size will be changed accordingly. A color filter may be applied with a non-null
 	 * {@code filter}. The fragment is rotated in {@code direction} (use {@link Direction#UP} to ignore rotation).
 	 * The fragment may not be visible, partially or completely.
 	 * <p>
@@ -476,16 +474,28 @@ public class GraphicsInterface {
 	 * the upper-left corner of the screen, X axis is positive to the right and Y axis is positive to the bottom.
 	 * @param x the X coordinate of the upper-left corner of the fragment to render
 	 * @param y the Y coordinate of the upper-left corner of the fragment to render
+	 * @param width the width to fit the fragment into
+	 * @param height the height to fit the fragment into
 	 * @param texture the {@link Texture} to render
 	 * @param tileX the X coordinate of the tile. Ignored when {@code texture.getTileSize() == 0}
 	 * @param tileY the Y coordinate of the tile. Ignored when {@code texture.getTileSize() == 0}
 	 * @param filter the color filter to apply or {@code null} for none
 	 * @param direction the direction in which to rotate the texture
 	 */
-	public static void drawTexture(int x, int y, Texture texture, int tileX, int tileY, Color filter, Direction direction) {
+	public static void drawTexture(
+			int x,
+			int y,
+			int width,
+			int height,
+			Texture texture,
+			int tileX,
+			int tileY,
+			Color filter,
+			Direction direction) {
+		
 		double[] coords = new double[4];
-		int endX = texture.getWidth() + x,
-				endY = texture.getHeight() + y;
+		int endX = width + x,
+				endY = height + y;
 		
 		if (texture.getTileSize() == 0) {
 			coords[UL_X] = 0;
@@ -516,6 +526,29 @@ public class GraphicsInterface {
 		glEnd();
 		
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+	
+	private static final int UL_X = 0, UL_Y = 1, LR_X = 2, LR_Y = 3;
+	
+	/**
+	 * Renders the given texture or one of its tiles. The upper-left corner of the rendered fragment
+	 * will be located at ({@code x};{@code y}). The dimensions of the fragment are determined by the
+	 * natural size of the texture or its tile size. A color filter may be applied with a non-null
+	 * {@code filter}. The fragment is rotated in {@code direction} (use {@link Direction#UP} to ignore rotation).
+	 * The fragment may not be visible, partially or completely.
+	 * <p>
+	 * Coordinates are given in <i>display coordinate system</i>, where the point (0;0) corresponds to
+	 * the upper-left corner of the screen, X axis is positive to the right and Y axis is positive to the bottom.
+	 * @param x the X coordinate of the upper-left corner of the fragment to render
+	 * @param y the Y coordinate of the upper-left corner of the fragment to render
+	 * @param texture the {@link Texture} to render
+	 * @param tileX the X coordinate of the tile. Ignored when {@code texture.getTileSize() == 0}
+	 * @param tileY the Y coordinate of the tile. Ignored when {@code texture.getTileSize() == 0}
+	 * @param filter the color filter to apply or {@code null} for none
+	 * @param direction the direction in which to rotate the texture
+	 */
+	public static void drawTexture(int x, int y, Texture texture, int tileX, int tileY, Color filter, Direction direction) {
+		drawTexture(x, y, texture.getWidth(), texture.getHeight(), texture, tileX, tileY, filter, direction);
 	}
 	
 	/**

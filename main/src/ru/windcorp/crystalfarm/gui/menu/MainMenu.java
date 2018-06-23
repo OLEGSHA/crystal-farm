@@ -17,11 +17,11 @@
  */
 package ru.windcorp.crystalfarm.gui.menu;
 
+import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
+
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.graphics.Color;
-import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.gui.Aligner;
 import ru.windcorp.crystalfarm.gui.Button;
@@ -35,9 +35,12 @@ import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.translation.ModuleTranslation;
 import ru.windcorp.crystalfarm.translation.TString;
+import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.StringUtil;
 
 public class MainMenu extends GuiLayer {
+	
+	private SimpleTexture background = SimpleTexture.get("background");
 
 	public MainMenu() {
 		super("MainMenu");
@@ -122,7 +125,7 @@ public class MainMenu extends GuiLayer {
 				StringUtil.iteratorToString(CrystalFarm.DEVELOPERS.iterator(), ", "),
 				CrystalFarm.YEARS,
 				CrystalFarm.LICENSE)
-				.toFont().setColor(Color.GRAY)) {
+				.toFont().setColor(Color.LIGHT_GRAY)) {
 			@Override
 			protected synchronized void layoutSelf() {
 				Size preferred = getPreferredSize();
@@ -142,11 +145,20 @@ public class MainMenu extends GuiLayer {
 	
 	@Override
 	public void render() {
-		GraphicsInterface.fillRectangle(
+		double scale = Math.max(getWindowWidth() / (double) background.getWidth(),
+				getWindowHeight() / (double) background.getHeight());
+		
+		int width = (int) (background.getWidth() * scale);
+		int height = (int) (background.getHeight() * scale);
+		
+		drawTexture(
+				(getWindowWidth() - width) / 2,
+				(getWindowHeight() - height) / 2,
+				width,
+				height,
+				background,
 				0, 0,
-				GraphicsInterface.getWindowWidth(),
-				GraphicsInterface.getWindowHeight(),
-				GraphicsDesign.gdGetBackgroundColor());
+				null, Direction.UP);
 		super.render();
 	}
 
