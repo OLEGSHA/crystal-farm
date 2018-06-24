@@ -2,7 +2,8 @@ package ru.windcorp.crystalfarm.gui.menu;
 
 
 import ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface;
-import ru.windcorp.crystalfarm.gui.GuiSettingEditors;
+
+import ru.windcorp.crystalfarm.gui.*;
 
 public class SettingsAdvancedMenu extends MenuLayer {
 

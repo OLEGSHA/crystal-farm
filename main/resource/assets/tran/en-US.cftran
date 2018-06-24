@@ -11,6 +11,13 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.MainMenu.about = About
 		menu.MainMenu.exit = Exit
 		menu.MainMenu.notice = %1$s version %2$s\n© %3$s %4$s\nLicensed under %5$s
+	# Settings menu
+		menu.SettingsMenu.title = Settings
+		menu.SettingsMenu.volume = Volume
+		menu.SettingsMenu.fullscreen = Fullscreen
+		menu.SettingsMenu.advanced = Advanced Settings
+	# Advanced Settings Menu
+		menu.AdvancedSettingsMenu.title = Advanced Settings
 	# 'About' menu
 		menu.AboutMenu.title = About
 	# Test menu
@@ -23,7 +30,6 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.test.sliderFloat = Floating-point Number Slider
 		menu.test.gain = Master volume
 		menu.test.fullscreen = Fullscreen
-
 # Misc
 	# Generic
 		misc.gen.enabled = Enabled

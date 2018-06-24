@@ -18,22 +18,31 @@
 package ru.windcorp.crystalfarm.gui.menu;
 
 import ru.windcorp.crystalfarm.audio.ModuleAudioInterface;
+import ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.GuiSettingEditors;
+import ru.windcorp.crystalfarm.gui.Table;
 import ru.windcorp.crystalfarm.translation.TString;
 
 public class SettingsMenu extends MenuLayer {
-
+	
+	Table tab = new Table(getName() + ".tab", 3);
 	public SettingsMenu() {
 		super("SettingsMenu", true);
 		
-		add(GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN));
+		tab.addRow("menu.SettingsMenu.volume",
+				   GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),
+				   GuiSettingEditors.createResetter(ModuleAudioInterface.GAIN));
+		
+		tab.addRow("menu.SettingsMenu.fullscreen",
+				GuiSettingEditors.createEditor(ModuleGraphicsInterface.WINDOW_FULLSCREEN),
+				GuiSettingEditors.createResetter(ModuleGraphicsInterface.WINDOW_FULLSCREEN));
+		add(tab);
 		add(new Button(
 				"SettingsMenu.Advanced",
 				TString.translated("menu.SettingsMenu.advanced").toFont(),
 				button -> new SettingsAdvancedMenu().show()
 				));
-		
 	}
 
 }

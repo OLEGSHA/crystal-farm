@@ -11,6 +11,13 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		menu.MainMenu.about = Об игре
 		menu.MainMenu.exit = Выход
 		menu.MainMenu.notice = %1$s версия %2$s\n© %3$s %4$s\nЛицензия %5$s
+	# Настройки
+		menu.SettingsMenu.title = Настройки
+		menu.SettingsMenu.volume = Громкость
+		menu.SettingsMenu.fullscreen = Полный экран
+		menu.SettingsMenu.advanced = Расширенные настройки
+	# Расширенные настройки
+		menu.AdvancedSettingsMenu.title = Расширенные настройки
 	# Меню "Об игре"
 		menu.AboutMenu.title = Об игре
 	# Тестовое меню
