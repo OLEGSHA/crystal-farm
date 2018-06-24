@@ -10,8 +10,15 @@ public class SettingsAdvancedMenu extends MenuLayer {
 	public SettingsAdvancedMenu() {
 		super("AdvancedSettingsMenu", true);
 		
-		add(GuiSettingEditors.createEditor(ModuleGraphicsInterface.SHOW_FPS));
-		add(GuiSettingEditors.createEditor(ModuleGraphicsInterface.VSYNC));
+		Table table = new Table(getName() + ".table", 3);
+		
+		table.addRow("menu.AdvancedSettingsMenu.showfps",
+			GuiSettingEditors.createEditor(ModuleGraphicsInterface.SHOW_FPS),
+			GuiSettingEditors.createResetter(ModuleGraphicsInterface.SHOW_FPS));
+		table.addRow("menu.AdvancedSettingsMenu.vsync",
+			GuiSettingEditors.createEditor(ModuleGraphicsInterface.VSYNC),
+			GuiSettingEditors.createResetter(ModuleGraphicsInterface.VSYNC));
+		add(table);
 	}
 	
 }

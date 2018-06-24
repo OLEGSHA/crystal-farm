@@ -26,18 +26,18 @@ import ru.windcorp.crystalfarm.translation.TString;
 
 public class SettingsMenu extends MenuLayer {
 	
-	Table tab = new Table(getName() + ".tab", 3);
+	Table table = new Table(getName() + ".table", 3);
 	public SettingsMenu() {
 		super("SettingsMenu", true);
 		
-		tab.addRow("menu.SettingsMenu.volume",
+		table.addRow("menu.SettingsMenu.volume",
 				   GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),
 				   GuiSettingEditors.createResetter(ModuleAudioInterface.GAIN));
 		
-		tab.addRow("menu.SettingsMenu.fullscreen",
+		table.addRow("menu.SettingsMenu.fullscreen",
 				GuiSettingEditors.createEditor(ModuleGraphicsInterface.WINDOW_FULLSCREEN),
 				GuiSettingEditors.createResetter(ModuleGraphicsInterface.WINDOW_FULLSCREEN));
-		add(tab);
+		add(table);
 		add(new Button(
 				"SettingsMenu.Advanced",
 				TString.translated("menu.SettingsMenu.advanced").toFont(),

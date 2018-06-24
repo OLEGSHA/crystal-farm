@@ -18,7 +18,9 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.SettingsMenu.advanced = Advanced Settings
 	# Advanced Settings Menu
 		menu.AdvancedSettingsMenu.title = Advanced Settings
-	# 'About' menu
+		menu.AdvancedSettingsMenu.showfps = Show FPS
+		menu.AdvancedSettingsMenu.vsync = VSync
+ 	# 'About' menu
 		menu.AboutMenu.title = About
 	# Test menu
 		menu.TestMenu.title = Test Menu
