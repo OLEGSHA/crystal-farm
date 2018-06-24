@@ -13,13 +13,30 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.MainMenu.notice = %1$s version %2$s\n© %3$s %4$s\nLicensed under %5$s
 	# Settings menu
 		menu.SettingsMenu.title = Settings
-		menu.SettingsMenu.volume = Volume
-		menu.SettingsMenu.fullscreen = Fullscreen
-		menu.SettingsMenu.advanced = Advanced Settings
+		menu.SettingsMenu.advanced = Advanced
+		menu.SettingsMenu.graphics = Graphics
+		menu.SettingsMenu.sounds = Sound
+		menu.SettingsMenu.language = Language
 	# Advanced Settings Menu
-		menu.AdvancedSettingsMenu.title = Advanced Settings
-		menu.AdvancedSettingsMenu.showfps = Show FPS
-		menu.AdvancedSettingsMenu.vsync = VSync
+		menu.SettingsAdvancedMenu.title = Advanced Settings
+		menu.SettingsAdvancedMenu.notifier = Notification Settings
+	# Sounds Settings Menu
+		menu.SettingsSoundsMenu.title = Sounds
+		menu.SettingsSoundsMenu.volume = Master Volume
+		menu.SettingsSoundsMenu.musicvolume = Music Volume
+	# Notifier Settings Menu
+		menu.SettingsNotifierMenu.title = Notification Settings
+		menu.SettingsNotifierMenu.volume = Notification Volume
+		menu.SettingsNotifierMenu.shakeinterval = Shake Interval
+		menu.SettingsNotifierMenu.timeout = Timeout
+	# Graphics Settings Menu
+		menu.SettingsGraphicsMenu.title = Graphics
+		menu.SettingsGraphicsMenu.fullscreen = Fullscreen
+		menu.SettingsGraphicsMenu.advanced = Advanced
+	# Advanced Graphics Menu
+		menu.SettingsGraphicsAdvancedMenu.title = Advanced Graphics
+		menu.SettingsGraphicsAdvancedMenu.showfps = Show FPS
+		menu.SettingsGraphicsAdvancedMenu.vsync = VSync
  	# 'About' menu
 		menu.AboutMenu.title = About
 	# Test menu

@@ -17,36 +17,21 @@
  */
 package ru.windcorp.crystalfarm.gui.menu;
 
-import ru.windcorp.crystalfarm.gui.Button;
+import ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface;
 import ru.windcorp.crystalfarm.gui.GuiSettingEditors;
 import ru.windcorp.crystalfarm.gui.Table;
-import ru.windcorp.crystalfarm.translation.ModuleTranslation;
-import ru.windcorp.crystalfarm.translation.TString;
 
-public class SettingsMenu extends MenuLayer {
-	
-	public SettingsMenu() {
-		super("SettingsMenu", true);
+public class SettingsGraphicsAdvancedMenu	extends MenuLayer {
+	public SettingsGraphicsAdvancedMenu() {
+		super("SettingsGraphicsAdvancedMenu", true);
 		Table table = new Table(getName() + ".table", 3);
 		
-		table.addRow(
-				"menu.SettingsMenu.language",
-				GuiSettingEditors.createLimitedChoiceEditor(ModuleTranslation.LANGUAGE, ModuleTranslation.getAvailableLanguages()));
-		add(new Button(
-				"SettingsMenu.sounds",
-				TString.translated("menu.SettingsMenu.sounds").toFont(),
-				button -> new SettingsSoundsMenu().show()
-				));
-		add(new Button(
-				"SettingsMenu.graphics",
-				TString.translated("menu.SettingsMenu.graphics").toFont(),
-				button -> new SettingsGraphicsMenu().show()
-				));
-		add(new Button(
-				"SettingsMenu.Advanced",
-				TString.translated("menu.SettingsMenu.advanced").toFont(),
-				button -> new SettingsAdvancedMenu().show()
-				));
+		table.addRow("menu.SettingsGraphicsAdvancedMenu.showfps",
+				GuiSettingEditors.createEditor(ModuleGraphicsInterface.SHOW_FPS),
+				GuiSettingEditors.createResetter(ModuleGraphicsInterface.SHOW_FPS));
+		table.addRow("menu.SettingsGraphicsAdvancedMenu.vsync",
+			GuiSettingEditors.createEditor(ModuleGraphicsInterface.VSYNC),
+			GuiSettingEditors.createResetter(ModuleGraphicsInterface.VSYNC));
 		add(table);
 	}
 }

@@ -1,24 +1,16 @@
 package ru.windcorp.crystalfarm.gui.menu;
 
-
-import ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface;
-
-import ru.windcorp.crystalfarm.gui.*;
+import ru.windcorp.crystalfarm.gui.Button;
+import ru.windcorp.crystalfarm.translation.TString;
 
 public class SettingsAdvancedMenu extends MenuLayer {
-
 	public SettingsAdvancedMenu() {
-		super("AdvancedSettingsMenu", true);
+		super("SettingsAdvancedMenu", true);
 		
-		Table table = new Table(getName() + ".table", 3);
-		
-		table.addRow("menu.AdvancedSettingsMenu.showfps",
-			GuiSettingEditors.createEditor(ModuleGraphicsInterface.SHOW_FPS),
-			GuiSettingEditors.createResetter(ModuleGraphicsInterface.SHOW_FPS));
-		table.addRow("menu.AdvancedSettingsMenu.vsync",
-			GuiSettingEditors.createEditor(ModuleGraphicsInterface.VSYNC),
-			GuiSettingEditors.createResetter(ModuleGraphicsInterface.VSYNC));
-		add(table);
+		add(new Button(
+				"SettingsAdvancedMenu.notifier",
+				TString.translated("menu.SettingsAdvancedMenu.notifier").toFont(),
+				button -> new SettingsNotifierMenu().show()
+				));
 	}
-	
 }

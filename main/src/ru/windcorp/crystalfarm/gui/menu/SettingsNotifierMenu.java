@@ -17,36 +17,24 @@
  */
 package ru.windcorp.crystalfarm.gui.menu;
 
-import ru.windcorp.crystalfarm.gui.Button;
+import ru.windcorp.crystalfarm.graphics.notifier.ModuleNotifier;
 import ru.windcorp.crystalfarm.gui.GuiSettingEditors;
 import ru.windcorp.crystalfarm.gui.Table;
-import ru.windcorp.crystalfarm.translation.ModuleTranslation;
-import ru.windcorp.crystalfarm.translation.TString;
 
-public class SettingsMenu extends MenuLayer {
-	
-	public SettingsMenu() {
-		super("SettingsMenu", true);
+public class SettingsNotifierMenu extends MenuLayer {
+	public SettingsNotifierMenu() {
+		super("SettingsNotifierMenu", true);
 		Table table = new Table(getName() + ".table", 3);
 		
-		table.addRow(
-				"menu.SettingsMenu.language",
-				GuiSettingEditors.createLimitedChoiceEditor(ModuleTranslation.LANGUAGE, ModuleTranslation.getAvailableLanguages()));
-		add(new Button(
-				"SettingsMenu.sounds",
-				TString.translated("menu.SettingsMenu.sounds").toFont(),
-				button -> new SettingsSoundsMenu().show()
-				));
-		add(new Button(
-				"SettingsMenu.graphics",
-				TString.translated("menu.SettingsMenu.graphics").toFont(),
-				button -> new SettingsGraphicsMenu().show()
-				));
-		add(new Button(
-				"SettingsMenu.Advanced",
-				TString.translated("menu.SettingsMenu.advanced").toFont(),
-				button -> new SettingsAdvancedMenu().show()
-				));
+		table.addRow("menu.SettingsNotifierMenu.volume",
+				GuiSettingEditors.createEditor(ModuleNotifier.SETTING_ALERT_GAIN),
+				GuiSettingEditors.createResetter(ModuleNotifier.SETTING_ALERT_GAIN));
+		table.addRow("menu.SettingsNotifierMenu.shakeinterval",
+				GuiSettingEditors.createEditor(ModuleNotifier.SETTING_SHAKE_INTERVAL),
+				GuiSettingEditors.createResetter(ModuleNotifier.SETTING_SHAKE_INTERVAL));
+		table.addRow("menu.SettingsNotifierMenu.timeout",
+				GuiSettingEditors.createEditor(ModuleNotifier.SETTING_TIMEOUT),
+				GuiSettingEditors.createResetter(ModuleNotifier.SETTING_TIMEOUT));
 		add(table);
 	}
 }

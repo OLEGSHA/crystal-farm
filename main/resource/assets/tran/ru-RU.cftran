@@ -11,15 +11,32 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		menu.MainMenu.about = Об игре
 		menu.MainMenu.exit = Выход
 		menu.MainMenu.notice = %1$s версия %2$s\n© %3$s %4$s\nЛицензия %5$s
-	# Настройки
+	# Меню настроек
 		menu.SettingsMenu.title = Настройки
-		menu.SettingsMenu.volume = Громкость
-		menu.SettingsMenu.fullscreen = Полный экран
-		menu.SettingsMenu.advanced = Расширенные настройки
-	# Расширенные настройки
-		menu.AdvancedSettingsMenu.title = Расширенные настройки
-		menu.AdvancedSettingsMenu.showfps = Счётчик FPS
-		menu.AdvancedSettingsMenu.vsync = Вертикальная синхронизация
+		menu.SettingsMenu.advanced = Расширенные
+		menu.SettingsMenu.graphics = Графика
+		menu.SettingsMenu.sounds = Звуки
+		menu.SettingsMenu.language = Язык
+	# Меню расширенных настройки
+		menu.SettingsAdvancedMenu.title = Расширенные настройки
+		menu.SettingsAdvancedMenu.notifier = Уведомления
+	# Меню настроек звука
+		menu.SettingsSoundsMenu.title = Звуки
+		menu.SettingsSoundsMenu.volume = Общие
+		menu.SettingsSoundsMenu.musicvolume = Музыка
+	# Меню настроек графики
+		menu.SettingsGraphicsMenu.title = Графика
+		menu.SettingsGraphicsMenu.fullscreen = Полный экран
+		menu.SettingsGraphicsMenu.advanced = Расширенные
+	# Меню расширенных настроек графики
+		menu.SettingsGraphicsAdvancedMenu.title = Графика расширенные
+		menu.SettingsGraphicsAdvancedMenu.showfps = Счётчик FPS
+		menu.SettingsGraphicsAdvancedMenu.vsync = Вертикальная Синхронизация
+	# Notifier Settings Menu
+		menu.SettingsNotifierMenu.title = Уведомления
+		menu.SettingsNotifierMenu.volume = Громкость уведомлений
+		menu.SettingsNotifierMenu.shakeinterval = Интервал напоминания
+		menu.SettingsNotifierMenu.timeout = Длительность
 	# Меню "Об игре"
 		menu.AboutMenu.title = Об игре
 	# Тестовое меню

@@ -17,36 +17,21 @@
  */
 package ru.windcorp.crystalfarm.gui.menu;
 
-import ru.windcorp.crystalfarm.gui.Button;
+import ru.windcorp.crystalfarm.audio.ModuleAudioInterface;
 import ru.windcorp.crystalfarm.gui.GuiSettingEditors;
 import ru.windcorp.crystalfarm.gui.Table;
-import ru.windcorp.crystalfarm.translation.ModuleTranslation;
-import ru.windcorp.crystalfarm.translation.TString;
 
-public class SettingsMenu extends MenuLayer {
-	
-	public SettingsMenu() {
-		super("SettingsMenu", true);
+public class SettingsSoundsMenu extends MenuLayer {
+	public SettingsSoundsMenu() {
+		super("SettingsSoundsMenu", true);
 		Table table = new Table(getName() + ".table", 3);
 		
-		table.addRow(
-				"menu.SettingsMenu.language",
-				GuiSettingEditors.createLimitedChoiceEditor(ModuleTranslation.LANGUAGE, ModuleTranslation.getAvailableLanguages()));
-		add(new Button(
-				"SettingsMenu.sounds",
-				TString.translated("menu.SettingsMenu.sounds").toFont(),
-				button -> new SettingsSoundsMenu().show()
-				));
-		add(new Button(
-				"SettingsMenu.graphics",
-				TString.translated("menu.SettingsMenu.graphics").toFont(),
-				button -> new SettingsGraphicsMenu().show()
-				));
-		add(new Button(
-				"SettingsMenu.Advanced",
-				TString.translated("menu.SettingsMenu.advanced").toFont(),
-				button -> new SettingsAdvancedMenu().show()
-				));
+		table.addRow("menu.SettingsSoundsMenu.volume",
+				GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),
+				GuiSettingEditors.createResetter(ModuleAudioInterface.GAIN));
+		table.addRow("menu.SettingsSoundsMenu.musicvolume",
+				GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN_MUSIC),
+				GuiSettingEditors.createResetter(ModuleAudioInterface.GAIN_MUSIC));
 		add(table);
 	}
 }
