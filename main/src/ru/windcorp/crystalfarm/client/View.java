@@ -17,56 +17,40 @@
  */
 package ru.windcorp.crystalfarm.client;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 
 public class View {
 	
 	private int x, y;
-	private double scale = 1;
-
-	public View(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
+	private double scale;
 	
-	public int getX() {
-		return x;
-	}
-
-	public void setX(int x) {
+	public View(int x, int y, double scale) {
 		this.x = x;
-	}
-
-	public int getY() {
-		return y;
-	}
-
-	public void setY(int y) {
 		this.y = y;
-	}
-
-	public double getScale() {
-		return scale;
-	}
-
-	public void setScale(double scale) {
 		this.scale = scale;
 	}
 
-	public int getWidth() {
-		return GraphicsInterface.getWindowWidth();
+	public void move(int xMod, int yMod) {
+		this.x += xMod;
+		this.y += yMod;
 	}
 	
-	public int getHeight() {
-		return GraphicsInterface.getWindowHeight();
+	public void zoom(double factor) {
+		this.scale *= factor;
 	}
 	
-	public int getXEnd() {
-		return getX() + getWidth();
+	public void pushMatrix() {
+		glPushMatrix();
+		glMatrixMode(GL_MODELVIEW);
+		glTranslated(GraphicsInterface.getWindowWidth()/2, GraphicsInterface.getWindowHeight()/2, 0);
+		glScaled(scale, scale, 0);
+		glTranslated(-x, -y, 0);
 	}
 	
-	public int getYEnd() {
-		return getY() + getHeight();
+	public void popMatrix() {
+		glPopMatrix();
 	}
 
 }

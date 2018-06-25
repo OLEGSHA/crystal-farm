@@ -28,7 +28,7 @@ import ru.windcorp.crystalfarm.logic.Island;
 public class GameLayer extends Layer implements InputListener {
 
 	private Island island;
-	private final View view = new View(0, 0);
+	private final View view = new View(0, 0, 1);
 	
 	public GameLayer() {
 		super("Game");
@@ -36,7 +36,9 @@ public class GameLayer extends Layer implements InputListener {
 
 	@Override
 	public void render() {
+		getView().pushMatrix();
 		getIsland().render(view);
+		getView().popMatrix();
 	}
 
 	public Island getIsland() {
@@ -59,17 +61,17 @@ public class GameLayer extends Layer implements InputListener {
 			if (ki.isPressed()) {
 				switch (ki.getKey()) {
 				case GLFW.GLFW_KEY_UP:
-					getView().setY(getView().getY() - 40); break;
+					getView().move(  0, -40); break;
 				case GLFW.GLFW_KEY_DOWN:
-					getView().setY(getView().getY() + 40); break;
+					getView().move(  0, +40); break;
 				case GLFW.GLFW_KEY_LEFT:
-					getView().setX(getView().getX() - 40); break;
+					getView().move(-40,   0); break;
 				case GLFW.GLFW_KEY_RIGHT:
-					getView().setX(getView().getX() + 40); break;
+					getView().move(+40,   0); break;
 				case GLFW.GLFW_KEY_LEFT_BRACKET:
-					getView().setScale(getView().getScale() * 1.25); break;
+					getView().zoom(  1.25); break;
 				case GLFW.GLFW_KEY_RIGHT_BRACKET:
-					getView().setScale(getView().getScale() / 1.25); break;
+					getView().zoom(1/1.25); break;
 				}
 			}
 		}

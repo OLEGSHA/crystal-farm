@@ -63,10 +63,9 @@ public abstract class GridTile extends Tile {
 	}
 	
 	@Override
-	public void render(View view, int x, int y, int size) {
+	public void render(View view, int x, int y) {
 		GraphicsInterface.drawTexture(
 				x, y,
-				size, size,
 				texture,
 				0, 0,
 				null, Direction.UP);

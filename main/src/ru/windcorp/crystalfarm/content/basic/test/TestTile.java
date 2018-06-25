@@ -18,11 +18,8 @@
 package ru.windcorp.crystalfarm.content.basic.test;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.client.View;
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.translation.TString;
-import ru.windcorp.crystalfarm.util.Direction;
 
 public class TestTile extends GridTile {
 	
@@ -30,17 +27,6 @@ public class TestTile extends GridTile {
 
 	public TestTile() {
 		super(InbuiltMod.INST, "testTile", NAME);
-	}
-	
-	@Override
-	public void render(View view, int x, int y, int size) {
-		GraphicsInterface.drawTexture(
-				x, y,
-				size, size,
-				getTexture(),
-				0, 0,
-				null,
-				Direction.values()[System.identityHashCode(this) % 4]);
 	}
 
 }

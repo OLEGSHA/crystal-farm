@@ -109,6 +109,6 @@ public abstract class Tile extends Updateable {
 		// Do nothing
 	}
 	
-	public abstract void render(View view, int x, int y, int size);
+	public abstract void render(View view, int x, int y);
 
 }
