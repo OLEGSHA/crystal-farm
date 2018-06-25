@@ -13,30 +13,30 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.MainMenu.notice = %1$s version %2$s\n© %3$s %4$s\nLicensed under %5$s
 	# Settings menu
 		menu.SettingsMenu.title = Settings
-		menu.SettingsMenu.advanced = Advanced
+		menu.SettingsMenu.advanced = Other
 		menu.SettingsMenu.graphics = Graphics
-		menu.SettingsMenu.sounds = Sound
+		menu.SettingsMenu.sounds = Sounds
 		menu.SettingsMenu.language = Language
-	# Advanced Settings Menu
-		menu.SettingsAdvancedMenu.title = Advanced Settings
-		menu.SettingsAdvancedMenu.notifier = Notification Settings
-	# Sounds Settings Menu
-		menu.SettingsSoundsMenu.title = Sounds
-		menu.SettingsSoundsMenu.volume = Master Volume
-		menu.SettingsSoundsMenu.musicvolume = Music Volume
-	# Notifier Settings Menu
-		menu.SettingsNotifierMenu.title = Notification Settings
-		menu.SettingsNotifierMenu.volume = Notification Volume
-		menu.SettingsNotifierMenu.shakeinterval = Shake Interval
-		menu.SettingsNotifierMenu.timeout = Timeout
-	# Graphics Settings Menu
-		menu.SettingsGraphicsMenu.title = Graphics
-		menu.SettingsGraphicsMenu.fullscreen = Fullscreen
-		menu.SettingsGraphicsMenu.advanced = Advanced
-	# Advanced Graphics Menu
-		menu.SettingsGraphicsAdvancedMenu.title = Advanced Graphics
-		menu.SettingsGraphicsAdvancedMenu.showfps = Show FPS
-		menu.SettingsGraphicsAdvancedMenu.vsync = VSync
+		# Sound settings menu
+			menu.SettingsSoundsMenu.title = Sounds
+			menu.SettingsSoundsMenu.volume = Master
+			menu.SettingsSoundsMenu.musicvolume = Music
+		# Graphics settings menu
+			menu.SettingsGraphicsMenu.title = Graphics
+			menu.SettingsGraphicsMenu.fullscreen = Fullscreen
+			menu.SettingsGraphicsMenu.advanced = Advanced
+			# Advanced graphics settings menu
+				menu.SettingsGraphicsAdvancedMenu.title = Graphics (Advanced)
+				menu.SettingsGraphicsAdvancedMenu.showfps = FPS Display
+				menu.SettingsGraphicsAdvancedMenu.vsync = Vertical sync
+		# Other settings menu
+			menu.SettingsAdvancedMenu.title = Other
+			menu.SettingsAdvancedMenu.notifier = Notifications
+			# Notifications settings menu
+				menu.SettingsNotifierMenu.title = Notifications
+				menu.SettingsNotifierMenu.volume = Volume
+				menu.SettingsNotifierMenu.shakeinterval = Shake interval
+				menu.SettingsNotifierMenu.timeout = Timeout
  	# 'About' menu
 		menu.AboutMenu.title = About
 	# Test menu
@@ -47,6 +47,7 @@ welcome = I can now speak English just as they speak it in the US!
 		menu.test.switchButton.text = "State: "
 		menu.test.sliderInt = Integer Slider
 		menu.test.sliderFloat = Floating-point Number Slider
+		menu.test.textField = Text Field
 		menu.test.gain = Master volume
 		menu.test.fullscreen = Fullscreen
 # Misc

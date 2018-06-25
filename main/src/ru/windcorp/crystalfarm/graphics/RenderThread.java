@@ -168,6 +168,7 @@ public class RenderThread implements Runnable {
 	private void setupWindowCallbacks() {
 		Log.info("Registering window callbacks");
 		glfwSetKeyCallback(getWindow(), GraphicsInterface::handleKeyInput);
+		glfwSetCharCallback(getWindow(), GraphicsInterface::handleCharInput);
 		glfwSetCursorPosCallback(getWindow(), GraphicsInterface::handleCursorMove);
 		glfwSetMouseButtonCallback(getWindow(), GraphicsInterface::handleMouseButton);
 		glfwSetWindowSizeCallback(getWindow(), GraphicsInterface::handleWindowResize);

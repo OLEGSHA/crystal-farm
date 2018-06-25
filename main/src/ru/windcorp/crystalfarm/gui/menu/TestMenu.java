@@ -51,11 +51,24 @@ public class TestMenu extends MenuLayer {
 				0.0005f, 0.001f, 0.00001f, 0.0008f,
 				x -> Notifier.positive(TString.translated("menu.test.sliderFloat").append("!")));
 		
+		TextField textField = new TextField("ExampleTestField",
+				"Foobar", 20,
+				x -> {
+					for (int i = 0; i < x.getLength(); ++i) {
+						if (Character.isWhitespace(x.getBuffer()[i])) {
+							return false;
+						}
+					}
+					return true;
+				},
+				x -> Notifier.positive(TString.translated("menu.test.textField").append("!")));
+		
 		table.addRow("menu.test.button", button);
 		table.addRow("menu.test.choiceButton", choiceButton);
 		table.addRow("menu.test.switchButton.text", switchButton);
 		table.addRow("menu.test.sliderInt", sliderInt);
 		table.addRow("menu.test.sliderFloat", sliderFloat);
+		table.addRow("menu.test.textField", textField);
 		
 		table.addRow("menu.test.gain",
 				GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),

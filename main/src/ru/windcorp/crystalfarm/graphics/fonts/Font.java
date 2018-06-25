@@ -60,16 +60,20 @@ public class Font extends Nameable {
 	}
 	
 	public int getLength(char[] chars, boolean bold) {
+		return getLength(chars, 0, chars.length, bold);
+	}
+	
+	public int getLength(char[] chars, int offset, int length, boolean bold) {
 		int sum = 0, maxSum = 0;
 		
-		for (char c : chars) {
-			if (c == '\n') {
+		for (int i = offset; i < length; ++i) {
+			if (chars[i] == '\n') {
 				if (maxSum < sum) {
 					maxSum = sum;
 				}
 				sum = 0;
 			} else {
-				sum += getSymbol(c).getWidth() + (bold ? 1 : 0);
+				sum += getSymbol(chars[i]).getWidth() + (bold ? 1 : 0);
 			}
 		}
 		if (maxSum < sum) {
@@ -80,18 +84,22 @@ public class Font extends Nameable {
 	}
 	
 	public Size getSize(char[] chars, boolean bold) {
+		return getSize(chars, 0, chars.length, bold);
+	}
+	
+	public Size getSize(char[] chars, int offset, int length, boolean bold) {
 		Size result = new Size(0, getHeight());
 		int maxWidth = 0;
-		
-		for (char c : chars) {
-			if (c == '\n') {
+
+		for (int i = offset; i < length; ++i) {
+			if (chars[i] == '\n') {
 				if (maxWidth < result.width) {
 					maxWidth = result.width;
 				}
 				result.width = 0;
 				result.height += getHeight();
 			} else {
-				result.width += getSymbol(c).getWidth() + (bold ? 1 : 0);
+				result.width += getSymbol(chars[i]).getWidth() + (bold ? 1 : 0);
 			}
 		}
 		if (maxWidth < result.width) {
@@ -114,21 +122,25 @@ public class Font extends Nameable {
 		}
 	}
 	
-	protected void renderUnstyled(char[] chars, int x, int y, boolean bold, Color color) {
+	protected void renderUnstyled(char[] chars, int offset, int length, int x, int y, boolean bold, Color color) {
 		x++; y++;
 		int startX = x;
-		
-		for (char c : chars) {
-			if (c == '\n') {
+
+		for (int i = offset; i < length; ++i) {
+			if (chars[i] == '\n') {
 				x = startX;
 				y += getHeight();
 			} else {
-				x += render(getSymbol(c), x, y, bold, color);
+				x += render(getSymbol(chars[i]), x, y, bold, color);
 			}
 		}
 	}
-	
+
 	public void render(char[] chars, int x, int y, boolean bold, FontStyle style, Color color) {
+		render(chars, 0, chars.length, x, y, bold, style, color);
+	}
+	
+	public void render(char[] chars, int offset, int length, int x, int y, boolean bold, FontStyle style, Color color) {
 		if (color == null) color = Color.WHITE;
 		
 		switch (style) {
@@ -136,13 +148,13 @@ public class Font extends Nameable {
 			color.save();
 			color.multiply(0.75);
 			color.save();
-			renderUnstyled(chars, x - 1, y - 1, bold, color.multiply(2));
+			renderUnstyled(chars, offset, length, x - 1, y - 1, bold, color.multiply(2));
 			color.revert();
 			//$FALL-THROUGH$
 			
 		case SHADOW:
 			color.save();
-			renderUnstyled(chars, x + 1, y + 1, bold, color.multiply(0.25));
+			renderUnstyled(chars, offset, length, x + 1, y + 1, bold, color.multiply(0.25));
 			color.revert();
 			break;
 			
@@ -150,7 +162,7 @@ public class Font extends Nameable {
 			break;
 		}
 		
-		renderUnstyled(chars, x, y, bold, color);
+		renderUnstyled(chars, offset, length, x, y, bold, color);
 		color.reset();
 	}
 	

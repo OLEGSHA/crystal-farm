@@ -13,30 +13,30 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		menu.MainMenu.notice = %1$s версия %2$s\n© %3$s %4$s\nЛицензия %5$s
 	# Меню настроек
 		menu.SettingsMenu.title = Настройки
-		menu.SettingsMenu.advanced = Расширенные
+		menu.SettingsMenu.advanced = Дополнительно
 		menu.SettingsMenu.graphics = Графика
 		menu.SettingsMenu.sounds = Звуки
 		menu.SettingsMenu.language = Язык
-	# Меню расширенных настройки
-		menu.SettingsAdvancedMenu.title = Расширенные настройки
-		menu.SettingsAdvancedMenu.notifier = Уведомления
-	# Меню настроек звука
-		menu.SettingsSoundsMenu.title = Звуки
-		menu.SettingsSoundsMenu.volume = Общие
-		menu.SettingsSoundsMenu.musicvolume = Музыка
-	# Меню настроек графики
-		menu.SettingsGraphicsMenu.title = Графика
-		menu.SettingsGraphicsMenu.fullscreen = Полный экран
-		menu.SettingsGraphicsMenu.advanced = Расширенные
-	# Меню расширенных настроек графики
-		menu.SettingsGraphicsAdvancedMenu.title = Графика расширенные
-		menu.SettingsGraphicsAdvancedMenu.showfps = Счётчик FPS
-		menu.SettingsGraphicsAdvancedMenu.vsync = Вертикальная Синхронизация
-	# Notifier Settings Menu
-		menu.SettingsNotifierMenu.title = Уведомления
-		menu.SettingsNotifierMenu.volume = Громкость уведомлений
-		menu.SettingsNotifierMenu.shakeinterval = Интервал напоминания
-		menu.SettingsNotifierMenu.timeout = Длительность
+		# Меню настроек звука
+			menu.SettingsSoundsMenu.title = Звуки
+			menu.SettingsSoundsMenu.volume = Общее
+			menu.SettingsSoundsMenu.musicvolume = Музыка
+		# Меню настроек графики
+			menu.SettingsGraphicsMenu.title = Графика
+			menu.SettingsGraphicsMenu.fullscreen = Полный экран
+			menu.SettingsGraphicsMenu.advanced = Расширенные
+			# Меню расширенных настроек графики
+				menu.SettingsGraphicsAdvancedMenu.title = Графика (расширенные)
+				menu.SettingsGraphicsAdvancedMenu.showfps = Счётчик FPS
+				menu.SettingsGraphicsAdvancedMenu.vsync = Вертикальная синхронизация
+		# Меню расширенных настройек
+			menu.SettingsAdvancedMenu.title = Дополнительно
+			menu.SettingsAdvancedMenu.notifier = Уведомления
+			# Меню настроек уведомлений
+				menu.SettingsNotifierMenu.title = Уведомления
+				menu.SettingsNotifierMenu.volume = Громкость
+				menu.SettingsNotifierMenu.shakeinterval = Интервал напоминания
+				menu.SettingsNotifierMenu.timeout = Длительность
 	# Меню "Об игре"
 		menu.AboutMenu.title = Об игре
 	# Тестовое меню
@@ -47,6 +47,7 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		menu.test.switchButton.text = "Состояние: "
 		menu.test.sliderInt = Целочисленный ползунок
 		menu.test.sliderFloat = Ползунок с плавающей запятой
+		menu.test.textField = Текстовое поле
 		menu.test.gain = Общая громкость
 		menu.test.fullscreen = Полноэкранный режим
 		

@@ -24,6 +24,7 @@ import ru.windcorp.crystalfarm.translation.TString;
 
 public class GuiSettingEditors {
 	
+	@SuppressWarnings("unchecked")
 	public static Component createEditor(ConfigurationNode setting) {
 		if (setting instanceof SettingInt) {
 			return createIntEditor((SettingInt) setting);
@@ -33,6 +34,11 @@ public class GuiSettingEditors {
 		}
 		if (setting instanceof SettingBoolean) {
 			return createBooleanEditor((SettingBoolean) setting);
+		}
+		if (setting instanceof Setting<?>) {
+			if (((Setting<?>) setting).getType() == String.class) {
+				return createStringEditor((Setting<String>) setting);
+			}
 		}
 		
 		return null;
@@ -77,6 +83,19 @@ public class GuiSettingEditors {
 		button.addAction(x -> setting.set(button.getState()));
 		setting.addListener(x -> button.setStateSilently(setting.get()));
 		return button;
+	}
+
+	private static Component createStringEditor(Setting<String> setting) {
+		TextField textField = new TextField(
+				setting.getName() + ".editor",
+				setting.get(),
+				20,
+				null,
+				null);
+		
+		textField.addAction(x -> setting.set(textField.get()));
+		setting.addListener(x -> textField.setValueSilently(setting.get()));
+		return textField;
 	}
 	
 	public static Button createResetter(ConfigurationNode setting) {

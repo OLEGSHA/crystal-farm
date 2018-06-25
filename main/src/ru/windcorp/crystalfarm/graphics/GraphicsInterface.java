@@ -37,6 +37,7 @@ import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.GuiLayer;
+import ru.windcorp.crystalfarm.input.CharInput;
 import ru.windcorp.crystalfarm.input.CursorMoveInput;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
@@ -192,6 +193,14 @@ public class GraphicsInterface {
 		}
 		
 		dispatchInput(new KeyInput(key, action, mods));
+	}
+	
+	static void handleCharInput(long window, int character) {
+		if (window != getWindow()) {
+			return;
+		}
+
+		dispatchInput(new CharInput(character));
 	}
 	
 	static void dispatchInput(Input input) {
@@ -461,6 +470,50 @@ public class GraphicsInterface {
 				width - 2*borderThickness,
 				height - 2*borderThickness,
 				color);
+	}
+	
+	/**
+	 * Creates a rectangular mask. The rectangle may not be visible,
+	 * partially or completely.
+	 * <p>
+	 * Coordinates are given in <i>display coordinate system</i>, where the point (0;0) corresponds to
+	 * the upper-left corner of the screen, X axis is positive to the right and Y axis is positive to the bottom.
+	 * @param x the X coordinate of the upper-left corner of the rectangle
+	 * @param y the Y coordinate of the upper-left corner of the rectangle
+	 * @param width the width of the rectangle
+	 * @param height the height of the rectangle
+	 * @see {@link #resetMask()}
+	 */
+	public static void setMask(int x, int y, int width, int height) {
+		glEnable(GL_STENCIL_TEST);
+		
+	    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+	    glStencilMask(0xFF);
+	    glClear(GL_STENCIL_BUFFER_BIT);
+	    
+	    width += x;
+		height += y;
+		
+		glBegin(GL_QUADS);
+			
+			glVertex2i(x, y);
+			glVertex2i(x, height);
+			glVertex2i(width, height);
+			glVertex2i(width, y);
+		
+		glEnd();
+		
+		glStencilFunc(GL_EQUAL, 1, 0xFF);
+	    glStencilMask(0x00);
+	}
+	
+	/**
+	 * Discards any present masks.
+	 * @see {@link #setMask(int, int, int, int)}
+	 */
+	public static void resetMask() {
+		glDisable(GL_STENCIL_TEST);
 	}
 	
 	/**

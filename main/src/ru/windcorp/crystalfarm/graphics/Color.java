@@ -30,13 +30,20 @@ public class Color implements Cloneable {
 			WHITE				= new Color(  1,   1,   1,   1),
 			TRANSPARENT			= new Color(  0,   0,   0,   0),
 			RED					= new Color(  1,   0,   0,   1),
+			SOFT_RED			= new Color(  1, .25, .25,   1),
 			GREEN				= new Color(  0,   1,   0,   1),
+			SOFT_GREEN			= new Color(.25,   1, .25,   1),
 			BLUE				= new Color(  0,   0,   1,   1),
+			SOFT_BLUE			= new Color(.25, .25,   1,   1),
 			BRIGHT_YELLOW		= new Color(  1,   1,   0,   1),
+			YELLOW				= new Color(.75, .75,   0,   1),
 			BRIGHT_CYAN			= new Color(  0,   1,   1,   1),
+			CYAN				= new Color(  0, .75, .75,   1),
 			BRIGHT_MAGENTA		= new Color(  1,   0,   1,   1),
+			MAGENTA				= new Color(.75,   0, .75,   1),
 			GRAY				= new Color(0.5, 0.5, 0.5,   1),
 			LIGHT_GRAY			= new Color(.75, .75, .75,   1),
+			LIGHTEST_GRAY		= new Color( .9,  .9,  .9,   1),
 			DARK_GRAY			= new Color(.25, .25, .25,   1);
 	
 	/**
