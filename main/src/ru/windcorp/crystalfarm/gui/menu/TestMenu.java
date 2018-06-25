@@ -20,6 +20,7 @@ package ru.windcorp.crystalfarm.gui.menu;
 import java.util.Arrays;
 
 import ru.windcorp.crystalfarm.audio.ModuleAudioInterface;
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.gui.*;
@@ -33,7 +34,10 @@ public class TestMenu extends MenuLayer {
 		Table table = new Table(getName() + ".table", 3);
 		
 		Button button = new Button("ExampleButton", TString.translated("menu.test.button").toFont(),
-				x -> Notifier.positive(TString.translated("menu.test.button").append("!")));
+				x -> {
+					
+					Notifier.positive(TString.translated("menu.test.button").append("!"));
+				});
 		ChoiceButton<String> choiceButton = new ChoiceButton<String>("ExampleChoiceButton",
 				x -> Notifier.positive(TString.translated("menu.test.choiceButton").append("!")),
 				0, Arrays.asList("1", "2", "3"));
@@ -63,12 +67,18 @@ public class TestMenu extends MenuLayer {
 				},
 				x -> Notifier.positive(TString.translated("menu.test.textField").append("!")));
 		
+		ColorChooser colorChooser = new ColorChooser("ExampleColorChooser",
+				GraphicsDesign.gdGetBorderHoveredColor(),
+				true, true,
+				x -> Notifier.positive(TString.translated("menu.test.colorChooser").append("!")));
+		
 		table.addRow("menu.test.button", button);
 		table.addRow("menu.test.choiceButton", choiceButton);
 		table.addRow("menu.test.switchButton.text", switchButton);
 		table.addRow("menu.test.sliderInt", sliderInt);
 		table.addRow("menu.test.sliderFloat", sliderFloat);
 		table.addRow("menu.test.textField", textField);
+		table.addRow("menu.test.colorChooser", colorChooser);
 		
 		table.addRow("menu.test.gain",
 				GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),
@@ -76,6 +86,9 @@ public class TestMenu extends MenuLayer {
 		table.addRow("menu.test.fullscreen",
 				GuiSettingEditors.createEditor(ModuleGraphicsInterface.WINDOW_FULLSCREEN),
 				GuiSettingEditors.createResetter(ModuleGraphicsInterface.WINDOW_FULLSCREEN));
+		table.addRow("menu.test.foreground",
+				GuiSettingEditors.createEditor(GraphicsDesign.SETTING_FOREGROUND_COLOR),
+				GuiSettingEditors.createResetter(GraphicsDesign.SETTING_FOREGROUND_COLOR));
 		
 		add(table);
 		button.takeFocus();

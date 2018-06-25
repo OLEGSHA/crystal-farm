@@ -99,14 +99,13 @@ public class LayoutGrid implements Layout {
 					parent.getY() + rows[row],
 					
 					(column != (columns.length-1) ?
-						(columns[column + 1] - columns[column]) :
-						(parent.getWidth() - columns[column] - margin*gdGetLine()))
-					- gap*gdGetLine(),
+						(columns[column + 1] - columns[column] - gap*gdGetLine()) :
+						(parent.getWidth() - margin*gdGetLine() - columns[column])),
 						
 					(row != (rows.length-1) ?
-						(rows[row + 1] - rows[row]) :
-						(parent.getHeight() - rows[row] - margin*gdGetLine()))
-					- gap*gdGetLine());
+						(rows[row + 1] - rows[row] - gap*gdGetLine()) :
+						(parent.getHeight() - margin*gdGetLine() - rows[row]))
+					);
 		}
 	}
 

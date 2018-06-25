@@ -48,8 +48,22 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		menu.test.sliderInt = Целочисленный ползунок
 		menu.test.sliderFloat = Ползунок с плавающей запятой
 		menu.test.textField = Текстовое поле
+		menu.test.colorChooser = Выбор цвета
 		menu.test.gain = Общая громкость
 		menu.test.fullscreen = Полноэкранный режим
+		menu.test.foreground = Передний план
+		
+# Компоненты GUI
+	# Выбор цвета
+		gui.colorChooser.random = Случайно
+		gui.colorChooser.title = Выбор цвета
+		gui.colorChooser.discard = Отмена
+		gui.colorChooser.accept = Принять
+		gui.colorChooser.channel.r = Красный
+		gui.colorChooser.channel.g = Зелёный
+		gui.colorChooser.channel.b = Синий
+		gui.colorChooser.channel.a = Альфа
+		gui.colorChooser.hex = Шестнадцатеричный
 		
 # Разное
 	# Generic

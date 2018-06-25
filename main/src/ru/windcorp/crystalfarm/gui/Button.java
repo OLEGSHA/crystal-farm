@@ -42,7 +42,7 @@ public class Button extends ActivatableComponent {
 		this.label = new Label(name + ".label", label);
 		
 		addInputListener((ComponentKeyInputListener) (comp, input) -> {
-			if (input.is(GLFW.GLFW_KEY_ENTER, KeyInput.RELEASED)) {
+			if (input.is(GLFW.GLFW_KEY_ENTER, KeyInput.PRESSED)) {
 				accept(null);
 				input.consume();
 			}

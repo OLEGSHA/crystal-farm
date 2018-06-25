@@ -20,6 +20,7 @@ package ru.windcorp.crystalfarm.gui;
 import java.util.List;
 
 import ru.windcorp.crystalfarm.cfg.*;
+import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.translation.TString;
 
 public class GuiSettingEditors {
@@ -38,6 +39,9 @@ public class GuiSettingEditors {
 		if (setting instanceof Setting<?>) {
 			if (((Setting<?>) setting).getType() == String.class) {
 				return createStringEditor((Setting<String>) setting);
+			}
+			if (((Setting<?>) setting).getType() == Color.class) {
+				return createColorEditor((Setting<Color>) setting);
 			}
 		}
 		
@@ -97,6 +101,19 @@ public class GuiSettingEditors {
 		setting.addListener(x -> textField.setValueSilently(setting.get()));
 		return textField;
 	}
+
+	private static Component createColorEditor(Setting<Color> setting) {
+		ColorChooser colorChooser = new ColorChooser(
+				setting.getName() + ".editor",
+				setting.get(),
+				true,
+				true,
+				null);
+		
+		colorChooser.addAction(x -> setting.set(colorChooser.getColor()));
+		setting.addListener(x -> colorChooser.setColor(setting.get()));
+		return colorChooser;
+	}
 	
 	public static Button createResetter(ConfigurationNode setting) {
 		if (setting instanceof SettingInt) {
@@ -107,6 +124,9 @@ public class GuiSettingEditors {
 		}
 		if (setting instanceof SettingBoolean) {
 			return createBooleanResetter((SettingBoolean) setting);
+		}
+		if (setting instanceof Setting<?>) {
+			return createSettingResetter((Setting<?>) setting);
 		}
 		
 		return null;
@@ -127,6 +147,13 @@ public class GuiSettingEditors {
 	}
 
 	private static Button createBooleanResetter(SettingBoolean setting) {
+		return new Button(
+				setting.getName() + ".resetter",
+				TString.translated("misc.gen.reset").toFont(),
+				x -> setting.set(setting.getDefaultValue()));
+	}
+
+	private static <T> Button createSettingResetter(Setting<T> setting) {
 		return new Button(
 				setting.getName() + ".resetter",
 				TString.translated("misc.gen.reset").toFont(),

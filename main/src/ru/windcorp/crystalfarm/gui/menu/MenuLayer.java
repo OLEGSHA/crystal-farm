@@ -23,6 +23,7 @@ import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 import org.lwjgl.glfw.GLFW;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
+import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.GuiLayer;
@@ -34,14 +35,18 @@ import ru.windcorp.crystalfarm.translation.TString;
 public class MenuLayer extends GuiLayer {
 	
 	private final Menu contents;
-
+	
 	public MenuLayer(String name, boolean addCloseButton) {
+		this(name, TString.translated("menu." + name + ".title").toFont(), addCloseButton);
+	}
+
+	public MenuLayer(String name, FontString title, boolean addCloseButton) {
 		super(name);
 		
 		Component root = new Component(name + "Bg");
 		root.setLayout(new LayoutBorderVertical());
 		
-		this.contents = new Menu(name, TString.translated("menu." + name + ".title").toFont());
+		this.contents = new Menu(name, title);
 		
 		root.addChild(contents.center().setLayoutHint(LayoutBorderVertical.CENTER));
 		if (addCloseButton) {

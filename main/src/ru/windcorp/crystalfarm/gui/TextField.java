@@ -203,8 +203,6 @@ public class TextField extends ActivatableComponent {
 					FontStyle.PLAIN,
 					Color.BLACK
 					);
-			
-			
 		}
 		
 		resetMask();
@@ -212,12 +210,12 @@ public class TextField extends ActivatableComponent {
 
 	private Color getBackgroundColor() {
 		if (isError()) {
-			return isHovered() ? Color.SOFT_RED			: Color.RED;
+			return isHovered() ? Color.SOFT_RED : Color.RED;
 		} else {
 			if (isChanged()) {
-				return isHovered() ? Color.BRIGHT_YELLOW	: Color.YELLOW;
+				return isHovered() ? Color.BRIGHT_YELLOW : Color.YELLOW;
 			} else {
-				return isHovered() ? Color.LIGHTEST_GRAY	: Color.LIGHT_GRAY;
+				return isHovered() ? Color.LIGHTEST_GRAY : Color.LIGHT_GRAY;
 			}
 		}
 	}
