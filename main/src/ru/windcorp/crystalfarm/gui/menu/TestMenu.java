@@ -19,11 +19,15 @@ package ru.windcorp.crystalfarm.gui.menu;
 
 import java.util.Arrays;
 
+import org.lwjgl.glfw.GLFW;
+
 import ru.windcorp.crystalfarm.audio.ModuleAudioInterface;
 import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
 import ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.gui.*;
+import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.input.KeyStroke;
 import ru.windcorp.crystalfarm.translation.TString;
 
 public class TestMenu extends MenuLayer {
@@ -42,18 +46,9 @@ public class TestMenu extends MenuLayer {
 				x -> Notifier.positive(TString.translated("menu.test.choiceButton").append("!")),
 				0, Arrays.asList("1", "2", "3"));
 		
-		TString base = TString.translated("menu.test.switchButton.text");
-		SwitchButton switchButton = new SwitchButton("ExampleSwitchButton",
-				base.append(TString.translated("misc.gen.enabled")), base.append(TString.translated("misc.gen.disabled")), false,
-				x -> Notifier.positive(TString.translated("menu.test.switchButton").append("!")));
-		
 		SliderInt sliderInt = new SliderInt("ExampleSliderInt",
 				0, 20, 4, 16,
 				x -> Notifier.positive(TString.translated("menu.test.sliderInt").append("!")));
-		
-		SliderFloat sliderFloat = new SliderFloat("ExampleSliderFloat",
-				0.0005f, 0.001f, 0.00001f, 0.0008f,
-				x -> Notifier.positive(TString.translated("menu.test.sliderFloat").append("!")));
 		
 		TextField textField = new TextField("ExampleTestField",
 				"Foobar", 20,
@@ -67,18 +62,15 @@ public class TestMenu extends MenuLayer {
 				},
 				x -> Notifier.positive(TString.translated("menu.test.textField").append("!")));
 		
-		ColorChooser colorChooser = new ColorChooser("ExampleColorChooser",
-				GraphicsDesign.gdGetBorderHoveredColor(),
-				true, true,
-				x -> Notifier.positive(TString.translated("menu.test.colorChooser").append("!")));
+		KeyStrokeEditor keyStrokeEditor = new KeyStrokeEditor("ExampleKeyStrokeEditor",
+				new KeyStroke(GLFW.GLFW_KEY_W, GLFW.GLFW_MOD_ALT, KeyInput.PRESSED),
+				x -> Notifier.positive(TString.translated("menu.test.control").append("!")));
 		
 		table.addRow("menu.test.button", button);
 		table.addRow("menu.test.choiceButton", choiceButton);
-		table.addRow("menu.test.switchButton.text", switchButton);
 		table.addRow("menu.test.sliderInt", sliderInt);
-		table.addRow("menu.test.sliderFloat", sliderFloat);
 		table.addRow("menu.test.textField", textField);
-		table.addRow("menu.test.colorChooser", colorChooser);
+		table.addRow("menu.test.control", keyStrokeEditor);
 		
 		table.addRow("menu.test.gain",
 				GuiSettingEditors.createEditor(ModuleAudioInterface.GAIN),

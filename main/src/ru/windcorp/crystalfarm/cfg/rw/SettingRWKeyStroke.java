@@ -15,13 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.input;
+package ru.windcorp.crystalfarm.cfg.rw;
 
-public class CursorMoveInput extends Input {
+import ru.windcorp.crystalfarm.cfg.ConfigurationSyntaxException;
+import ru.windcorp.crystalfarm.input.KeyStroke;
 
-	@Override
-	public InputTarget getTarget() {
-		return InputTarget.HOVERED;
+public class SettingRWKeyStroke extends SettingRW<KeyStroke> {
+
+	public SettingRWKeyStroke() {
+		super("Inbuilt-KeyStroke",
+				KeyStroke.class,
+				
+				declar -> {
+					try{
+						return KeyStroke.fromString(declar);
+					} catch (IllegalArgumentException e) {
+						throw new ConfigurationSyntaxException("\"" + declar + "\" does not denote a correct key stroke", e);
+					}
+				},
+				
+				keyStroke -> keyStroke.toString());
 	}
 
 }

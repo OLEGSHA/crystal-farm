@@ -64,6 +64,28 @@ public class KeyInput extends ButtonInput {
 		return sb.toString();
 	}
 	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + key;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KeyInput other = (KeyInput) obj;
+		if (key != other.key)
+			return false;
+		return true;
+	}
+
 	public static String getNameForKey(int key) {
 		return Debug.getConstantName(GLFW.class, "GLFW_KEY_", Integer.TYPE, key);
 	}

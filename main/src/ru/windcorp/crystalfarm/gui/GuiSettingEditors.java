@@ -21,6 +21,7 @@ import java.util.List;
 
 import ru.windcorp.crystalfarm.cfg.*;
 import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.input.KeyStroke;
 import ru.windcorp.crystalfarm.translation.TString;
 
 public class GuiSettingEditors {
@@ -42,6 +43,9 @@ public class GuiSettingEditors {
 			}
 			if (((Setting<?>) setting).getType() == Color.class) {
 				return createColorEditor((Setting<Color>) setting);
+			}
+			if (((Setting<?>) setting).getType() == KeyStroke.class) {
+				return createKeyStrokeEditor((Setting<KeyStroke>) setting);
 			}
 		}
 		
@@ -113,6 +117,17 @@ public class GuiSettingEditors {
 		colorChooser.addAction(x -> setting.set(colorChooser.getColor()));
 		setting.addListener(x -> colorChooser.setColor(setting.get()));
 		return colorChooser;
+	}
+
+	private static Component createKeyStrokeEditor(Setting<KeyStroke> setting) {
+		KeyStrokeEditor editor = new KeyStrokeEditor(
+				setting.getName() + ".editor",
+				setting.get(),
+				null);
+		
+		editor.addAction(x -> setting.set(editor.getValue()));
+		setting.addListener(x -> editor.setValueSilently(setting.get()));
+		return editor;
 	}
 	
 	public static Button createResetter(ConfigurationNode setting) {

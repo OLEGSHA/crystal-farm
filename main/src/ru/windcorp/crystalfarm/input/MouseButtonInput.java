@@ -80,4 +80,26 @@ public class MouseButtonInput extends ButtonInput {
 		return sb.toString();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + button;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		MouseButtonInput other = (MouseButtonInput) obj;
+		if (button != other.button)
+			return false;
+		return true;
+	}
+
 }

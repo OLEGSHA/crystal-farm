@@ -41,6 +41,7 @@ import ru.windcorp.crystalfarm.input.CharInput;
 import ru.windcorp.crystalfarm.input.CursorMoveInput;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.input.KeyStroke;
 import ru.windcorp.crystalfarm.input.MouseButtonInput;
 import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.IndentedStringBuilder;
@@ -182,6 +183,17 @@ public class GraphicsInterface {
 	 * GLFW event handling
 	 */
 	
+	private static OneTimeKeyStrokeConsumer oneTimeKeyStrokeConsumer = null;
+	
+	/**
+	 * Calls the consumer on the single next key press. The input is discarded afterwards.
+	 * Modifier keys and fullscreen switch are never consumed.
+	 * @param consumer the consumer
+	 */
+	public static void onNextKeyStroke(OneTimeKeyStrokeConsumer consumer) {
+		oneTimeKeyStrokeConsumer = consumer;
+	}
+	
 	static void handleKeyInput(long window, int key, int scancode, int action, int mods) {
 		if (window != getWindow()) {
 			return;
@@ -189,6 +201,15 @@ public class GraphicsInterface {
 		
 		if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
 			setFullscreen(!isFullscreen());
+			return;
+		}
+		
+		if (action == GLFW_PRESS && oneTimeKeyStrokeConsumer != null
+				&& key != GLFW_KEY_LEFT_SHIFT
+				&& key != GLFW_KEY_LEFT_ALT
+				&& key != GLFW_KEY_LEFT_CONTROL) {
+			oneTimeKeyStrokeConsumer.onKeyStroke(new KeyStroke(key, mods, action));
+			oneTimeKeyStrokeConsumer = null;
 			return;
 		}
 		

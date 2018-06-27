@@ -65,7 +65,7 @@ public class MenuLayer extends GuiLayer {
 		
 		if (!input.isConsumed() &&
 				input instanceof KeyInput &&
-				((KeyInput) input).is(GLFW.GLFW_KEY_ESCAPE, KeyInput.RELEASED)) {
+				((KeyInput) input).is(GLFW.GLFW_KEY_ESCAPE, KeyInput.PRESSED)) {
 			close();
 		}
 		
