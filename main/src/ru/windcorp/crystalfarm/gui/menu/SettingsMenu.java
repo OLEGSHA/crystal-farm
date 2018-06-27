@@ -34,17 +34,17 @@ public class SettingsMenu extends MenuLayer {
 				GuiSettingEditors.createLimitedChoiceEditor(ModuleTranslation.LANGUAGE, ModuleTranslation.getAvailableLanguages()));
 		add(new Button(
 				"SettingsMenu.sounds",
-				TString.translated("menu.SettingsMenu.sounds").toFont(),
+				TString.translated("menu.SettingsSoundsMenu.title").toFont(),
 				button -> new SettingsSoundsMenu().show()
 				));
 		add(new Button(
 				"SettingsMenu.graphics",
-				TString.translated("menu.SettingsMenu.graphics").toFont(),
+				TString.translated("menu.SettingsGraphicsMenu.title").toFont(),
 				button -> new SettingsGraphicsMenu().show()
 				));
 		add(new Button(
 				"SettingsMenu.Advanced",
-				TString.translated("menu.SettingsMenu.advanced").toFont(),
+				TString.translated("menu.SettingsAdvancedMenu.title").toFont(),
 				button -> new SettingsAdvancedMenu().show()
 				));
 		add(table);

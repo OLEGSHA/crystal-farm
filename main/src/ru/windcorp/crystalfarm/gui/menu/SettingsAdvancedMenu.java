@@ -9,8 +9,14 @@ public class SettingsAdvancedMenu extends MenuLayer {
 		
 		add(new Button(
 				"SettingsAdvancedMenu.notifier",
-				TString.translated("menu.SettingsAdvancedMenu.notifier").toFont(),
+				TString.translated("menu.SettingsNotifierMenu.title").toFont(),
 				button -> new SettingsNotifierMenu().show()
 				));
+		add(new Button(
+				"SettingsAdvancedMenu.design",
+				TString.translated("menu.SettingsDesignMenu.title").toFont(),
+				button -> new SettingsDesignMenu().show()
+				));
+		
 	}
 }

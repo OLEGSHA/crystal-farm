@@ -77,7 +77,7 @@ public class MainMenu extends GuiLayer {
 				menu.addChild(
 						new Button(
 								"MainMenu.settings",
-								TString.translated("menu.MainMenu.settings").toFont(),
+								TString.translated("menu.SettingsMenu.title").toFont(),
 								button -> new SettingsMenu().show()
 						));
 

@@ -17,7 +17,7 @@ public class SettingsGraphicsMenu extends MenuLayer {
 		add(table);
 		add(new Button(
 				"SettingsGraphicsMenu.advanced",
-				TString.translated("menu.SettingsGraphicsMenu.advanced").toFont(),
+				TString.translated("menu.SettingsGraphicsAdvancedMenu.title").toFont(),
 				button -> new SettingsGraphicsAdvancedMenu().show()
 				));
 	}

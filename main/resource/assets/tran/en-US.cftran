@@ -7,48 +7,55 @@ welcome = I can now speak English just as they speak it in the US!
 	# Main menu
 		menu.MainMenu.title = Main Menu
 		menu.MainMenu.play = Play!
-		menu.MainMenu.settings = Settings
 		menu.MainMenu.about = About
 		menu.MainMenu.exit = Exit
 		menu.MainMenu.notice = %1$s version %2$s\n© %3$s %4$s\nLicensed under %5$s
-	# Settings menu
-		menu.SettingsMenu.title = Settings
-		menu.SettingsMenu.advanced = Other
-		menu.SettingsMenu.graphics = Graphics
-		menu.SettingsMenu.sounds = Sounds
-		menu.SettingsMenu.language = Language
-		# Sound settings menu
-			menu.SettingsSoundsMenu.title = Sounds
-			menu.SettingsSoundsMenu.volume = Master
-			menu.SettingsSoundsMenu.musicvolume = Music
-		# Graphics settings menu
-			menu.SettingsGraphicsMenu.title = Graphics
-			menu.SettingsGraphicsMenu.fullscreen = Fullscreen
-			menu.SettingsGraphicsMenu.advanced = Advanced
-			# Advanced graphics settings menu
-				menu.SettingsGraphicsAdvancedMenu.title = Graphics (Advanced)
-				menu.SettingsGraphicsAdvancedMenu.showfps = FPS Display
-				menu.SettingsGraphicsAdvancedMenu.vsync = Vertical sync
-		# Other settings menu
-			menu.SettingsAdvancedMenu.title = Other
-			menu.SettingsAdvancedMenu.notifier = Notifications
-			# Notifications settings menu
-				menu.SettingsNotifierMenu.title = Notifications
-				menu.SettingsNotifierMenu.volume = Volume
-				menu.SettingsNotifierMenu.shakeinterval = Shake interval
-				menu.SettingsNotifierMenu.timeout = Timeout
- 	# 'About' menu
-		menu.AboutMenu.title = About
-	# Test menu
-		menu.TestMenu.title = Test Menu
-		menu.test.button = Button
-		menu.test.choiceButton = Choice Button
-		menu.test.sliderInt = Integer Slider
-		menu.test.textField = Text Field
-		menu.test.control = Control
-		menu.test.gain = Master volume
-		menu.test.fullscreen = Fullscreen
-		menu.test.foreground = Foreground
+		# Settings menu
+			menu.SettingsMenu.title = Settings
+			menu.SettingsMenu.language = Language
+			# Sound settings menu
+				menu.SettingsSoundsMenu.title = Sounds
+				menu.SettingsSoundsMenu.volume = Master
+				menu.SettingsSoundsMenu.musicvolume = Music
+			# Graphics settings menu
+				menu.SettingsGraphicsMenu.title = Graphics
+				menu.SettingsGraphicsMenu.fullscreen = Fullscreen
+				# Advanced graphics settings menu
+					menu.SettingsGraphicsAdvancedMenu.title = Graphics (Advanced)
+					menu.SettingsGraphicsAdvancedMenu.showfps = FPS Display
+					menu.SettingsGraphicsAdvancedMenu.vsync = Vertical sync
+			# Other settings menu
+				menu.SettingsAdvancedMenu.title = Other
+				# Notifications settings menu
+					menu.SettingsNotifierMenu.title = Notifications
+					menu.SettingsNotifierMenu.volume = Volume
+					menu.SettingsNotifierMenu.shakeinterval = Shake interval
+					menu.SettingsNotifierMenu.timeout = Timeout
+				# Design settings menu
+					menu.SettingsDesignMenu.title = Design Settings
+					menu.SettingsDesignMenu.foreground = Foreground
+					menu.SettingsDesignMenu.foregroundalt = Alt. Foreground
+					menu.SettingsDesignMenu.background = Background
+					menu.SettingsDesignMenu.backgroundalt = Alt. Background
+					menu.SettingsDesignMenu.border = Border
+					menu.SettingsDesignMenu.borderfocused = Focused Border
+					menu.SettingsDesignMenu.borderhovered = Hovered Border
+					menu.SettingsDesignMenu.cover = Cover
+					menu.SettingsDesignMenu.fontcolor = Font Color
+					menu.SettingsDesignMenu.fontaltcolor = Alt. Font Color
+					menu.SettingsDesignMenu.line = Line (experimental)
+ 		# 'About' menu
+			menu.AboutMenu.title = About
+		# Test menu
+			menu.TestMenu.title = Test Menu
+			menu.test.button = Button
+			menu.test.choiceButton = Choice Button
+			menu.test.sliderInt = Integer Slider
+			menu.test.textField = Text Field
+			menu.test.control = Control
+			menu.test.gain = Master volume
+			menu.test.fullscreen = Fullscreen
+			menu.test.foreground = Foreground
 		
 # GUI components
 	# Color Chooser
