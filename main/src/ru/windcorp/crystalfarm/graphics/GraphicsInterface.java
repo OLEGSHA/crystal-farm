@@ -199,11 +199,6 @@ public class GraphicsInterface {
 			return;
 		}
 		
-		if (key == GLFW_KEY_F11 && action == GLFW_PRESS) {
-			setFullscreen(!isFullscreen());
-			return;
-		}
-		
 		if (action == GLFW_PRESS && oneTimeKeyStrokeConsumer != null
 				&& key != GLFW_KEY_LEFT_SHIFT
 				&& key != GLFW_KEY_LEFT_ALT
@@ -213,7 +208,14 @@ public class GraphicsInterface {
 			return;
 		}
 		
-		dispatchInput(new KeyInput(key, action, mods));
+		KeyInput input = new KeyInput(key, action, mods);
+		
+		if (ModuleGraphicsInterface.FULLSCREEN_KEY.get().matches(input)) {
+			setFullscreen(!isFullscreen());
+			return;
+		}
+		
+		dispatchInput(input);
 	}
 	
 	static void handleCharInput(long window, int character) {

@@ -24,9 +24,12 @@ import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 import java.lang.reflect.InvocationTargetException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.cfg.Setting;
 import ru.windcorp.crystalfarm.cfg.SettingBoolean;
 import ru.windcorp.crystalfarm.cfg.SettingInt;
 import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
+import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.input.KeyStroke;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 import ru.windcorp.tge2.util.jobs.JobManager;
@@ -47,6 +50,9 @@ public class ModuleGraphicsInterface extends Module {
 	static final SettingBoolean WINDOW_MAXIMIZED = new SettingBoolean("WindowMaximized", "True when window is maximized. Does not affect WindowFullscreen", true);
 	public static final SettingBoolean SHOW_FPS = new SettingBoolean("ShowFPS", "When true, current FPS is displayed", false);
 	public static final SettingBoolean VSYNC = new SettingBoolean("Vsync", "When true, vertical synchronization is enabled", true);
+	
+	public static final Setting<KeyStroke> FULLSCREEN_KEY = new Setting<>(
+			"FullscreenKey", "Key to toggle Fullscreen", KeyStroke.class, new KeyStroke(GLFW_KEY_F11, 0, KeyInput.PRESSED));
 	
 	public ModuleGraphicsInterface() {
 		super("GraphicsInterface", InbuiltMod.INST);
@@ -71,6 +77,7 @@ public class ModuleGraphicsInterface extends Module {
 		addConfig(WINDOW_MAXIMIZED);
 		addConfig(SHOW_FPS);
 		addConfig(VSYNC);
+		addConfig(FULLSCREEN_KEY);
 		
 		addConfig(GraphicsDesign.registerConfig());
 		

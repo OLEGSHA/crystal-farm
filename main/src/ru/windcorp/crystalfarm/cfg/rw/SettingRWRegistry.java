@@ -30,6 +30,7 @@ public class SettingRWRegistry {
 	static {
 		register(new SettingRWString());
 		register(new SettingRWColor());
+		register(new SettingRWKeyStroke());
 	}
 	
 	public static void register(SettingRW<?> setting) {
