@@ -23,20 +23,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Server {
 	
-	private static Server current;
-	
-	public static Server getCurrent() {
-		return current;
-	}
-	
 	private final World world;
 	
 	private final Collection<Agent> agents = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
 	
 	public Server(World world) {
 		this.world = world;
-		
-		current = this;
 	}
 
 	public World getWorld() {
@@ -49,6 +41,17 @@ public class Server {
 	
 	public void start() {
 		// TODO: start ticking
+	}
+	
+	public void addAgent(Agent agent) {
+		// TODO: find island for new agent
+		agent.setIsland(getWorld().getIslands().values().iterator().next());
+		getAgents().add(agent);
+	}
+	
+	public void removeAgent(Agent agent) {
+		getAgents().remove(agent);
+		// TODO: save info about agent
 	}
 
 }

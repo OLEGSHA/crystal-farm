@@ -15,20 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.server;
+package ru.windcorp.crystalfarm.logic.action;
 
-import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.input.KeyStroke;
 
-public abstract class Agent {
+public abstract class KeyAction extends Action {
 	
-	private Island island = null;
-
-	public Island getIsland() {
-		return island;
+	public KeyAction(String name, boolean isLocal) {
+		super(name, isLocal);
 	}
 
-	public void setIsland(Island island) {
-		this.island = island;
-	}
+	public abstract KeyStroke getKeyStroke();
 	
+	public boolean matches(KeyInput input) {
+		return getKeyStroke().matches(input);
+	}
+
 }

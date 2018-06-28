@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm;
 
 import ru.windcorp.crystalfarm.audio.ModuleAudioInterface;
 import ru.windcorp.crystalfarm.cfg.ModuleConfiguration;
+import ru.windcorp.crystalfarm.client.ModuleClient;
 import ru.windcorp.crystalfarm.content.basic.ModuleContentBasic;
 import ru.windcorp.crystalfarm.graphics.ModuleGraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.notifier.ModuleNotifier;
@@ -49,6 +50,7 @@ public class InbuiltMod extends Mod {
 		ModuleRegistry.register(new ModuleAudioInterface());
 		ModuleRegistry.register(new ModuleTranslation());
 		ModuleRegistry.register(new ModuleGraphicsInterface());
+		ModuleRegistry.register(new ModuleClient());
 		
 		ModuleRegistry.register(new ModuleContentBasic());
 	}

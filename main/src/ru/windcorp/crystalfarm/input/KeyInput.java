@@ -89,5 +89,15 @@ public class KeyInput extends ButtonInput {
 	public static String getNameForKey(int key) {
 		return Debug.getConstantName(GLFW.class, "GLFW_KEY_", Integer.TYPE, key);
 	}
+	
+	public static int getKey(String glfwConstName) {
+		try {
+			return GLFW.class.getField("GLFW_KEY_" + glfwConstName).getInt(null);
+		} catch (IllegalAccessException | SecurityException e) {
+			throw new IllegalArgumentException("\"" + glfwConstName + "\": could not obtain key code due to an access or security problem", e);
+		} catch (NoSuchFieldException e) {
+			throw new IllegalArgumentException("\"" + glfwConstName + "\" does not denote a valid key", e);
+		}
+	}
 
 }

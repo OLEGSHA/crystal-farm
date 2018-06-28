@@ -15,20 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.server;
+package ru.windcorp.crystalfarm.client;
 
-import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.logic.action.Action;
+import ru.windcorp.crystalfarm.logic.server.Agent;
 
-public abstract class Agent {
+public abstract class ClientAgent extends Agent {
 	
-	private Island island = null;
+	private final View view = new View(0, 0, 1);
 
-	public Island getIsland() {
-		return island;
+	public abstract void sendAction(Action action);
+
+	public View getView() {
+		return view;
 	}
 
-	public void setIsland(Island island) {
-		this.island = island;
-	}
-	
 }

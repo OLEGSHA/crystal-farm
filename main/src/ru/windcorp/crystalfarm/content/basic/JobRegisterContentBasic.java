@@ -17,10 +17,10 @@
  */
 package ru.windcorp.crystalfarm.content.basic;
 
-import ru.windcorp.crystalfarm.content.basic.test.TestBiome;
-import ru.windcorp.crystalfarm.content.basic.test.TestLevelProvider;
+import ru.windcorp.crystalfarm.content.basic.test.*;
 import ru.windcorp.crystalfarm.logic.BiomeRegistry;
 import ru.windcorp.crystalfarm.logic.IslandFactory;
+import ru.windcorp.crystalfarm.logic.action.ActionRegistry;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 
@@ -32,6 +32,16 @@ public class JobRegisterContentBasic extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
+		ActionRegistry.IN_GAME.register(
+				new TestCameraMoveControl("Up",		  0, -40, "PRESS W"),
+				new TestCameraMoveControl("Down",	  0, +40, "PRESS S"),
+				new TestCameraMoveControl("Left",	-40,   0, "PRESS A"),
+				new TestCameraMoveControl("Right",	+40,   0, "PRESS D"),
+				
+				new TestCameraZoomControl("In",    1.5, "PRESS EQUAL"),
+				new TestCameraZoomControl("Out", 1/1.5, "PRESS MINUS")
+				);
+		
 		IslandFactory.registerIslandLevelProvider(new TestLevelProvider());
 		BiomeRegistry.register(new TestBiome());
 	}

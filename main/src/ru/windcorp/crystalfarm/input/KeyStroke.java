@@ -135,13 +135,7 @@ public class KeyStroke {
 			declar = declar.substring(0, index);
 		}
 		
-		try {
-			return new KeyStroke(GLFW.class.getField("GLFW_KEY_" + declar).getInt(null), mods, action);
-		} catch (IllegalAccessException | SecurityException e) {
-			throw new IllegalArgumentException("\"" + declar + "\": could not obtain key code due to an access or security problem", e);
-		} catch (NoSuchFieldException e) {
-			throw new IllegalArgumentException("\"" + declar + "\" does not denote a valid key", e);
-		}
+		return new KeyStroke(KeyInput.getKey(declar), mods, action);
 	}
 	
 }

@@ -15,25 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.client;
+package ru.windcorp.crystalfarm.content.basic.test;
 
-import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.logic.action.ActionRegistry;
-import ru.windcorp.crystalfarm.struct.modules.Module;
-import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
-import ru.windcorp.tge2.util.jobs.JobManager;
+import java.io.DataInput;
+import java.io.IOException;
 
-public class ModuleClient extends Module {
+import ru.windcorp.crystalfarm.logic.GameManager;
+import ru.windcorp.crystalfarm.logic.action.ControlAction;
+import ru.windcorp.crystalfarm.logic.server.Agent;
+import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
-	public ModuleClient() {
-		super("Client", InbuiltMod.INST);
-		
-		addConfig(ActionRegistry.ROOT_SECTION);
-	}
+public class TestCameraMoveControl extends ControlAction {
 	
+	private final int xMod, yMod;
+
+	public TestCameraMoveControl(String name, int xMod, int yMod, String key) {
+		super("CameraMove" + name, "Move camera " + name, key, true);
+		this.xMod = xMod;
+		this.yMod = yMod;
+	}
+
 	@Override
-	public void registerJobs(JobManager<ModuleJob> manager) {
-		// Do nothing
+	public void run(Agent agent, DataInput input) throws IOException, SyntaxException {
+		GameManager.getLocalClient().getView().move(xMod, yMod);
 	}
-	
+
 }

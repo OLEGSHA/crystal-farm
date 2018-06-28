@@ -17,61 +17,71 @@
  */
 package ru.windcorp.crystalfarm.client;
 
-import org.lwjgl.glfw.GLFW;
-
 import ru.windcorp.crystalfarm.graphics.InputListener;
 import ru.windcorp.crystalfarm.graphics.Layer;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.logic.action.Action;
+import ru.windcorp.crystalfarm.logic.action.ActionRegistry;
 
 public class GameLayer extends Layer implements InputListener {
 
-	private Island island;
-	private final View view = new View(0, 0, 1);
+	private final ClientAgent agent;
 	
-	public GameLayer() {
+	public GameLayer(ClientAgent agent) {
 		super("Game");
+		this.agent = agent;
 	}
 
 	@Override
 	public void render() {
 		getView().pushMatrix();
-		getIsland().render(view);
+		getIsland().render(getView());
 		getView().popMatrix();
+	}
+	
+	public ClientAgent getAgent() {
+		return agent;
 	}
 
 	public Island getIsland() {
-		return island;
-	}
-
-	public void setIsland(Island island) {
-		this.island = island;
+		return getAgent().getIsland();
 	}
 	
 	public View getView() {
-		return view;
+		return getAgent().getView();
 	}
 
 	@Override
 	public void onInput(Input input) {
 		if (input instanceof KeyInput) {
-			KeyInput ki = (KeyInput) input;
+//			KeyInput ki = (KeyInput) input;
+//			
+//			if (ki.isPressed()) {
+//				switch (ki.getKey()) {
+//				case GLFW.GLFW_KEY_UP:
+//					getView().move(  0, -40); break;
+//				case GLFW.GLFW_KEY_DOWN:
+//					getView().move(  0, +40); break;
+//				case GLFW.GLFW_KEY_LEFT:
+//					getView().move(-40,   0); break;
+//				case GLFW.GLFW_KEY_RIGHT:
+//					getView().move(+40,   0); break;
+//				case GLFW.GLFW_KEY_LEFT_BRACKET:
+//					getView().zoom(  1.25); break;
+//				case GLFW.GLFW_KEY_RIGHT_BRACKET:
+//					getView().zoom(1/1.25); break;
+//				}
+//			}
 			
-			if (ki.isPressed()) {
-				switch (ki.getKey()) {
-				case GLFW.GLFW_KEY_UP:
-					getView().move(  0, -40); break;
-				case GLFW.GLFW_KEY_DOWN:
-					getView().move(  0, +40); break;
-				case GLFW.GLFW_KEY_LEFT:
-					getView().move(-40,   0); break;
-				case GLFW.GLFW_KEY_RIGHT:
-					getView().move(+40,   0); break;
-				case GLFW.GLFW_KEY_LEFT_BRACKET:
-					getView().zoom(  1.25); break;
-				case GLFW.GLFW_KEY_RIGHT_BRACKET:
-					getView().zoom(1/1.25); break;
+			Action action = ActionRegistry.IN_GAME.getAction((KeyInput) input);
+			
+			if (action != null) {
+				if (action.isLocal()) {
+					action.run(getAgent());
+				} else {
+					getAgent().sendAction(action);
 				}
 			}
 		}

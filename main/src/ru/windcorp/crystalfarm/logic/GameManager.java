@@ -19,7 +19,7 @@ package ru.windcorp.crystalfarm.logic;
 
 import java.io.IOException;
 
-import ru.windcorp.crystalfarm.client.GameLayer;
+import ru.windcorp.crystalfarm.client.*;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.LayerFailure;
 import ru.windcorp.crystalfarm.gui.menu.MainMenu;
@@ -32,6 +32,17 @@ import ru.windcorp.tge2.util.grh.Resource;
 
 public class GameManager {
 	
+	private static Server localServer = null;
+	private static ClientAgent localClient = null;
+	
+	public static Server getLocalServer() {
+		return localServer;
+	}
+
+	public static ClientAgent getLocalClient() {
+		return localClient;
+	}
+
 	public static boolean generateNewWorld(Resource resource) {
 		Log.topic("Worldgen");
 		
@@ -74,14 +85,14 @@ public class GameManager {
 		
 		Log.info("Initializing server");
 		World world = WorldFactory.createWorld(resource);
-		Server server = new Server(world);
+		localServer = new Server(world);
 		
 		Log.info("Loading world");
 		try {
 			world.load();
 			
 			Log.info("Starting server");
-			server.start();
+			getLocalServer().start();
 			Log.info("Server started");
 			return false;
 			
@@ -149,8 +160,9 @@ public class GameManager {
 	}
 
 	public static void joinLocalServer() {
-		GameLayer layer = new GameLayer();
-		layer.setIsland(Server.getCurrent().getWorld().getIsland("TestIsland"));
+		localClient = new LocalClientAgent(getLocalServer());
+		getLocalServer().addAgent(getLocalClient());
+		GameLayer layer = new GameLayer(getLocalClient());
 		GraphicsInterface.removeAllNormalLayers();
 		GraphicsInterface.addLayerToBottom(layer);
 	}

@@ -15,20 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.server;
+package ru.windcorp.crystalfarm.content.basic.test;
 
-import ru.windcorp.crystalfarm.logic.Island;
+import java.io.DataInput;
+import java.io.IOException;
 
-public abstract class Agent {
+import ru.windcorp.crystalfarm.logic.GameManager;
+import ru.windcorp.crystalfarm.logic.action.ControlAction;
+import ru.windcorp.crystalfarm.logic.server.Agent;
+import ru.windcorp.tge2.util.exceptions.SyntaxException;
+
+public class TestCameraZoomControl extends ControlAction {
 	
-	private Island island = null;
+	private final double factor;
 
-	public Island getIsland() {
-		return island;
+	public TestCameraZoomControl(String name, double factor, String key) {
+		super("CameraZoom" + name, "Zoom camera " + name, key, true);
+		this.factor = factor;
 	}
 
-	public void setIsland(Island island) {
-		this.island = island;
+	@Override
+	public void run(Agent agent, DataInput input) throws IOException, SyntaxException {
+		GameManager.getLocalClient().getView().zoom(factor);
 	}
-	
+
 }
