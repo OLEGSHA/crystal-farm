@@ -17,17 +17,26 @@
  */
 package ru.windcorp.crystalfarm.client;
 
+import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.action.Action;
-import ru.windcorp.crystalfarm.logic.server.Agent;
 
-public abstract class ClientAgent extends Agent {
+public abstract class Proxy {
 	
 	private final View view = new View(0, 0, 1);
-
-	public abstract void sendAction(Action action);
+	private final Island island;
+	
+	public Proxy(Island island) {
+		this.island = island;
+	}
 
 	public View getView() {
 		return view;
 	}
 
+	public Island getIsland() {
+		return island;
+	}
+
+	public abstract void sendAction(Action action);
+	
 }

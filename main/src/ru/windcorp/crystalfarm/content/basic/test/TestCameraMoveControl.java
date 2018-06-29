@@ -20,6 +20,7 @@ package ru.windcorp.crystalfarm.content.basic.test;
 import java.io.DataInput;
 import java.io.IOException;
 
+import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.action.ControlAction;
 import ru.windcorp.crystalfarm.logic.server.Agent;
@@ -30,7 +31,7 @@ public class TestCameraMoveControl extends ControlAction {
 	private final int xMod, yMod;
 
 	public TestCameraMoveControl(String name, int xMod, int yMod, String key) {
-		super("CameraMove" + name, "Move camera " + name, key, true);
+		super(InbuiltMod.INST, "CameraMove" + name, "Move camera " + name, key, true);
 		this.xMod = xMod;
 		this.yMod = yMod;
 	}

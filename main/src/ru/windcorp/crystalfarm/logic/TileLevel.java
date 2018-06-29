@@ -19,7 +19,11 @@ package ru.windcorp.crystalfarm.logic;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
@@ -29,6 +33,8 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	
 	private final TileRegistry<T> tileRegistry = new TileRegistry<>(getName());
 	private final Class<T> clazz;
+	
+	private final Collection<Tile> tickingTiles = new CopyOnWriteArrayList<>();
 
 	public TileLevel(String name, Class<T> clazz) {
 		super(name);
@@ -119,11 +125,32 @@ public abstract class TileLevel<T extends Tile> extends Level {
 		tile.writeAll(output);
 		output.writeInt((int) output.popCounter());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected TileLevel<T> clone() {
 		return (TileLevel<T>) super.clone();
+	}
+	
+	@Override
+	public void tick(World world, Island island, long length, long time) {
+		Iterator<Tile> it = getTickableTiles().iterator();
+		Tile tile;
+		
+		while (it.hasNext()) {
+			tile = it.next();
+			
+			if (tile.getLevel() != this) {
+				it.remove();
+				continue;
+			}
+			
+			tile.tick(world, island, this, length, time);
+		}
+	}
+	
+	public Collection<Tile> getTickableTiles() {
+		return tickingTiles;
 	}
 	
 }

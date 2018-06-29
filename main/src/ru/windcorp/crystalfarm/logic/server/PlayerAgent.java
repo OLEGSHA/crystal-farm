@@ -15,22 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.action;
+package ru.windcorp.crystalfarm.logic.server;
 
-import ru.windcorp.crystalfarm.input.KeyInput;
-import ru.windcorp.crystalfarm.input.KeyStroke;
-import ru.windcorp.crystalfarm.struct.mod.Mod;
-
-public abstract class KeyAction extends Action {
-	
-	public KeyAction(Mod mod, String name, boolean isLocal) {
-		super(mod, name, isLocal);
-	}
-
-	public abstract KeyStroke getKeyStroke();
-	
-	public boolean matches(KeyInput input) {
-		return getKeyStroke().matches(input);
-	}
+public class PlayerAgent extends Agent {
 
 }

@@ -26,29 +26,53 @@ import ru.windcorp.crystalfarm.logic.Data;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public class WorldMeta extends Data {
+
+	private String displayName	= null;
+	private long time			= 0;
+	private long tickLength		= 1000 / 20;
 	
 	public WorldMeta() {
 		super(InbuiltMod.INST, "IslandMeta");
 	}
 
-	private String displayName; 
-
 	@Override
 	public void read(DataInput input, int change) throws IOException, SyntaxException {
 		displayName		= input.readUTF();
+		time			= input.readLong();
+		tickLength		= input.readLong();
 	}
 
 	@Override
 	public void write(DataOutput output, int change) throws IOException {
 		output.writeUTF(displayName);
+		output.writeLong(time);
+		output.writeLong(tickLength);
 	}
 
 	public String getDisplayName() {
 		return displayName;
 	}
+	
+	public long getTime() {
+		return time;
+	}
+	
+	public long getTickLength() {
+		return tickLength;
+	}
 
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+		setChangeAll();
+	}
+	
+	public void setTime(long time) {
+		this.time = time;
+		setChangeAll();
+	}
+	
+	public void setTickLength(long tickLength) {
+		this.tickLength = tickLength;
 		setChangeAll();
 	}
 

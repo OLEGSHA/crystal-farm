@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.logic;
 
 import java.io.IOException;
+import java.util.Random;
 
 import ru.windcorp.crystalfarm.client.*;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
@@ -33,13 +34,15 @@ import ru.windcorp.tge2.util.grh.Resource;
 public class GameManager {
 	
 	private static Server localServer = null;
-	private static ClientAgent localClient = null;
+	private static Proxy localClient = null;
+	
+	public static final Random GENERIC_RANDOM = new Random();
 	
 	public static Server getLocalServer() {
 		return localServer;
 	}
 
-	public static ClientAgent getLocalClient() {
+	public static Proxy getLocalClient() {
 		return localClient;
 	}
 
@@ -160,11 +163,44 @@ public class GameManager {
 	}
 
 	public static void joinLocalServer() {
-		localClient = new LocalClientAgent(getLocalServer());
-		getLocalServer().addAgent(getLocalClient());
+		LocalClientAgent agent = new LocalClientAgent(getLocalServer());
+		localClient = new LocalProxy(agent);
+		
+		getLocalServer().addAgent(agent);
 		GameLayer layer = new GameLayer(getLocalClient());
 		GraphicsInterface.removeAllNormalLayers();
 		GraphicsInterface.addLayerToBottom(layer);
+	}
+	
+	public static void shutdownLocalServer() {
+		if (getLocalServer() == null) {
+			throw new IllegalStateException("No local server present");
+		}
+		
+		Log.topic("Server Shutdown");
+		
+		try {
+			localServer = null;
+			getLocalServer().shutdown();
+		} finally {
+			Log.end("Server Shutdown");			
+		}
+	}
+
+	public static void shutdownClient() {
+		if (getLocalClient() == null) {
+			throw new IllegalStateException("No client present");
+		}
+		
+		localClient = null;
+		
+		if (getLocalClient() instanceof LocalProxy
+				&& getLocalServer() != null) {
+			shutdownLocalServer();
+		}
+
+		GraphicsInterface.removeAllNormalLayers();
+		GraphicsInterface.addLayerToBottom(new MainMenu());
 	}
 	
 }

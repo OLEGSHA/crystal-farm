@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 
 import ru.windcorp.crystalfarm.cfg.Section;
 import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.logic.server.Agent;
 import ru.windcorp.tge2.util.Nameable;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
@@ -73,13 +74,13 @@ public class ActionRegistry extends Nameable {
 		return getActionMap().get(name);
 	}
 	
-	public KeyAction getAction(KeyInput input) {
+	public KeyAction getAction(KeyInput input, Agent agent) {
 		synchronized (getActionMap()) {
 			for (Entry<String, Action> entry : getActionMap().entrySet()) {
 				if (entry.getValue() instanceof KeyAction) {
 					KeyAction action = (KeyAction) entry.getValue();
 					
-					if (action.isEnabled() && action.matches(input)) {
+					if (action.isEnabled(agent) && action.matches(input)) {
 						return action;
 					}
 				}

@@ -15,22 +15,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic.action;
+package ru.windcorp.crystalfarm.client;
 
-import ru.windcorp.crystalfarm.input.KeyInput;
-import ru.windcorp.crystalfarm.input.KeyStroke;
-import ru.windcorp.crystalfarm.struct.mod.Mod;
+import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.logic.action.Action;
 
-public abstract class KeyAction extends Action {
+public class LocalProxy extends Proxy {
 	
-	public KeyAction(Mod mod, String name, boolean isLocal) {
-		super(mod, name, isLocal);
+	private LocalClientAgent agent;
+
+	public LocalProxy(LocalClientAgent agent) {
+		super(null);
+		this.agent = agent;
 	}
 
-	public abstract KeyStroke getKeyStroke();
+	@Override
+	public void sendAction(Action action) {
+		action.run(getAgent());
+	}
 	
-	public boolean matches(KeyInput input) {
-		return getKeyStroke().matches(input);
+	@Override
+	public Island getIsland() {
+		return getAgent().getIsland();
+	}
+
+	public LocalClientAgent getAgent() {
+		return agent;
+	}
+
+	public void setAgent(LocalClientAgent agent) {
+		this.agent = agent;
 	}
 
 }

@@ -22,6 +22,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.logic.server.Agent;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.tge2.util.Nameable;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
@@ -30,8 +31,8 @@ public abstract class Action extends Nameable {
 	private final boolean isLocal;
 	private boolean isEnabled = true;
 
-	public Action(String name, boolean isLocal) {
-		super(name);
+	public Action(Mod mod, String name, boolean isLocal) {
+		super(mod.getName() + ":" + name);
 		this.isLocal = isLocal;
 	}
 
@@ -39,7 +40,7 @@ public abstract class Action extends Nameable {
 		return isLocal;
 	}
 	
-	public boolean isEnabled() {
+	public boolean isEnabled(Agent agent) {
 		return isEnabled;
 	}
 

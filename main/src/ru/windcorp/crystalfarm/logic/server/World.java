@@ -22,6 +22,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +47,7 @@ public class World {
 	private final Resource resource;
 	
 	private final WorldMeta meta = new WorldMeta();
-	private final Map<String, Island> islands = Collections.synchronizedMap(new HashMap<>());
+	private final Collection<Island> islands = Collections.synchronizedCollection(new ArrayList<>());
 	private final Map<String, Data> data = Collections.synchronizedMap(new HashMap<>());
 	
 	protected World(Resource resource) {
@@ -69,17 +70,29 @@ public class World {
 		data.forEach(datum -> getData().put(datum.getName(), datum));
 	}
 	
-	public Map<String, Island> getIslands() {
+	public Collection<Island> getIslands() {
 		return islands;
 	}
 	
 	public Island getIsland(String name) {
-		return getIslands().get(name);
+		synchronized (getIslands()) {
+			for (Island island : getIslands()) {
+				if (island.getName().equals(name)) {
+					return island;
+				}
+			}
+		}
+		
+		return null;
 	}
 	
 	public void addIsland(Island island) {
 		island.setWorld(this);
-		getIslands().put(island.getName(), island);
+		getIslands().add(island);
+	}
+	
+	public long getTime() {
+		return getMeta().getTime();
 	}
 	
 	public void read(InputStream is) throws IOException, SyntaxException {
@@ -186,7 +199,7 @@ public class World {
 		synchronized (getIslands()) {
 			output.writeInt(getIslands().size());
 			
-			for (Island island : getIslands().values()) {
+			for (Island island : getIslands()) {
 				output.writeUTF(island.getName());
 				
 				output.pushCounter();

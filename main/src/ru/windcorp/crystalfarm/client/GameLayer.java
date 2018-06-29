@@ -27,11 +27,11 @@ import ru.windcorp.crystalfarm.logic.action.ActionRegistry;
 
 public class GameLayer extends Layer implements InputListener {
 
-	private final ClientAgent agent;
+	private final Proxy proxy;
 	
-	public GameLayer(ClientAgent agent) {
+	public GameLayer(Proxy proxy) {
 		super("Game");
-		this.agent = agent;
+		this.proxy = proxy;
 	}
 
 	@Override
@@ -41,47 +41,28 @@ public class GameLayer extends Layer implements InputListener {
 		getView().popMatrix();
 	}
 	
-	public ClientAgent getAgent() {
-		return agent;
+	public Proxy getProxy() {
+		return proxy;
 	}
 
 	public Island getIsland() {
-		return getAgent().getIsland();
+		return getProxy().getIsland();
 	}
 	
 	public View getView() {
-		return getAgent().getView();
+		return getProxy().getView();
 	}
 
 	@Override
 	public void onInput(Input input) {
 		if (input instanceof KeyInput) {
-//			KeyInput ki = (KeyInput) input;
-//			
-//			if (ki.isPressed()) {
-//				switch (ki.getKey()) {
-//				case GLFW.GLFW_KEY_UP:
-//					getView().move(  0, -40); break;
-//				case GLFW.GLFW_KEY_DOWN:
-//					getView().move(  0, +40); break;
-//				case GLFW.GLFW_KEY_LEFT:
-//					getView().move(-40,   0); break;
-//				case GLFW.GLFW_KEY_RIGHT:
-//					getView().move(+40,   0); break;
-//				case GLFW.GLFW_KEY_LEFT_BRACKET:
-//					getView().zoom(  1.25); break;
-//				case GLFW.GLFW_KEY_RIGHT_BRACKET:
-//					getView().zoom(1/1.25); break;
-//				}
-//			}
-			
-			Action action = ActionRegistry.IN_GAME.getAction((KeyInput) input);
+			Action action = ActionRegistry.IN_GAME.getAction((KeyInput) input, null);
 			
 			if (action != null) {
 				if (action.isLocal()) {
-					action.run(getAgent());
+					action.run(null);
 				} else {
-					getAgent().sendAction(action);
+					getProxy().sendAction(action);
 				}
 			}
 		}

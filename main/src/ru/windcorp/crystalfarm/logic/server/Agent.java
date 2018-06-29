@@ -17,18 +17,36 @@
  */
 package ru.windcorp.crystalfarm.logic.server;
 
+import java.lang.ref.WeakReference;
+
 import ru.windcorp.crystalfarm.logic.Island;
 
 public abstract class Agent {
 	
 	private Island island = null;
+	private WeakReference<Server> server = null;
 
 	public Island getIsland() {
 		return island;
 	}
+	
+	public Server getServer() {
+		if (server == null) {
+			return null;
+		}
+		return server.get();
+	}
+	
+	public void setServer(Server server) {
+		this.server = new WeakReference<Server>(server);
+	}
 
 	public void setIsland(Island island) {
 		this.island = island;
+	}
+	
+	public void onServerShutdown() {
+		// To be overridden
 	}
 	
 }

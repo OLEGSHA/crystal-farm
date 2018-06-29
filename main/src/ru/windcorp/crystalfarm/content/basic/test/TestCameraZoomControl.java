@@ -20,6 +20,7 @@ package ru.windcorp.crystalfarm.content.basic.test;
 import java.io.DataInput;
 import java.io.IOException;
 
+import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.action.ControlAction;
 import ru.windcorp.crystalfarm.logic.server.Agent;
@@ -30,7 +31,7 @@ public class TestCameraZoomControl extends ControlAction {
 	private final double factor;
 
 	public TestCameraZoomControl(String name, double factor, String key) {
-		super("CameraZoom" + name, "Zoom camera " + name, key, true);
+		super(InbuiltMod.INST, "CameraZoom" + name, "Zoom camera " + name, key, true);
 		this.factor = factor;
 	}
 

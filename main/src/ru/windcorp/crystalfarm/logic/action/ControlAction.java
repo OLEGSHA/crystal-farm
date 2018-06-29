@@ -19,22 +19,23 @@ package ru.windcorp.crystalfarm.logic.action;
 
 import ru.windcorp.crystalfarm.cfg.Setting;
 import ru.windcorp.crystalfarm.input.KeyStroke;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
 
 public abstract class ControlAction extends KeyAction {
 
 	private final Setting<KeyStroke> setting;
 
-	public ControlAction(String name, boolean isLocal, Setting<KeyStroke> setting) {
-		super(name, isLocal);
+	public ControlAction(Mod mod, String name, boolean isLocal, Setting<KeyStroke> setting) {
+		super(mod, name, isLocal);
 		this.setting = setting;
 	}
 	
-	public ControlAction(String name, String description, KeyStroke defaultKey, boolean isLocal) {
-		this(name, isLocal, new Setting<KeyStroke>(name, description, KeyStroke.class, defaultKey));
+	public ControlAction(Mod mod, String name, String description, KeyStroke defaultKey, boolean isLocal) {
+		this(mod, name, isLocal, new Setting<KeyStroke>(name, description, KeyStroke.class, defaultKey));
 	}
 	
-	public ControlAction(String name, String description, String key, boolean isLocal) {
-		this(name, description, KeyStroke.fromString(key), isLocal);
+	public ControlAction(Mod mod, String name, String description, String key, boolean isLocal) {
+		this(mod, name, description, KeyStroke.fromString(key), isLocal);
 	}
 
 	public Setting<KeyStroke> getSetting() {

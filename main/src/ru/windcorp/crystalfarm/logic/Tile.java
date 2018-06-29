@@ -36,6 +36,8 @@ public abstract class Tile extends Updateable {
 	
 	private WeakReference<TileLevel<?>> level = null;
 	private int nid;
+	
+	private boolean isTickable;
 
 	public Tile(Mod mod, String id, TString name) {
 		this.mod = mod;
@@ -43,9 +45,17 @@ public abstract class Tile extends Updateable {
 		this.name = name;
 	}
 	
-	void setLevel(TileLevel<?> level) {
-		if (level == null) this.level = null;
+	protected void setLevel(TileLevel<?> level) {
+		if (level == null) {
+			this.level = null;
+			return;
+		}
+		
 		this.level = new WeakReference<TileLevel<?>>(level);
+
+		if (isTickable()) {
+			level.getTickableTiles().add(this);
+		}
 	}
 	
 	public TileLevel<?> getLevel() {
@@ -94,6 +104,14 @@ public abstract class Tile extends Updateable {
 		return name;
 	}
 	
+	public boolean isTickable() {
+		return isTickable;
+	}
+
+	public void setTickable(boolean isTickable) {
+		this.isTickable = isTickable;
+	}
+
 	@Override
 	protected Tile clone() {
 		return (Tile) super.clone();
@@ -110,5 +128,9 @@ public abstract class Tile extends Updateable {
 	}
 	
 	public abstract void render(View view, int x, int y);
+	
+	public void tick(World world, Island island, Level level, long length, long time) {
+		// Do nothing
+	}
 
 }

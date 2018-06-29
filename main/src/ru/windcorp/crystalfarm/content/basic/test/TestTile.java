@@ -18,15 +18,51 @@
 package ru.windcorp.crystalfarm.content.basic.test;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
+import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.GridTile;
+import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.logic.Level;
+import ru.windcorp.crystalfarm.logic.Tile;
+import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.translation.TString;
+import ru.windcorp.crystalfarm.util.Direction;
 
 public class TestTile extends GridTile {
 	
 	private static final TString NAME = TString.wrap("Test Tile Name");
+	
+	private boolean state = false;
 
 	public TestTile() {
 		super(InbuiltMod.INST, "testTile", NAME);
+	}
+	
+	@Override
+	protected Tile clone() {
+		Tile t = super.clone();
+
+		if (GameManager.GENERIC_RANDOM.nextBoolean()) {
+			t.setTickable(true);
+		}
+		
+		return t;
+	}
+	
+	@Override
+	public void tick(World world, Island island, Level level, long length, long time) {
+		state = time % 1000 > 500;
+	}
+	
+	@Override
+	public void render(View view, int x, int y) {
+		GraphicsInterface.drawTexture(
+				x, y,
+				getTexture(),
+				0, 0,
+				state ? Color.GRAY : null, Direction.UP);
 	}
 
 }

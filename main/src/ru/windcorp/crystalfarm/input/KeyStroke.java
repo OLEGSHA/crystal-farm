@@ -19,8 +19,6 @@ package ru.windcorp.crystalfarm.input;
 
 import org.lwjgl.glfw.GLFW;
 
-import ru.windcorp.tge2.util.debug.Log;
-
 public class KeyStroke {
 	
 	private final int key;
@@ -58,9 +56,6 @@ public class KeyStroke {
 	}
 	
 	public boolean matches(KeyInput input) {
-		Log.debugObj(input.getKey() == getKey(),
-				input.getAction() == getAction(),
-				getMods() == 0 ? true : (input.getMods() & getMods()) != 0);
 		return input.getKey() == getKey()
 				&& input.getAction() == getAction()
 				&& (getMods() == 0 ? true : (input.getMods() & getMods()) != 0);

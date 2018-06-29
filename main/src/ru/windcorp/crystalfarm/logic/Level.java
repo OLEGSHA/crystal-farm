@@ -78,4 +78,6 @@ public abstract class Level extends Nameable implements Cloneable {
 	public abstract void readUpdate(DataInput input) throws IOException, SyntaxException;
 	public abstract void writeUpdate(DataOutput output) throws IOException;
 
+	public abstract void tick(World world, Island island, long length, long time);
+
 }

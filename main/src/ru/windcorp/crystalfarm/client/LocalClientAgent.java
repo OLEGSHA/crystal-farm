@@ -17,10 +17,11 @@
  */
 package ru.windcorp.crystalfarm.client;
 
-import ru.windcorp.crystalfarm.logic.action.Action;
+import ru.windcorp.crystalfarm.logic.GameManager;
+import ru.windcorp.crystalfarm.logic.server.Agent;
 import ru.windcorp.crystalfarm.logic.server.Server;
 
-public class LocalClientAgent extends ClientAgent {
+public class LocalClientAgent extends Agent {
 	
 	private final Server server;
 
@@ -31,10 +32,12 @@ public class LocalClientAgent extends ClientAgent {
 	public Server getServer() {
 		return server;
 	}
-
+	
 	@Override
-	public void sendAction(Action action) {
-		action.run(this);
+	public void onServerShutdown() {
+		if (GameManager.getLocalClient() != null) {
+			GameManager.shutdownClient();
+		}
 	}
 
 }
