@@ -20,7 +20,6 @@ package ru.windcorp.crystalfarm.content.basic.test;
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.graphics.Color;
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.logic.Island;
@@ -58,11 +57,7 @@ public class TestTile extends GridTile {
 	
 	@Override
 	public void render(View view, int x, int y) {
-		GraphicsInterface.drawTexture(
-				x, y,
-				getTexture(),
-				0, 0,
-				state ? Color.GRAY : null, Direction.UP);
+		getTexture().render(x, y, state ? Color.GRAY : null, Direction.UP);
 	}
 
 }

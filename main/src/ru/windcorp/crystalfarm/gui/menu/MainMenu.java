@@ -36,7 +36,6 @@ import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.translation.ModuleTranslation;
 import ru.windcorp.crystalfarm.translation.TString;
-import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.StringUtil;
 
 public class MainMenu extends GuiLayer {
@@ -158,20 +157,17 @@ public class MainMenu extends GuiLayer {
 	
 	@Override
 	public void render() {
-		double scale = Math.max(getWindowWidth() / (double) background.getWidth(),
-				getWindowHeight() / (double) background.getHeight());
+		double scale = Math.max(getWindowWidth() / (double) background.getUsableWidth(),
+				getWindowHeight() / (double) background.getUsableHeight());
 		
-		int width = (int) (background.getWidth() * scale);
-		int height = (int) (background.getHeight() * scale);
+		int width = (int) (background.getUsableWidth() * scale);
+		int height = (int) (background.getUsableHeight() * scale);
 		
-		drawTexture(
+		background.render(
 				(getWindowWidth() - width) / 2,
 				(getWindowHeight() - height) / 2,
 				width,
-				height,
-				background,
-				0, 0,
-				null, Direction.UP);
+				height);
 		super.render();
 	}
 

@@ -31,7 +31,6 @@ import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
-import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.jobs.JobListener;
 import ru.windcorp.tge2.util.jobs.JobManager;
 
@@ -49,7 +48,7 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 	private final SimpleTexture iconThreadLoadSleep = SimpleTexture.get("mascot/sleep");
 	
 	private Font font = null;
-	private int maxThreadHeight = iconThreadLoadSleep.getHeight();
+	private int maxThreadHeight = iconThreadLoadSleep.getUsableHeight();
 	
 	private final Map<Thread, ModuleJob> current = Collections.synchronizedMap(new HashMap<>());
 
@@ -89,11 +88,9 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 	}
 
 	private void renderLogo() {
-		drawTexture(
+		logo.render(
 				(getWindowWidth() - logo.getWidth()) / 2,
-				(getWindowHeight()/2 - logo.getHeight()) / 2,
-				logo, 0, 0,
-				null, Direction.UP);
+				(getWindowHeight()/2 - logo.getHeight()) / 2);
 	}
 
 	private void renderProgress(int left, int total) {
@@ -131,10 +128,8 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 		
 		synchronized (current) {
 			for (ModuleJob job : current.values()) {
-				drawTexture(TABLE_MARGIN_X, y,
-						job == null ? iconThreadLoadSleep : iconThreadLoadWork,
-								0, 0,
-								null, Direction.UP);
+				(job == null ? iconThreadLoadSleep : iconThreadLoadWork)
+					.render(TABLE_MARGIN_X, y);
 				
 				if (font != null) {
 					font.render(job == null ? "Idling" : job.getName(),

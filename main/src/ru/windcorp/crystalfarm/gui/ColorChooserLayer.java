@@ -28,7 +28,6 @@ import ru.windcorp.crystalfarm.graphics.RandomColor;
 import ru.windcorp.crystalfarm.gui.layout.LayoutHorizontal;
 import ru.windcorp.crystalfarm.gui.menu.MenuLayer;
 import ru.windcorp.crystalfarm.translation.TString;
-import ru.windcorp.crystalfarm.util.Direction;
 
 public class ColorChooserLayer extends MenuLayer {
 	
@@ -53,14 +52,11 @@ public class ColorChooserLayer extends MenuLayer {
 					getHeight(),
 					isFocused() ? gdGetBorderFocusedColor() : gdGetBorderColor());
 			
-			drawTexture(
+			ColorChooser.texture.render(
 					getX() + gdGetLine(),
 					getY() + gdGetLine(), 
 					getWidth() - 2*gdGetLine(),
-					getHeight() - 2*gdGetLine(),
-					ColorChooser.texture,
-					0, 0,
-					null, Direction.UP);
+					getHeight() - 2*gdGetLine());
 			
 			glBegin(GL_TRIANGLES);
 				glColor4dv(extreme);
@@ -185,14 +181,11 @@ public class ColorChooserLayer extends MenuLayer {
 						getWidth(),
 						getHeight(),
 						isFocused() ? gdGetBorderFocusedColor() : gdGetBorderColor());
-				drawTexture(
+				ColorChooser.texture.render(
 						getX() + gdGetLine(),
 						getY() + gdGetLine(),
 						getWidth() - 2*gdGetLine(),
-						getHeight() - 2*gdGetLine(),
-						ColorChooser.texture,
-						0, 0,
-						null, Direction.UP);
+						getHeight() - 2*gdGetLine());
 				fillRectangle(
 						getX() + gdGetLine(),
 						getY() + gdGetLine(),

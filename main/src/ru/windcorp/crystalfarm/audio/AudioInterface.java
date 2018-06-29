@@ -28,8 +28,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import ru.windcorp.tge2.util.synch.SynchUtil;
-
 public class AudioInterface {
 	
 	private static IntBuffer sources = null;
@@ -46,6 +44,8 @@ public class AudioInterface {
 	 * @param xPosition - sound position at X axis
 	 * @param yPosition - sound position at Y axis
 	 * @param pitch - pitch change
+	 * 
+	 * @see {@link Sound#play(float, float, float, float)}
 	 */
 	public static void play(Sound sound, float gain, float xPosition, float yPosition, float pitch) {
 		int source = nextSource();
@@ -61,37 +61,6 @@ public class AudioInterface {
 		
 		alSourcePlay(source);
 		SOURCE_SOUNDS.put(source, sound);
-	}
-	
-	/**
-	 * Plays the given sound. Pitch is preserved, sound is played at (0; 0).
-	 * @param sound - the sound to play
-	 * @param gain - sound volume
-	 */
-	public static void play(Sound sound, float gain) {
-		play(sound, gain, 0, 0, 1.0f);
-	}
-	
-	/**
-	 * Plays the given sound and waits for it to stop.
-	 * @param sound - the sound to play
-	 * @param gain - sound volume
-	 * @param xPosition - sound position at X axis
-	 * @param yPosition - sound position at Y axis
-	 * @param pitch - pitch change
-	 */
-	public static void playCompletely(Sound sound, float gain, float xPosition, float yPosition, float pitch) {
-		play(sound, gain, xPosition, yPosition, pitch);
-		SynchUtil.pause(sound.getLength());
-	}
-	
-	/**
-	 * Plays the given sound and waits for it to stop. Pitch is preserved, sound is played at (0; 0).
-	 * @param sound - the sound to play
-	 * @param gain - sound volume
-	 */
-	public static void playCompletely(Sound sound, float gain) {
-		playCompletely(sound, gain, 0, 0, 1.0f);
 	}
 	
 	/**

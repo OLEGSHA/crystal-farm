@@ -18,12 +18,10 @@
 package ru.windcorp.crystalfarm.logic;
 
 import ru.windcorp.crystalfarm.client.View;
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.texture.SimpleTexture;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.translation.TString;
-import ru.windcorp.crystalfarm.util.Direction;
 
 public abstract class GridTile extends Tile {
 	
@@ -64,11 +62,7 @@ public abstract class GridTile extends Tile {
 	
 	@Override
 	public void render(View view, int x, int y) {
-		GraphicsInterface.drawTexture(
-				x, y,
-				texture,
-				0, 0,
-				null, Direction.UP);
+		getTexture().render(x, y);
 	}
 
 }

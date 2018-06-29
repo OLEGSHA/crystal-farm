@@ -18,7 +18,6 @@
 package ru.windcorp.crystalfarm.graphics.fonts;
 
 import ru.windcorp.crystalfarm.graphics.Color;
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.gui.Size;
 import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.Nameable;
@@ -73,7 +72,7 @@ public class Font extends Nameable {
 				}
 				sum = 0;
 			} else {
-				sum += getSymbol(chars[i]).getWidth() + (bold ? 1 : 0);
+				sum += getSymbol(chars[i]).getUsableWidth() + (bold ? 1 : 0);
 			}
 		}
 		if (maxSum < sum) {
@@ -99,7 +98,7 @@ public class Font extends Nameable {
 				result.width = 0;
 				result.height += getHeight();
 			} else {
-				result.width += getSymbol(chars[i]).getWidth() + (bold ? 1 : 0);
+				result.width += getSymbol(chars[i]).getUsableWidth() + (bold ? 1 : 0);
 			}
 		}
 		if (maxWidth < result.width) {
@@ -112,13 +111,13 @@ public class Font extends Nameable {
 	}
 	
 	protected int render(FontSymbol symbol, int x, int y, boolean bold, Color color) {
-		GraphicsInterface.drawTexture(x, y, symbol, 0, 0, color, Direction.UP);
+		symbol.render(x, y, color, Direction.UP);
 		
 		if (bold) {
-			GraphicsInterface.drawTexture(x + 1, y, symbol, 0, 0, color, Direction.UP);
-			return symbol.getWidth() + 1;
+			symbol.render(x + 1, y, color, Direction.UP);
+			return symbol.getUsableWidth() + 1;
 		} else {
-			return symbol.getWidth();
+			return symbol.getUsableWidth();
 		}
 	}
 	

@@ -21,48 +21,36 @@ import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.util.Direction;
 
-public interface Texture {
+public interface TiledTexture extends Texture {
+
+	int getTileSize();
+	int getTileY();
+	int getTileX();
 	
-	String getName();
-	
-	int getTextureId();
-	
-	int getX();
-	int getY();
-	int getUsableWidth();
-	int getUsableHeight();
-	int getTextureWidth();
-	int getTextureHeight();
-	
-	default void render(int x, int y, int width, int height, Color filter, Direction direction) {
-		GraphicsInterface.drawTexture(
-				x, y,
-				width, height,
-				this,
-				0, 0,
-				getWidth() / (double) getTextureWidth(),
-				getHeight() / (double) getTextureHeight(),
-				filter, direction);
-	}
-	
+	@Override
 	default int getWidth() {
-		return getUsableWidth();
+		return getTileSize();
 	}
 	
+	@Override
 	default int getHeight() {
-		return getUsableHeight();
-	}
-	
-	default void render(int x, int y, Color filter, Direction direction) {
-		render(x, y, getWidth(), getHeight(), filter, direction);
-	}
-	
-	default void render(int x, int y, int width, int height) {
-		render(x, y, width, height, null, Direction.UP);
-	}
-	
-	default void render(int x, int y) {
-		render(x, y, getWidth(), getHeight(), null, Direction.UP);
+		return getTileSize();
 	}
 
+	@Override
+	default void render(int x, int y, int width, int height, Color filter, Direction direction) {
+		GraphicsInterface.drawTexture(
+				x,
+				y,
+				width,
+				height,
+				this,
+				 getTileX()		 * getTileSize() / (double) getTextureWidth(),
+				 getTileY()		 * getTileSize() / (double) getTextureHeight(),
+				(getTileX() + 1) * getTileSize() / (double) getTextureWidth(),
+				(getTileY() + 1) * getTileSize() / (double) getTextureHeight(),
+				filter,
+				direction);
+	}
+	
 }

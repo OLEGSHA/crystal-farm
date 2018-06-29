@@ -36,7 +36,6 @@ import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.translation.TString;
-import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.NumberUtil;
 
 public class ColorChooser extends ActivatableComponent {
@@ -123,14 +122,11 @@ public class ColorChooser extends ActivatableComponent {
 				isHovered() ? gdGetForegroundAltColor() : gdGetForegroundColor(),
 				isFocused() ? gdGetBorderFocusedColor() : gdGetBorderColor(),
 				gdGetLine());
-		drawTexture(
+		texture.render(
 				getX() + gdGetLine(),
 				getY() + gdGetLine(),
 				getHeight() - 2*gdGetLine(),
-				getHeight() - 2*gdGetLine(),
-				texture,
-				0, 0,
-				null, Direction.UP);
+				getHeight() - 2*gdGetLine());
 		fillRectangle(
 				getX() + gdGetLine(),
 				getY() + gdGetLine(),

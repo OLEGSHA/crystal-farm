@@ -17,7 +17,6 @@
  */
 package ru.windcorp.crystalfarm.gui;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.texture.Texture;
 
 public class Image extends Component {
@@ -48,10 +47,9 @@ public class Image extends Component {
 			return;
 		}
 		
-		GraphicsInterface.drawTexture(
+		texture.render(
 				getX() + (getWidth() - getTexture().getWidth())/2,
-				getY() + (getHeight() - getTexture().getHeight())/2,
-				texture);
+				getY() + (getHeight() - getTexture().getHeight())/2);
 	}
 
 }

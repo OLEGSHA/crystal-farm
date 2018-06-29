@@ -55,12 +55,12 @@ public class SimpleTexture extends Nameable implements Texture {
 	}
 
 	@Override
-	public int getWidth() {
+	public int getUsableWidth() {
 		return texture.getWidth();
 	}
 
 	@Override
-	public int getHeight() {
+	public int getUsableHeight() {
 		return texture.getHeight();
 	}
 	
@@ -72,11 +72,6 @@ public class SimpleTexture extends Nameable implements Texture {
 	@Override
 	public int getTextureHeight() {
 		return texture.getTextureHeight();
-	}
-
-	@Override
-	public int getTileSize() {
-		return 0;
 	}
 
 }

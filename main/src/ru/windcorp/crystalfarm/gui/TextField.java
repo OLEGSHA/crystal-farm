@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 
 import org.lwjgl.glfw.GLFW;
 
-import ru.windcorp.crystalfarm.audio.AudioInterface;
 import ru.windcorp.crystalfarm.audio.Sound;
 import ru.windcorp.crystalfarm.audio.SoundManager;
 import ru.windcorp.crystalfarm.graphics.Color;
@@ -129,7 +128,7 @@ public class TextField extends ActivatableComponent {
 				synchronized (this) {
 					if (isChanged()) {
 						if (isError()) {
-							AudioInterface.play(sound, 1);
+							sound.play();
 						} else {
 							isChanged = false;
 							accept(null);
@@ -142,7 +141,7 @@ public class TextField extends ActivatableComponent {
 			} else if (!ki.isReleased() && ki.getKey() == GLFW.GLFW_KEY_BACKSPACE) {
 				synchronized (this) {
 					if (getLength() == 0) {
-						AudioInterface.play(sound, 1);
+						sound.play();
 					} else {
 						this.length--;
 						onChange();

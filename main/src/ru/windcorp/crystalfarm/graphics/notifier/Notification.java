@@ -22,7 +22,6 @@ import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
 
 import java.util.function.Consumer;
 
-import ru.windcorp.crystalfarm.audio.AudioInterface;
 import ru.windcorp.crystalfarm.audio.Sound;
 import ru.windcorp.crystalfarm.audio.SoundManager;
 import ru.windcorp.crystalfarm.graphics.Color;
@@ -197,7 +196,7 @@ public class Notification {
 		
 		if (x == gdGetLine()) {
 			if (!soundPlayed) {
-				AudioInterface.play(getType().getSound(), ModuleNotifier.SETTING_ALERT_GAIN.get());
+				getType().getSound().play(ModuleNotifier.SETTING_ALERT_GAIN.get());
 				soundPlayed = true;
 			}
 			
@@ -250,10 +249,9 @@ public class Notification {
 			fillRectangle(x, y, width, height, gdGetCoverColor());
 		}
 		
-		drawTexture(
+		getType().getIcon().render(
 				x + 2*gdGetLine(),
-				y + 2*gdGetLine(),
-				getType().getIcon());
+				y + 2*gdGetLine());
 		
 		getLabel().render(x + 3*gdGetLine() + getType().getIcon().getWidth(), y + 2*gdGetLine());
 		
