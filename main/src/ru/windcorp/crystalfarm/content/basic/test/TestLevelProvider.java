@@ -27,7 +27,7 @@ public class TestLevelProvider implements Consumer<Collection<Level>> {
 
 	@Override
 	public void accept(Collection<Level> arg0) {
-		GridTileLevel<TestTile> testLevel = new GridTileLevel<>("TestLevel", TestTile.class, 50, 64);
+		GridTileLevel<TestTile> testLevel = new GridTileLevel<>("TestLevel", TestTile.class, 50);
 		testLevel.getTileRegistry().register(new TestTile());
 		
 		arg0.add(testLevel);

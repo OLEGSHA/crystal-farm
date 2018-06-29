@@ -19,29 +19,24 @@ package ru.windcorp.crystalfarm.content.basic.test;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.client.View;
-import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
-import ru.windcorp.crystalfarm.logic.Tile;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.translation.TString;
-import ru.windcorp.crystalfarm.util.Direction;
 
 public class TestTile extends GridTile {
 	
 	private static final TString NAME = TString.wrap("Test Tile Name");
-	
-	private boolean state = false;
 
 	public TestTile() {
-		super(InbuiltMod.INST, "testTile", NAME);
+		super(InbuiltMod.INST, "testTile", NAME, 4, 400, 3, 300);
 	}
 	
 	@Override
-	protected Tile clone() {
-		Tile t = super.clone();
+	protected GridTile clone() {
+		GridTile t = super.clone();
 
 		if (GameManager.GENERIC_RANDOM.nextBoolean()) {
 			t.setTickable(true);
@@ -51,13 +46,13 @@ public class TestTile extends GridTile {
 	}
 	
 	@Override
-	public void tick(World world, Island island, Level level, long length, long time) {
-		state = time % 1000 > 500;
+	public void render(View view, int x, int y) {
+		super.render(view, x, y);
 	}
 	
 	@Override
-	public void render(View view, int x, int y) {
-		getTexture().render(x, y, state ? Color.GRAY : null, Direction.UP);
+	public void tick(World world, Island island, Level level, long length, long time) {
+		getTexture().setState(time % 10000 > 5000 ? 0 : 1);
 	}
 
 }

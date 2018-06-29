@@ -17,6 +17,8 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
+import static ru.windcorp.crystalfarm.logic.GameManager.TEXTURE_SIZE;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -30,11 +32,10 @@ import ru.windcorp.tge2.util.stream.CountingDataOutput;
 public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 	
 	private final int size;
-	private final int textureSize;
 	private final T[][] tiles;
 
 	@SuppressWarnings("unchecked")
-	public GridTileLevel(String name, Class<T> clazz, int size, int textureSize) {
+	public GridTileLevel(String name, Class<T> clazz, int size) {
 		super(name, clazz);
 		
 		this.size = size;
@@ -42,12 +43,6 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 		for (int x = 0; x < size; ++x) {
 			this.tiles[x] = (T[]) Array.newInstance(clazz, size);
 		}
-		
-		this.textureSize = textureSize;
-	}
-
-	public int getTextureSize() {
-		return textureSize;
 	}
 
 	public int getSize() {
@@ -86,7 +81,7 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 				for (int y = 0; y < getSize(); ++y) {
 					T tile = getTile(x, y);
 					if (tile != null) {
-						tile.render(view, x*textureSize, y*textureSize);
+						tile.render(view, x*TEXTURE_SIZE, y*TEXTURE_SIZE);
 					}
 				}
 			}

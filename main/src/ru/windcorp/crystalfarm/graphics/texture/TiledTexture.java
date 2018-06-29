@@ -17,40 +17,58 @@
  */
 package ru.windcorp.crystalfarm.graphics.texture;
 
-import ru.windcorp.crystalfarm.graphics.Color;
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
-import ru.windcorp.crystalfarm.util.Direction;
-
-public interface TiledTexture extends Texture {
-
-	int getTileSize();
-	int getTileY();
-	int getTileX();
+public class TiledTexture extends SimpleTexture implements AbstractTiledTexture, Cloneable {
 	
-	@Override
-	default int getWidth() {
-		return getTileSize();
-	}
-	
-	@Override
-	default int getHeight() {
-		return getTileSize();
+	private int tileX = 0;
+	private int tileY = 0;
+	private final int tileSize;
+
+	protected TiledTexture(TexturePrimitive texture, int tileSize) {
+		super(texture);
+		this.tileSize = tileSize;
 	}
 
+	public static TiledTexture get(String name, int tileSize) {
+		synchronized (TextureManager.class) {
+			TiledTexture texture = TextureManager.get(name, TiledTexture.class);
+			if (texture == null) {
+				texture = new TiledTexture(TextureManager.loadTexture(name), tileSize);
+				TextureManager.register(texture);
+			}
+			return texture;
+		}
+	}
+
 	@Override
-	default void render(int x, int y, int width, int height, Color filter, Direction direction) {
-		GraphicsInterface.drawTexture(
-				x,
-				y,
-				width,
-				height,
-				this,
-				 getTileX()		 * getTileSize() / (double) getTextureWidth(),
-				 getTileY()		 * getTileSize() / (double) getTextureHeight(),
-				(getTileX() + 1) * getTileSize() / (double) getTextureWidth(),
-				(getTileY() + 1) * getTileSize() / (double) getTextureHeight(),
-				filter,
-				direction);
+	public int getTileSize() {
+		return tileSize;
+	}
+
+	@Override
+	public int getTileX() {
+		return tileX;
+	}
+
+	public void setTileX(int tileX) {
+		this.tileX = tileX;
+	}
+
+	@Override
+	public int getTileY() {
+		return tileY;
+	}
+
+	public void setTileY(int tileY) {
+		this.tileY = tileY;
 	}
 	
+	public TiledTexture clone() {
+		try {
+			return (TiledTexture) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// Never happens
+			return null;
+		}
+	}
+
 }

@@ -37,6 +37,7 @@ public class GameManager {
 	private static Proxy localClient = null;
 	
 	public static final Random GENERIC_RANDOM = new Random();
+	public static final int TEXTURE_SIZE = 64;
 	
 	public static Server getLocalServer() {
 		return localServer;
@@ -180,8 +181,9 @@ public class GameManager {
 		Log.topic("Server Shutdown");
 		
 		try {
+			Server server = getLocalServer();
 			localServer = null;
-			getLocalServer().shutdown();
+			server.shutdown();
 		} finally {
 			Log.end("Server Shutdown");			
 		}
@@ -192,9 +194,10 @@ public class GameManager {
 			throw new IllegalStateException("No client present");
 		}
 		
+		Proxy client = getLocalClient();
 		localClient = null;
 		
-		if (getLocalClient() instanceof LocalProxy
+		if (client instanceof LocalProxy
 				&& getLocalServer() != null) {
 			shutdownLocalServer();
 		}
