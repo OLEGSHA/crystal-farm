@@ -45,16 +45,6 @@ public class SimpleTexture extends Nameable implements Texture {
 	}
 
 	@Override
-	public int getX() {
-		return 0;
-	}
-
-	@Override
-	public int getY() {
-		return 0;
-	}
-
-	@Override
 	public int getUsableWidth() {
 		return texture.getWidth();
 	}
