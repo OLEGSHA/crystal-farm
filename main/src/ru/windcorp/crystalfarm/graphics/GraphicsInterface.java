@@ -43,6 +43,7 @@ import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.input.KeyStroke;
 import ru.windcorp.crystalfarm.input.MouseButtonInput;
+import ru.windcorp.crystalfarm.input.ScrollInput;
 import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.collections.ReverseListView;
@@ -280,6 +281,14 @@ public class GraphicsInterface {
 		}
 		
 		dispatchInput(new MouseButtonInput(button, action, mods));
+	}
+	
+	static void handleScroll(long window, double xMod, double yMod) {
+		if (window != getWindow()) {
+			return;
+		}
+		
+		dispatchInput(new ScrollInput((int) yMod));
 	}
 	
 	static void handleWindowClose(long window) {
@@ -548,6 +557,7 @@ public class GraphicsInterface {
 		
 		glBegin(GL_QUADS);
 			
+			glColor4b((byte) 0, (byte) 0, (byte) 0, (byte) 0);
 			glVertex2i(x, y);
 			glVertex2i(x, height);
 			glVertex2i(width, height);
@@ -556,6 +566,7 @@ public class GraphicsInterface {
 		glEnd();
 		
 		glStencilFunc(GL_EQUAL, 1, 0xFF);
+	    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	    glStencilMask(0x00);
 	}
 	

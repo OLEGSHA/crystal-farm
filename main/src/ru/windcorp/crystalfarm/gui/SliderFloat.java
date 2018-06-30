@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.gui;
 
 import java.util.function.Consumer;
 
+import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.StringUtil;
 
@@ -59,6 +60,13 @@ public class SliderFloat extends ArrowedComponent {
 		this.power = pow10(decimals);
 		this.display = new TStringDisplay();
 		getDisplay().setText(display.toFont());
+		
+		addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
+			if (input.isPressed() && input.isLeftButton()) {
+				setValue(getMin() + (getMax() - getMin()) * (input.getCursorX() - getX()) / (getWidth()));
+				input.consume();
+			}
+		});
 	}
 	
 	private int pow10(int power) {
@@ -86,7 +94,7 @@ public class SliderFloat extends ArrowedComponent {
 	}
 	
 	public void setValueSilently(float value) {
-		setMultiplierSilently((int) (value / getStep()));
+		setMultiplierSilently(Math.round(value / getStep()));
 	}
 	
 	public void setMultiplier(int value) {
@@ -98,7 +106,7 @@ public class SliderFloat extends ArrowedComponent {
 	}
 	
 	public void setValue(float value) {
-		setMultiplier((int) (value / getStep()));
+		setMultiplier(Math.round(value / getStep()));
 	}
 	
 	public float getMin() {

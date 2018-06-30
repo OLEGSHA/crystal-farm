@@ -15,30 +15,45 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.graphics;
+package ru.windcorp.crystalfarm.input;
 
-import ru.windcorp.tge2.util.IndentedStringBuilder;
-import ru.windcorp.tge2.util.Nameable;
+public class ScrollInput extends Input {
+	
+	private final int amount;
 
-public abstract class Layer extends Nameable {
+	public ScrollInput(int amount) {
+		this.amount = amount;
+	}
 
-	public Layer(String name) {
-		super(name);
+	public int getAmount() {
+		return amount;
 	}
-	
-	public abstract void render();
-	
-	public void dump(IndentedStringBuilder sb) {
-		sb.append("Layer " + toString() + " (" + this.getClass() + ")");
-		sb.breakLine();
+
+	@Override
+	public InputTarget getTarget() {
+		return InputTarget.HOVERED;
 	}
-	
-	public void show() {
-		GraphicsInterface.addLayer(this);
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + amount;
+		return result;
 	}
-	
-	public void close() {
-		GraphicsInterface.removeLayer(this);
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ScrollInput other = (ScrollInput) obj;
+		if (amount != other.amount)
+			return false;
+		return true;
 	}
 
 }

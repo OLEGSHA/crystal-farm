@@ -25,7 +25,6 @@ import java.util.function.Consumer;
 import org.lwjgl.glfw.GLFW;
 
 import ru.windcorp.crystalfarm.graphics.Color;
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.RandomColor;
 import ru.windcorp.crystalfarm.graphics.fonts.Font;
 import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
@@ -42,7 +41,7 @@ public class ColorChooser extends ActivatableComponent {
 	
 	static Texture texture = SimpleTexture.get("ui/colorChooser/alphaBg");
 	
-	private static final char[] SAMPLE = NumberUtil.toFullHex(0xFF_FF_FF_FF);
+	private static final char[] SAMPLE = NumberUtil.toFullHex(0xDDDDDDDD);
 	private static final TString TEXT_RANDOM = TString.translated("gui.colorChooser.random");
 	
 	private Color color;
@@ -67,16 +66,14 @@ public class ColorChooser extends ActivatableComponent {
 		setPreferredSize(size);
 		
 		addInputListener((ComponentKeyInputListener) (comp, input) -> {
-			if (input.is(GLFW.GLFW_KEY_ENTER, KeyInput.RELEASED)) {
-				ColorChooserLayer layer = new ColorChooserLayer(this);
-				GraphicsInterface.addLayer(layer);
+			if (input.is(GLFW.GLFW_KEY_ENTER, KeyInput.PRESSED)) {
+				new ColorChooserLayer(this).show();
 				input.consume();
 			}
 		});
 		addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
 			if (input.isLeftButton() && input.isPressed()) {
-				ColorChooserLayer layer = new ColorChooserLayer(this);
-				GraphicsInterface.addLayer(layer);
+				new ColorChooserLayer(this).show();
 				input.consume();
 			}
 		});

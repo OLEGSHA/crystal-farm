@@ -60,7 +60,7 @@ public class MainMenu extends GuiLayer {
 								TString.translated("menu.MainMenu.play").toFont(),
 								button -> GameManager.startLocalGame(
 										CrystalFarmResourceManagers.RM_FILE_WD.getResource("testWorld.earthpony.cfsave"))
-						).takeFocus());
+						));
 				
 				menu.addChild(
 						new Button(

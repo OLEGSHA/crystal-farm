@@ -21,6 +21,8 @@ import java.util.function.Consumer;
 
 import org.lwjgl.glfw.GLFW;
 
+import ru.windcorp.crystalfarm.graphics.GraphicsDesign;
+import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.gui.layout.LayoutBorderHorizontal;
 import ru.windcorp.crystalfarm.gui.listener.ComponentKeyInputListener;
@@ -36,11 +38,31 @@ public abstract class ArrowedComponent extends ActivatableComponent {
 
 		public Arrow(String name, FontString text) {
 			super(name, text);
+			addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
+				if (input.isPressed() && input.isLeftButton()) {
+					if (text == ARROW_LEFT) {
+						selectPrevious();
+					} else {
+						selectNext();
+					}
+					input.consume();
+				}
+			});
 		}
 		
 		@Override
 		protected void renderSelf() {
-			if (ArrowedComponent.this.isFocused() || ArrowedComponent.this.isHovered()) super.renderSelf();
+			if (ArrowedComponent.this.isFocused() || ArrowedComponent.this.isHovered()) {
+				if (isHovered()) {
+					GraphicsInterface.fillRectangle(
+							getX(),
+							getY(),
+							getWidth(),
+							getHeight(),
+							GraphicsDesign.gdGetCoverColor());
+				}
+				super.renderSelf();
+			}
 		}
 		
 	}
@@ -63,20 +85,6 @@ public abstract class ArrowedComponent extends ActivatableComponent {
 		
 		this.right = new Arrow(name + ".rightArrow", ARROW_RIGHT);
 		addChild(this.right.center().setLayoutHint(LayoutBorderHorizontal.RIGHT));
-		
-		addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
-			if (!input.isPressed()) {
-				return;
-			}
-			
-			if (input.isLeftButton()) {
-				selectNext();
-				input.consume();
-			} else if (input.isRightButton()) {
-				selectPrevious();
-				input.consume();
-			}
-		});
 		
 		addInputListener((ComponentKeyInputListener) (comp, input) -> {
 			if (input.isReleased()) {

@@ -75,5 +75,14 @@ public class GuiLayer extends Layer implements InputListener, WindowResizeListen
 		sb.unindent();
 		sb.breakLine();
 	}
+	
+	@Override
+	public void show() {
+		Component root = getRoot();
+		if (root != null) {
+			root.focusNext();
+		}
+		super.show();
+	}
 
 }

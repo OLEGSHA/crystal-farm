@@ -46,6 +46,8 @@ public class LayoutAlign implements Layout {
 		c.getChildren().forEach(child -> {
 			
 			Size size = child.getPreferredSize();
+			size.width = Math.min(size.width, c.getWidth() - 2*margin*gdGetLine());
+			size.height = Math.min(size.height, c.getHeight() - 2*margin*gdGetLine());
 			
 			child.setBounds(
 					c.getX() + (int) ((c.getWidth() - size.width) * alignX),

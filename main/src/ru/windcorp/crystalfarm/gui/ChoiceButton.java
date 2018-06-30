@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
+import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.translation.TString;
 
 public class ChoiceButton<T> extends ArrowedComponent {
@@ -36,6 +37,20 @@ public class ChoiceButton<T> extends ArrowedComponent {
 		
 		this.choices = new CopyOnWriteArrayList<>(choices);
 		this.selection = firstSelection;
+		
+		addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
+			if (!input.isPressed()) {
+				return;
+			}
+			
+			if (input.isLeftButton()) {
+				selectNext();
+				input.consume();
+			} else if (input.isRightButton()) {
+				selectPrevious();
+				input.consume();
+			}
+		});
 	}
 
 	public List<T> getChoices() {

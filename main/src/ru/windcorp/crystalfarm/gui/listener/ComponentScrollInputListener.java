@@ -15,30 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.graphics;
+package ru.windcorp.crystalfarm.gui.listener;
 
-import ru.windcorp.tge2.util.IndentedStringBuilder;
-import ru.windcorp.tge2.util.Nameable;
+import ru.windcorp.crystalfarm.input.ScrollInput;
 
-public abstract class Layer extends Nameable {
-
-	public Layer(String name) {
-		super(name);
+public interface ComponentScrollInputListener extends ComponentInputListener<ScrollInput> {
+	
+	@Override
+	default Class<ScrollInput> getInputClass() {
+		return ScrollInput.class;
 	}
 	
-	public abstract void render();
-	
-	public void dump(IndentedStringBuilder sb) {
-		sb.append("Layer " + toString() + " (" + this.getClass() + ")");
-		sb.breakLine();
-	}
-	
-	public void show() {
-		GraphicsInterface.addLayer(this);
-	}
-	
-	public void close() {
-		GraphicsInterface.removeLayer(this);
-	}
-
 }

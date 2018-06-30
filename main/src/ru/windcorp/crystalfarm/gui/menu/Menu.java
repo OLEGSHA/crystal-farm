@@ -22,16 +22,23 @@ import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
 import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.gui.Component;
 import ru.windcorp.crystalfarm.gui.Label;
+import ru.windcorp.crystalfarm.gui.Scroller;
 import ru.windcorp.crystalfarm.gui.layout.LayoutVertical;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 
-public class Menu extends Component {
-
+public class Menu extends Scroller {
+	
 	public Menu(String name, FontString title) {
-		super(name);
-		setLayout(new LayoutVertical(3));
+		super(1, new Component(name));
+		getContents().setLayout(new LayoutVertical(3));
+		
 		addChild(new Label(name + ".label", title.setBold(true).setStyle(FontStyle.ENGRAVED)).center());
+	}
+	
+	@Override
+	public Component addChild(Component child) {
+		return getContents().addChild(child);
 	}
 	
 	@Override

@@ -22,7 +22,6 @@ import static ru.windcorp.crystalfarm.graphics.GraphicsDesign.*;
 
 import org.lwjgl.glfw.GLFW;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.fonts.FontString;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.gui.Component;
@@ -57,6 +56,7 @@ public class MenuLayer extends GuiLayer {
 		}
 		
 		setRoot(root);
+		root.takeFocus();
 	}
 	
 	@Override
@@ -88,14 +88,6 @@ public class MenuLayer extends GuiLayer {
 		}
 		
 		return this;
-	}
-	
-	public void show() {
-		GraphicsInterface.addLayer(this);
-	}
-	
-	public void close() {
-		GraphicsInterface.removeLayer(MenuLayer.this);
 	}
 
 }

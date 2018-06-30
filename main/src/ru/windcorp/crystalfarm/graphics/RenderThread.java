@@ -172,6 +172,7 @@ public class RenderThread implements Runnable {
 		glfwSetCharCallback(getWindow(), GraphicsInterface::handleCharInput);
 		glfwSetCursorPosCallback(getWindow(), GraphicsInterface::handleCursorMove);
 		glfwSetMouseButtonCallback(getWindow(), GraphicsInterface::handleMouseButton);
+		glfwSetScrollCallback(getWindow(), GraphicsInterface::handleScroll);
 		glfwSetWindowSizeCallback(getWindow(), GraphicsInterface::handleWindowResize);
 		glfwSetWindowCloseCallback(getWindow(), GraphicsInterface::handleWindowClose);
 	}

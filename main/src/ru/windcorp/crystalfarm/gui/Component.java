@@ -571,7 +571,7 @@ public class Component extends Nameable {
 				y >= getY() && y < getY() + getHeight();
 	}
 
-	public synchronized void render() {
+	protected synchronized void render() {
 		if (width == 0 || height == 0) {
 			return;
 		}
@@ -647,6 +647,14 @@ public class Component extends Nameable {
 	 */
 	public Component align(double x, double y) {
 		return new Aligner(this, x, y);
+	}
+	
+	/**
+	 * Returns a component that allows scrolling this component
+	 * @return a {@link Scroller} initialized with this component
+	 */
+	public Component scroller() {
+		return new Scroller(this);
 	}
 
 }

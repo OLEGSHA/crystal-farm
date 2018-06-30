@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.gui;
 
 import java.util.function.Consumer;
 
+import ru.windcorp.crystalfarm.gui.listener.ComponentMouseButtonInputListener;
 import ru.windcorp.crystalfarm.translation.TString;
 
 import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
@@ -51,6 +52,13 @@ public class SliderInt extends ArrowedComponent {
 		this.value = value;
 		this.display = new TStringDisplay();
 		getDisplay().setText(display.toFont());
+		
+		addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
+			if (input.isPressed() && input.isLeftButton()) {
+				setValue(getMin() + getStep() * (int) Math.round(((double) getMax() - getMin()) * (input.getCursorX() - getX()) / getWidth() / getStep()));
+				input.consume();
+			}
+		});
 	}
 	
 	public int getValue() {
