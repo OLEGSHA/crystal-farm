@@ -239,6 +239,10 @@ public class GraphicsInterface {
 		if (window != getWindow()) {
 			return;
 		}
+		if (width == 0 || height == 0) {
+			// Minimized
+			return;
+		}
 		
 		ModuleGraphicsInterface.WINDOW_MAXIMIZED.set(glfwGetWindowAttrib(getWindow(), GLFW_MAXIMIZED) == GLFW_TRUE);
 		
@@ -373,36 +377,60 @@ public class GraphicsInterface {
 	 * @param fullscreen whether to set window to fullscreen
 	 */
 	public static void setFullscreen(boolean fullscreen) {
-		boolean changed = fullscreen != isFullscreen();
 		ModuleGraphicsInterface.WINDOW_FULLSCREEN.set(fullscreen);
-		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-		
-		if (fullscreen) {
-			glfwSetWindowMonitor(
-					getWindow(),
-					glfwGetPrimaryMonitor(),
-					0,
-					0,
-					unsavedWidth = vidmode.width(),
-					unsavedHeight = vidmode.height(),
-					0);
-		} else {
-			boolean maximized = isMaximized();
-			if (maximized && !changed) {
-				return;
-			}
-			
-			glfwSetWindowMonitor(
-					getWindow(),
-					0,
-					maximized ? 0 : (vidmode.width() - getWindowWidth()) / 2,
-					maximized ? 0 : (vidmode.height() - getWindowHeight()) / 2,
-					getWindowWidth(),
-					getWindowHeight(),
-					0);
-		}
+		syncFullscreen();
 	}
 	
+	static void syncFullscreen() {
+		if (isFullscreen()) {
+			makeFullscreen();
+		} else {
+			if (isMaximized()) {
+				makeMaximized();
+			} else {
+				makeWindowed();
+			}
+		}
+	}
+
+	private static void makeFullscreen() {
+		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwSetWindowMonitor(
+				getWindow(),
+				glfwGetPrimaryMonitor(),
+				0,
+				0,
+				unsavedWidth = vidmode.width(),
+				unsavedHeight = vidmode.height(),
+				0);
+	}
+	
+	private static void makeMaximized() {
+		// When initializing window changing monitor breaks everything
+		if (!isGraphicsReady()) return;
+		
+		glfwSetWindowMonitor(
+				getWindow(),
+				0,
+				0,
+				0,
+				getWindowWidth(),
+				getWindowHeight(),
+				0);
+	}
+
+	private static void makeWindowed() {
+		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		glfwSetWindowMonitor(
+				getWindow(),
+				0,
+				(vidmode.width() - getWindowWidth()) / 2,
+				(vidmode.height() - getWindowHeight()) / 2,
+				getWindowWidth(),
+				getWindowHeight(),
+				0);
+	}
+
 	/*
 	 * Timing
 	 */

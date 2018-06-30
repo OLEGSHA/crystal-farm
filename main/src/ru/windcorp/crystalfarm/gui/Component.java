@@ -198,9 +198,9 @@ public class Component extends Nameable {
 	
 	public synchronized void validate() {
 		Component parent = getParent();
+		invalidate();
 		
-		if (isValid() || parent == null) {
-			invalidate();
+		if (parent == null) {
 			layoutSelf();
 		} else {
 			parent.validate();

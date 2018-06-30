@@ -59,12 +59,12 @@ public class ModuleGraphicsInterface extends Module {
 		
 		WINDOW_FULLSCREEN.addListener(x -> {
 			run(() -> {
-				setFullscreen(isFullscreen());
+				syncFullscreen();
 				return null;
 			});
 		});
 		
-		WINDOW_FULLSCREEN.addListener(x -> {
+		VSYNC.addListener(x -> {
 			run(() -> {
 				glfwSwapInterval(VSYNC.get() ? 1 : 0);
 				return null;

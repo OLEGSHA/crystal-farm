@@ -26,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ru.windcorp.crystalfarm.CrystalFarmResourceManagers;
 import ru.windcorp.crystalfarm.InbuiltMod;
@@ -52,7 +52,7 @@ public class ModuleTranslation extends Module {
 			DICTIONARY = Collections.synchronizedMap(new HashMap<>()),
 			DICTIONARY_FALLBACK = Collections.synchronizedMap(new HashMap<>());
 	
-	private static final Collection<WeakReference<TStringTranslated>> STRING_SET = Collections.synchronizedCollection(new LinkedList<>());
+	private static final Collection<WeakReference<TStringTranslated>> STRING_SET = Collections.synchronizedCollection(new ConcurrentLinkedQueue<>());
 	
 	private static final List<String> AVAILABLE_LANGUAGES = new ArrayList<>();
 	

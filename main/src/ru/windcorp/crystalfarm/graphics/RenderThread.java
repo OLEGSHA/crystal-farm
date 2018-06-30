@@ -141,7 +141,8 @@ public class RenderThread implements Runnable {
 	}
 
 	private void positionWindow() {
-		setFullscreen(isFullscreen());
+		//setFullscreen(isFullscreen());
+		syncFullscreen();
 	}
 
 	private void createWindowIcons() {
