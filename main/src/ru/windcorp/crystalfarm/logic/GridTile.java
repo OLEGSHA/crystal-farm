@@ -17,8 +17,6 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-import static ru.windcorp.crystalfarm.logic.GameManager.TEXTURE_SIZE;
-
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
@@ -31,7 +29,7 @@ public abstract class GridTile extends Tile {
 
 	public GridTile(Mod mod, String id, TString name, int... textureData) {
 		super(mod, id, name);
-		this.setTexture(ComplexTexture.get("tile/" + mod.getName() + "/" + id, TEXTURE_SIZE, textureData));
+		this.setTexture(getTextureForTile(this, textureData));
 	}
 	
 	synchronized void adopt(GridTileLevel<?> level, int x, int y) {

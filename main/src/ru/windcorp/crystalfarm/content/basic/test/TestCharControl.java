@@ -17,25 +17,28 @@
  */
 package ru.windcorp.crystalfarm.content.basic.test;
 
-import java.util.Collection;
-import java.util.function.Consumer;
+import java.io.DataInput;
+import java.io.IOException;
 
-import ru.windcorp.crystalfarm.logic.DynamicTile;
-import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
-import ru.windcorp.crystalfarm.logic.GridTileLevel;
-import ru.windcorp.crystalfarm.logic.Level;
+import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.logic.action.ControlAction;
+import ru.windcorp.crystalfarm.logic.server.Agent;
+import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
-public class TestLevelProvider implements Consumer<Collection<Level>> {
+public class TestCharControl extends ControlAction {
+
+	public TestCharControl(String name, String key, int vx, int vy) {
+		super(InbuiltMod.INST,
+				"TestCharMove" + name,
+				"Move " + name,
+				"PRESS " + key, false);
+	}
 
 	@Override
-	public void accept(Collection<Level> arg0) {
-		GridTileLevel<TestTile> testLevel = new GridTileLevel<>("TestLevel", TestTile.class, 50);
-		testLevel.getTileRegistry().register(new TestTile());
-		arg0.add(testLevel);
-		
-		DynamicTileLevel<DynamicTile> testDynLevel = new DynamicTileLevel<>("TestDynLevel", DynamicTile.class, 10);
-		testDynLevel.getTileRegistry().register(new TestCharTile());
-		arg0.add(testDynLevel);
+	public void run(Agent agent, DataInput input) throws IOException, SyntaxException {
+		// TODO Auto-generated method stub
+		System.err.println("Called auto-generated method TestCharControl.TestCharControl");
+
 	}
 
 }

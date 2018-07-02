@@ -37,7 +37,7 @@ public abstract class Updateable implements Cloneable {
 		change |= 1 << bit;
 	}
 	
-	protected boolean getChangeBit(int bit) {
+	protected boolean getChangeBit(int change, int bit) {
 		return (change & (1 << bit)) != 0;
 	}
 	

@@ -17,27 +17,37 @@
  */
 package ru.windcorp.crystalfarm.content.basic.test;
 
-import ru.windcorp.crystalfarm.logic.Biome;
-import ru.windcorp.crystalfarm.logic.BiomeProcessor;
+import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
-import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
-import ru.windcorp.crystalfarm.logic.GridTileLevel;
 import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.logic.Level;
+import ru.windcorp.crystalfarm.logic.server.World;
+import ru.windcorp.crystalfarm.translation.TString;
 
-public class TestGenerator implements BiomeProcessor {
+public class TestCharTile extends DynamicTile {
+	
+	private final ComplexTexture texture;
+
+	public TestCharTile() {
+		super(InbuiltMod.INST, "testCharTile", TString.wrap("Test Tile Name"));
+		this.texture = getTextureForTile(this, 1, 1000);
+		setTickable(true);
+	}
+
+	public ComplexTexture getTexture() {
+		return texture;
+	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void process(Island island, Biome biome) {
-		GridTileLevel<TestTile> testLevel = island.getLevel("TestLevel", GridTileLevel.class);
-		for (int x = 0; x < testLevel.getSize(); ++x) {
-			for (int y = 0; y < testLevel.getSize(); ++y) {
-				testLevel.setTile(new TestTile(), x, y);
-			}
-		}
-		
-		DynamicTileLevel<DynamicTile> testDynLevel = island.getLevel("TestDynLevel", DynamicTileLevel.class);
-		testDynLevel.addTile(new TestCharTile());
+	public void render(View view, int x, int y) {
+		getTexture().render(x, y);
+	}
+	
+	@Override
+	public void tick(World world, Island island, Level level, long length, long time) {
+		setPosition((Math.sin(time / 10000.0) + 1) * 50 / 2, (Math.cos(time / 10000.0) + 1) * 50 / 2);
 	}
 
 }

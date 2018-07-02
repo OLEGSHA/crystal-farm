@@ -17,12 +17,15 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
+import static ru.windcorp.crystalfarm.logic.GameManager.TEXTURE_SIZE;
+
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.translation.TString;
@@ -99,6 +102,10 @@ public abstract class Tile extends Updateable {
 	public String getId() {
 		return id;
 	}
+	
+	public String getRawId() {
+		return id.substring(getMod().getName().length() + 1);
+	}
 
 	public TString getName() {
 		return name;
@@ -131,6 +138,10 @@ public abstract class Tile extends Updateable {
 	
 	public void tick(World world, Island island, Level level, long length, long time) {
 		// Do nothing
+	}
+	
+	protected static ComplexTexture getTextureForTile(Tile tile, int... textureData) {
+		return ComplexTexture.get("tile/" + tile.getMod().getName() + "/" + tile.getRawId(), TEXTURE_SIZE, textureData);
 	}
 
 }
