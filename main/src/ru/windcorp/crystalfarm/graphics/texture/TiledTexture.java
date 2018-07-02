@@ -32,7 +32,7 @@ public class TiledTexture extends SimpleTexture implements AbstractTiledTexture,
 		synchronized (TextureManager.class) {
 			TiledTexture texture = TextureManager.get(name, TiledTexture.class);
 			if (texture == null) {
-				texture = new TiledTexture(TextureManager.loadTexture(name), tileSize);
+				texture = new TiledTexture(TextureManager.loadTexture(name, false), tileSize);
 				TextureManager.register(texture);
 			}
 			return texture;

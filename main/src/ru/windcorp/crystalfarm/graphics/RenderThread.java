@@ -146,8 +146,8 @@ public class RenderThread implements Runnable {
 	}
 
 	private void createWindowIcons() {
-		Vector2<TexturePrimitive, ByteBuffer> icon16 = TextureManager.loadToByteBuffer("window/icon16");
-		Vector2<TexturePrimitive, ByteBuffer> icon32 = TextureManager.loadToByteBuffer("window/icon32");
+		Vector2<TexturePrimitive, ByteBuffer> icon16 = TextureManager.loadToByteBuffer("window/icon16", false);
+		Vector2<TexturePrimitive, ByteBuffer> icon32 = TextureManager.loadToByteBuffer("window/icon32", false);
 		
 		try (GLFWImage.Buffer buffer = GLFWImage.malloc(2)) {
 			buffer

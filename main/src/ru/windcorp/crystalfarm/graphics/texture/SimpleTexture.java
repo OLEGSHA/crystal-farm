@@ -32,7 +32,7 @@ public class SimpleTexture extends Nameable implements Texture {
 		synchronized (TextureManager.class) {
 			SimpleTexture texture = TextureManager.get(name, SimpleTexture.class);
 			if (texture == null) {
-				texture = new SimpleTexture(TextureManager.loadTexture(name));
+				texture = new SimpleTexture(TextureManager.loadTexture(name, true));
 				TextureManager.register(texture);
 			}
 			return texture;

@@ -73,7 +73,7 @@ public class TextureManager {
 		return CrystalFarmResourceManagers.RM_ASSETS.getResource("texture/" + textureName + ".png");
 	}
 	
-	public static Vector2<TexturePrimitive, ByteBuffer> loadToByteBuffer(String textureName) {
+	public static Vector2<TexturePrimitive, ByteBuffer> loadToByteBuffer(String textureName, boolean filter) {
 		if (getEnableDebug()) Log.debug("Loading texture " + textureName + " into memory");
 		Resource resource = getResource(textureName);
 		
@@ -119,13 +119,13 @@ public class TextureManager {
 		buffer.put(data);
 		buffer.flip();
 		
-		TexturePrimitive result = new TexturePrimitive(textureName, source.getWidth(), source.getHeight(), textureWidth, textureHeight);
+		TexturePrimitive result = new TexturePrimitive(textureName, source.getWidth(), source.getHeight(), textureWidth, textureHeight, filter);
 		
 		return new Vector2<>(result, buffer);
 	}
 	
-	public static TexturePrimitive loadTexture(String textureName) {
-		Vector2<TexturePrimitive, ByteBuffer> vec = loadToByteBuffer(textureName);
+	public static TexturePrimitive loadTexture(String textureName, boolean filter) {
+		Vector2<TexturePrimitive, ByteBuffer> vec = loadToByteBuffer(textureName, filter);
 		addToLoadQueue(vec);
 		return vec.a;
 	}
@@ -144,8 +144,13 @@ public class TextureManager {
 		int textureId = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, textureId);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		if (image.isFiltered()) {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		} else {
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
 		
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL12.GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL12.GL_CLAMP_TO_EDGE);

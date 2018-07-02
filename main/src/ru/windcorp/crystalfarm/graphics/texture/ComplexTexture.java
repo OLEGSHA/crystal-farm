@@ -35,7 +35,7 @@ public class ComplexTexture extends TiledTexture {
 		synchronized (TextureManager.class) {
 			ComplexTexture texture = TextureManager.get(name, ComplexTexture.class);
 			if (texture == null) {
-				texture = new ComplexTexture(TextureManager.loadTexture(name), tileSize, data);
+				texture = new ComplexTexture(TextureManager.loadTexture(name, false), tileSize, data);
 				TextureManager.register(texture);
 			}
 			return texture;
@@ -73,7 +73,9 @@ public class ComplexTexture extends TiledTexture {
 	
 	@Override
 	public void render(int x, int y, int width, int height, Color filter, Direction direction) {
-		setTileY((int) (((long) GraphicsInterface.time() - start) / getDelay()) % getLength());
+		if (getLength() != 1) {
+			setTileY((int) (((long) GraphicsInterface.time() - start) / getDelay()) % getLength());
+		}
 		super.render(x, y, width, height, filter, direction);
 	}
 	

@@ -157,7 +157,7 @@ public class FontManager {
 		
 		buffer.flip();
 		
-		TexturePrimitive texture = new TexturePrimitive("Font:" + name + ":" + Integer.toHexString(character), charWidth, height, textureWidth, height);
+		TexturePrimitive texture = new TexturePrimitive("Font:" + name + ":" + Integer.toHexString(character), charWidth, height, textureWidth, height, false);
 		TextureManager.addToLoadQueue(new Vector2<>(texture, buffer));
 		return new FontSymbol(texture, character);
 	}

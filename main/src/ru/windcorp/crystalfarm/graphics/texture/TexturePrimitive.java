@@ -24,13 +24,15 @@ public class TexturePrimitive extends Nameable {
 	private int textureId;
 	private final int width, height,
 			textureWidth, textureHeight;
+	private final boolean isFiltered;
 
-	public TexturePrimitive(String name, int width, int height, int textureWidth, int textureHeight) {
+	public TexturePrimitive(String name, int width, int height, int textureWidth, int textureHeight, boolean isFiltered) {
 		super(name);
 		this.width = width;
 		this.height = height;
 		this.textureWidth = textureWidth;
 		this.textureHeight = textureHeight;
+		this.isFiltered = isFiltered;
 	}
 
 	public int getTextureId() {
@@ -55,6 +57,10 @@ public class TexturePrimitive extends Nameable {
 
 	public int getTextureHeight() {
 		return textureHeight;
+	}
+
+	public boolean isFiltered() {
+		return isFiltered;
 	}
 
 }
