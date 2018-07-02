@@ -33,6 +33,10 @@ public class JobRegisterContentBasic extends ModuleJob {
 	@Override
 	protected void runImpl() {
 		ActionRegistry.IN_GAME.register(
+				new PauseAction(),
+				new UnpauseAction(),
+				new OpenPauseMenuAction(),
+				
 				new TestCameraMoveControl("Up",		  0, -40, "PRESS W"),
 				new TestCameraMoveControl("Down",	  0, +40, "PRESS S"),
 				new TestCameraMoveControl("Left",	-40,   0, "PRESS A"),
