@@ -211,7 +211,7 @@ public class GraphicsInterface {
 		
 		KeyInput input = new KeyInput(key, action, mods);
 		
-		if (ModuleGraphicsInterface.FULLSCREEN_KEY.get().matches(input)) {
+		if (ModuleGraphicsInterface.FULLSCREEN_KEY.get().matches(input, true)) {
 			setFullscreen(!isFullscreen());
 			return;
 		}

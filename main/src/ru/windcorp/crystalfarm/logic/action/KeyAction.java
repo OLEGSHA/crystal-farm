@@ -30,7 +30,7 @@ public abstract class KeyAction extends Action<KeyInput> {
 	public abstract KeyStroke getKeyStroke();
 	
 	public boolean matches(KeyInput input) {
-		return getKeyStroke().matches(input);
+		return getKeyStroke().matches(input, true);
 	}
 
 }

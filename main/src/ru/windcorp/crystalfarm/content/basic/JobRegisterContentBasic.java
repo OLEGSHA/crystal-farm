@@ -37,6 +37,13 @@ public class JobRegisterContentBasic extends ModuleJob {
 				new UnpauseAction(),
 				new OpenPauseMenuAction(),
 				
+				new TestCharControl("Up",		"UP",		 0,		-0.003),
+				new TestCharControl("Down", 	"DOWN",		 0,		+0.003),
+				new TestCharControl("Left", 	"LEFT",		-0.003,		 0),
+				new TestCharControl("Right", 	"RIGHT",	+0.003,		 0),
+				
+				new TestBadaboomControl(),
+				
 				new TestCameraMoveControl("Up",		  0, -40, "PRESS W"),
 				new TestCameraMoveControl("Down",	  0, +40, "PRESS S"),
 				new TestCameraMoveControl("Left",	-40,   0, "PRESS A"),

@@ -55,9 +55,9 @@ public class KeyStroke {
 		return (getMods() & GLFW.GLFW_MOD_ALT) != 0;
 	}
 	
-	public boolean matches(KeyInput input) {
+	public boolean matches(KeyInput input, boolean matchAction) {
 		return input.getKey() == getKey()
-				&& input.getAction() == getAction()
+				&& (matchAction ? input.getAction() == getAction() : true)
 				&& (getMods() == 0 ? true : (input.getMods() & getMods()) != 0);
 	}
 	
