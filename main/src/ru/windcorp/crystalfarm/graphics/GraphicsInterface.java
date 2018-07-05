@@ -577,8 +577,9 @@ public class GraphicsInterface {
 	public static void resetMask() {
 		glDisable(GL_STENCIL_TEST);
 	}
-	
+
 	private static final int UL_X = 0, UL_Y = 1, LR_X = 2, LR_Y = 3;
+	private static final double[] DRAW_TEXTURE__COORDS = new double[4];
 	
 	/**
 	 * Renders the given part of the given texture. The upper-left corner of the rendered fragment
@@ -613,16 +614,15 @@ public class GraphicsInterface {
 			Color filter,
 			Direction direction) {
 		
-		double[] coords = new double[4];
 		int endX = width + x,
 				endY = height + y;
 		
-		coords[UL_X] = texXStart;
-		coords[UL_Y] = texYStart;
-		coords[LR_X] = texXEnd;
-		coords[LR_Y] = texYEnd;
+		DRAW_TEXTURE__COORDS[UL_X] = texXStart;
+		DRAW_TEXTURE__COORDS[UL_Y] = texYStart;
+		DRAW_TEXTURE__COORDS[LR_X] = texXEnd;
+		DRAW_TEXTURE__COORDS[LR_Y] = texYEnd;
 		
-		direction.turnCoordiates(coords);
+		direction.turnCoordiates(DRAW_TEXTURE__COORDS);
 
 		glBindTexture(GL_TEXTURE_2D, texture.getTextureId());
 		
@@ -634,10 +634,10 @@ public class GraphicsInterface {
 				applyColor(filter);
 			}
 			
-			glTexCoord2d(coords[UL_X], coords[UL_Y]); glVertex2i(x, y);
-			glTexCoord2d(coords[UL_X], coords[LR_Y]); glVertex2i(x, endY);
-			glTexCoord2d(coords[LR_X], coords[LR_Y]); glVertex2i(endX, endY);
-			glTexCoord2d(coords[LR_X], coords[UL_Y]); glVertex2i(endX, y);
+			glTexCoord2d(DRAW_TEXTURE__COORDS[UL_X], DRAW_TEXTURE__COORDS[UL_Y]); glVertex2i(x, y);
+			glTexCoord2d(DRAW_TEXTURE__COORDS[UL_X], DRAW_TEXTURE__COORDS[LR_Y]); glVertex2i(x, endY);
+			glTexCoord2d(DRAW_TEXTURE__COORDS[LR_X], DRAW_TEXTURE__COORDS[LR_Y]); glVertex2i(endX, endY);
+			glTexCoord2d(DRAW_TEXTURE__COORDS[LR_X], DRAW_TEXTURE__COORDS[UL_Y]); glVertex2i(endX, y);
 			
 		glEnd();
 		

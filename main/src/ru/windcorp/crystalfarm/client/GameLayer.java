@@ -22,8 +22,8 @@ import ru.windcorp.crystalfarm.graphics.Layer;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.logic.Island;
-import ru.windcorp.crystalfarm.logic.action.Action;
 import ru.windcorp.crystalfarm.logic.action.ActionRegistry;
+import ru.windcorp.crystalfarm.logic.action.KeyAction;
 
 public class GameLayer extends Layer implements InputListener {
 
@@ -56,13 +56,14 @@ public class GameLayer extends Layer implements InputListener {
 	@Override
 	public void onInput(Input input) {
 		if (input instanceof KeyInput) {
-			Action action = ActionRegistry.IN_GAME.getAction((KeyInput) input, null);
+			KeyInput keyInput = (KeyInput) input;
+			KeyAction action = ActionRegistry.IN_GAME.getAction(keyInput, null);
 			
 			if (action != null) {
 				if (action.isLocal()) {
-					action.run(null);
+					getProxy().runLocally(action, keyInput);
 				} else {
-					getProxy().sendAction(action);
+					getProxy().sendAction(action, keyInput);
 				}
 			}
 		}

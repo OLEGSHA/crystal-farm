@@ -21,18 +21,21 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import ru.windcorp.crystalfarm.client.Proxy;
 import ru.windcorp.crystalfarm.logic.server.Agent;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.tge2.util.Nameable;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
-public abstract class Action extends Nameable {
+public abstract class Action<T> extends Nameable {
 	
 	private final boolean isLocal;
+	private final Class<T> paramType;
 	private boolean isEnabled = true;
 
-	public Action(Mod mod, String name, boolean isLocal) {
+	public Action(Mod mod, String name, Class<T> paramType, boolean isLocal) {
 		super(mod.getName() + ":" + name);
+		this.paramType = paramType;
 		this.isLocal = isLocal;
 	}
 
@@ -40,6 +43,10 @@ public abstract class Action extends Nameable {
 		return isLocal;
 	}
 	
+	public Class<T> getParamType() {
+		return paramType;
+	}
+
 	public boolean isEnabled(Agent agent) {
 		return isEnabled;
 	}
@@ -50,15 +57,7 @@ public abstract class Action extends Nameable {
 
 	public abstract void run(Agent agent, DataInput input) throws IOException, SyntaxException;
 	
-	public void run(Agent agent) {
-		try {
-			run(agent, null);
-		} catch (IOException | SyntaxException e) {
-			// Do nothing
-		}
-	}
-	
-	public void write(DataOutput output) throws IOException {
+	public void write(Proxy proxy, T param, DataOutput output) throws IOException {
 		// To be overridden
 	}
 	

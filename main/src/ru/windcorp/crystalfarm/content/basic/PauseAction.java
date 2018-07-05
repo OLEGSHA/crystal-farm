@@ -25,10 +25,10 @@ import ru.windcorp.crystalfarm.logic.action.Action;
 import ru.windcorp.crystalfarm.logic.server.Agent;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
-public class PauseAction extends Action {
+public class PauseAction extends Action<Void> {
 
 	public PauseAction() {
-		super(InbuiltMod.INST, "Pause", false);
+		super(InbuiltMod.INST, "Pause", Void.TYPE, false);
 	}
 
 	@Override

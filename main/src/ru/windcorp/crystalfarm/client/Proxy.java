@@ -17,16 +17,39 @@
  */
 package ru.windcorp.crystalfarm.client;
 
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.action.Action;
+import ru.windcorp.crystalfarm.logic.server.Agent;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
+import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public abstract class Proxy {
 	
 	private final View view = new View(0, 0, 1);
 	private final Island island;
 	
+	private PipedInputStream buffer;
+	private final DataInput loopbackInput;
+	private final DataOutput loopbackOutput;
+	
 	public Proxy(Island island) {
 		this.island = island;
+		
+		this.buffer = new PipedInputStream();
+		this.loopbackInput = new DataInputStream(this.buffer);
+		try {
+			this.loopbackOutput = new DataOutputStream(new PipedOutputStream(this.buffer));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public View getView() {
@@ -37,6 +60,34 @@ public abstract class Proxy {
 		return island;
 	}
 
-	public abstract void sendAction(Action action);
+	public abstract <T> void sendAction(Action<T> action, T param);
+	
+	protected synchronized <T> void runLocally(Agent agent, Action<T> action, T param) {
+		try {
+			action.write(this, param, loopbackOutput);
+		} catch (IOException e) {
+			ExecutionReport.reportError(e, null,
+					"Failed to run action %s locally (param \"%s\"): IOException while writing to loopback stream", action.getName(), String.valueOf(param));
+		}
+		
+		try {
+			action.run(agent, loopbackInput);
+		} catch (IOException | SyntaxException e) {
+			ExecutionReport.reportError(e, null,
+					"Failed to run action %s locally (param \"%s\"): exception while reading from loopback stream", action.getName(), String.valueOf(param));
+			
+			try {
+				buffer.skip(buffer.available());
+			} catch (IOException e1) {
+				e1.addSuppressed(e);
+				ExecutionReport.reportCriticalError(e1, null,
+						"Failed to run action %s locally (param \"%s\"): exception while repairing loopback stream", action.getName(), String.valueOf(param));
+			}
+		}
+	}
+	
+	public <T> void runLocally(Action<T> action, T param) {
+		runLocally(null, action, param);
+	}
 	
 }

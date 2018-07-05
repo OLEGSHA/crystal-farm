@@ -30,8 +30,8 @@ public class LocalProxy extends Proxy {
 	}
 
 	@Override
-	public void sendAction(Action action) {
-		action.run(getAgent());
+	public <T> void sendAction(Action<T> action, T param) {
+		runLocally(getAgent(), action, param);
 	}
 	
 	@Override

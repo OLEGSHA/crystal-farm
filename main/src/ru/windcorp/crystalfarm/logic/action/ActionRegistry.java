@@ -34,7 +34,7 @@ public class ActionRegistry extends Nameable {
 	
 	public static final ActionRegistry IN_GAME = new ActionRegistry("InGame");
 
-	private final Map<String, Action> actions = Collections.synchronizedMap(new HashMap<>());
+	private final Map<String, Action<?>> actions = Collections.synchronizedMap(new HashMap<>());
 	private final Section section;
 	
 	public ActionRegistry(String name) {
@@ -43,7 +43,7 @@ public class ActionRegistry extends Nameable {
 		ROOT_SECTION.add(getSection());
 	}
 	
-	public Map<String, Action> getActionMap() {
+	public Map<String, Action<?>> getActionMap() {
 		return actions;
 	}
 	
@@ -51,8 +51,8 @@ public class ActionRegistry extends Nameable {
 		return section;
 	}
 	
-	public void register(Action action) {
-		Action previous = getActionMap().put(action.getName(), action);
+	public void register(Action<?> action) {
+		Action<?> previous = getActionMap().put(action.getName(), action);
 		
 		if (previous != null) {
 			ExecutionReport.reportError(null, null, "Action with name %s has already been registered in %s", action.getName(), this.toString());
@@ -64,19 +64,19 @@ public class ActionRegistry extends Nameable {
 		}
 	}
 	
-	public void register(Action... actions) {
-		for (Action a : actions) {
+	public void register(Action<?>... actions) {
+		for (Action<?> a : actions) {
 			register(a);
 		}
 	}
 	
-	public Action getAction(String name) {
+	public Action<?> getAction(String name) {
 		return getActionMap().get(name);
 	}
 	
 	public KeyAction getAction(KeyInput input, Agent agent) {
 		synchronized (getActionMap()) {
-			for (Entry<String, Action> entry : getActionMap().entrySet()) {
+			for (Entry<String, Action<?>> entry : getActionMap().entrySet()) {
 				if (entry.getValue() instanceof KeyAction) {
 					KeyAction action = (KeyAction) entry.getValue();
 					
