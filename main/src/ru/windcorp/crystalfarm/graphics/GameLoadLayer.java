@@ -58,7 +58,7 @@ public class GameLoadLayer extends Layer implements InputListener, JobListener<M
 	}
 
 	@Override
-	public void render() {
+	public void renderImpl() {
 		
 		if (!CrystalFarmLauncher.doesJobManagerExist()) {
 			removeLayer(this);

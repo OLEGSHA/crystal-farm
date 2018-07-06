@@ -100,12 +100,9 @@ public class ModuleGraphicsInterface extends Module {
 	@Override
 	public void registerJobs(JobManager<ModuleJob> manager) {
 		manager.addJob(new JobGraphicsInterfaceInit(this));
-		manager.addJob(new TMP_JobTestGUI(this));
 		manager.addJob(new JobShowGameLoadLayer(this));
 		manager.addJob(new JobLoadDefaultFonts(this));
 		manager.addJob(new JobOpenMainMenu(this));
-		
-//		for (int i = 0; i < 10; ++i) manager.addJob(new TMP_JobDelayLoad(i, this));
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() ->  {
 			if (getWindow() != 0) {

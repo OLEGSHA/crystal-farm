@@ -17,12 +17,13 @@
  */
 package ru.windcorp.crystalfarm.content.basic.test;
 
+import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.logic.Biome;
 
 public class TestBiome extends Biome {
 
 	public TestBiome() {
-		super("TestBiome",
+		super(InbuiltMod.INST, "TestBiome",
 				new TestGenerator());
 	}
 

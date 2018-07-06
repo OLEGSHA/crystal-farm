@@ -46,6 +46,7 @@ import ru.windcorp.crystalfarm.input.MouseButtonInput;
 import ru.windcorp.crystalfarm.input.ScrollInput;
 import ru.windcorp.crystalfarm.util.Direction;
 import ru.windcorp.tge2.util.IndentedStringBuilder;
+import ru.windcorp.tge2.util.NumberUtil;
 import ru.windcorp.tge2.util.collections.ReverseListView;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
@@ -92,7 +93,7 @@ public class GraphicsInterface {
 	 * @param layer the layer to add
 	 * @see {@link #getLayers()}
 	 */
-	public static void addLayer(Layer layer) {
+	static void addLayer(Layer layer) {
 		getLayers().add(firstStickyLayer++, layer);
 	}
 	
@@ -101,7 +102,7 @@ public class GraphicsInterface {
 	 * @param layer the layer to add
 	 * @see {@link #getLayers()}
 	 */
-	public static void addStickyLayer(Layer layer) {
+	static void addStickyLayer(Layer layer) {
 		getLayers().add(layer);
 	}
 	
@@ -110,7 +111,7 @@ public class GraphicsInterface {
 	 * @param layer the layer to add
 	 * @see {@link #getLayers()}
 	 */
-	public static void addLayerToBottom(Layer layer) {
+	static void addLayerToBottom(Layer layer) {
 		getLayers().add(0, layer);
 		firstStickyLayer++;
 	}
@@ -120,7 +121,7 @@ public class GraphicsInterface {
 	 * @param layer the layer to remove
 	 * @see {@link #getLayers()}
 	 */
-	public static void removeLayer(Layer layer) {
+	static void removeLayer(Layer layer) {
 		synchronized (LAYERS) {
 			int index = getLayers().indexOf(layer);
 			if (index != -1) {
@@ -138,11 +139,11 @@ public class GraphicsInterface {
 	 */
 	public static void removeAllNormalLayers() {
 		synchronized (LAYERS) {
-			for (int i = 0; i < firstStickyLayer; ++i) {
-				getLayers().remove(0);
-			}
+			int layers = firstStickyLayer;
 			
-			firstStickyLayer = 0;
+			for (int i = 0; i < layers; ++i) {
+				getLayers().get(firstStickyLayer - 1).close();
+			}
 		}
 	}
 	
@@ -154,12 +155,10 @@ public class GraphicsInterface {
 	 * (each separately), HUD, notifications. Layers are rendered from bottom
 	 * to top of the stack.
 	 * <p>
-	 * Graphics layer stack is divided into <i>normal</i> and <i>sticky</i> layers.
+	 * Graphics layer stack is divided into <i>normal</i> and {@linkplain StickyLayer <i>sticky</i>} layers.
 	 * Normal layers are expected to change based on the current game state. Sticky
 	 * layers usually stay throughout the launch. All sticky layers are displayed
-	 * on top of all normal layers. Stickiness is not an inherent property of the
-	 * layer, it is "set" when the layer is added, either through {@link #addLayer(Layer)},
-	 * {@link #addLayerToBottom(Layer)} or {@link #addStickyLayer(Layer)}.
+	 * on top of all normal layers.
 	 */
 	public static List<Layer> getLayers() {
 		return LAYERS;
@@ -178,6 +177,25 @@ public class GraphicsInterface {
 				}
 			}
 		});
+	}
+	
+	/*
+	 * Render
+	 */
+	
+	private static long frame = 0;
+	
+	static void render() {
+		++frame;
+		getLayers().forEach(layer -> layer.render());
+	}
+	
+	/**
+	 * Returns the number of the frame that is currently being rendered or has finished rendering.
+	 * @return the current frame number starting at 0
+	 */
+	public static long getFrame() {
+		return frame;
 	}
 	
 	/*
@@ -260,6 +278,8 @@ public class GraphicsInterface {
 		glLoadIdentity();
 		glOrtho(0, width, height, 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
+		
+		checkOpenGLErrors();
 		
 		getWindowResizeListeners().forEach(l -> l.onWindowResize(width, height));
 	}
@@ -444,7 +464,7 @@ public class GraphicsInterface {
 	 * Timing
 	 */
 	
-	static double frame = 1 / 60 * 1000;
+	static double frameLength = 1 / 60 * 1000;
 	
 	/**
 	 * Returns the current time in milliseconds. The time is relative to
@@ -460,8 +480,8 @@ public class GraphicsInterface {
 	 * Returns the duration of the last render cycle in milliseconds.
 	 * @return the time taken to render the previous frame.
 	 */
-	public static double frame() {
-		return frame;
+	public static double frameLength() {
+		return frameLength;
 	}
 	
 	/**
@@ -469,7 +489,7 @@ public class GraphicsInterface {
 	 * @return the amount of render cycles per second
 	 */
 	public static double getFps() {
-		return 1000 / frame;
+		return 1000 / frameLength;
 	}
 	
 	/*
@@ -505,6 +525,8 @@ public class GraphicsInterface {
 			glVertex2i(width, y);
 		
 		glEnd();
+		
+		checkOpenGLErrors();
 	}
 	
 	/**
@@ -568,6 +590,8 @@ public class GraphicsInterface {
 		glStencilFunc(GL_EQUAL, 1, 0xFF);
 	    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 	    glStencilMask(0x00);
+	    
+	    checkOpenGLErrors();
 	}
 	
 	/**
@@ -576,6 +600,7 @@ public class GraphicsInterface {
 	 */
 	public static void resetMask() {
 		glDisable(GL_STENCIL_TEST);
+		// glDisable(GL_STENCIL_TEST) should never fail, checkOpenGLErrors() redundant
 	}
 
 	private static final int UL_X = 0, UL_Y = 1, LR_X = 2, LR_Y = 3;
@@ -642,6 +667,8 @@ public class GraphicsInterface {
 		glEnd();
 		
 		glBindTexture(GL_TEXTURE_2D, 0);
+		
+		checkOpenGLErrors();
 	}
 	
 	/*
@@ -806,6 +833,21 @@ public class GraphicsInterface {
 	}
 	
 	/**
+	 * Returns the render state of the caller based on the number of the last frame the caller has rendered.
+	 * @param lastFrame the last frame rendered by the caller or -1 if the caller has never been rendered
+	 * @return <code>[rendered]</code>, <code>[NOT rendered]</code> or <code>[NEVER rendered]</code>
+	 */
+	public static String dumpIsRendered(long lastFrame) {
+		if (lastFrame == getFrame()) {
+			return "[rendered]";
+		} else if (lastFrame < 0) {
+			return "[NEVER rendered]";
+		} else {
+			return "[NOT rendered]";
+		}
+	}
+	
+	/**
 	 * Adds an {@link InputListener}. Layers must not be registered explicitly.
 	 * <p>
 	 * When dispatching input, the explicitly registered input listeners are notified
@@ -861,6 +903,38 @@ public class GraphicsInterface {
 
 	static void setGlCapabilities(GLCapabilities glCapabilities) {
 		GraphicsInterface.glCapabilities = glCapabilities;
+	}
+	
+	private static int lastError = GL_NO_ERROR;
+
+	public static int getLastError() {
+		return lastError;
+	}
+	
+	public static void checkOpenGLErrors() {
+		int error = glGetError();
+		if (error != GL_NO_ERROR) {
+			lastError = error;
+			throw new OpenGLException(error);
+		}
+	}
+	
+	private static String getOpenGLErrorName(int code) {
+		switch (code) {
+		case GL_NO_ERROR:			return "NO_ERROR";
+		case GL_INVALID_ENUM:		return "INVALID_ENUM";
+		case GL_INVALID_VALUE:		return "INVALID_VALUE";
+		case GL_INVALID_OPERATION:	return "INVALID_OPERATION";
+		case GL_OUT_OF_MEMORY:		return "OUT_OF_MEMORY";
+		case GL_STACK_OVERFLOW:		return "STACK_OVERFLOW";
+		case GL_STACK_UNDERFLOW:	return "STACK_UNDERFLOW";
+		
+		default:					return "Unknown to OpenGL 1.1";
+		}
+	}
+	
+	public static String getOpenGLErrorDescription(int code) {
+		return getOpenGLErrorName(code) + " / " + code + " / " + new String(NumberUtil.toFullHex(code));
 	}
 
 }

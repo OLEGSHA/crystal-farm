@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 
 import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
 import ru.windcorp.tge2.util.stream.CountingDataOutput;
@@ -35,8 +36,8 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 	private final T[][] tiles;
 
 	@SuppressWarnings("unchecked")
-	public GridTileLevel(String name, Class<T> clazz, int size) {
-		super(name, clazz);
+	public GridTileLevel(Mod mod, String name, Class<T> clazz, int size) {
+		super(mod, name, clazz);
 		
 		this.size = size;
 		this.tiles = (T[][]) Array.newInstance(clazz, size, size);
@@ -67,21 +68,22 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 			}
 			
 			getTiles()[x][y] = tile;
-			
-			if (tile != null) {
-				tile.adopt(this, x, y);
-			}
+			tile.adopt(this, x, y);
 		}
 	}
 
 	@Override
 	public void render(View view) {
 		synchronized (getTiles()) {
+			renderLoop:
 			for (int x = 0; x < size; ++x) {
 				for (int y = 0; y < getSize(); ++y) {
 					T tile = getTile(x, y);
-					if (tile != null) {
+					try {
 						tile.render(view, x*TEXTURE_SIZE, y*TEXTURE_SIZE);
+					} catch (Exception e) {
+						failRender(e, tile);
+						break renderLoop;
 					}
 				}
 			}

@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.logic.exception.OutOfDynIdsException;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
 import ru.windcorp.tge2.util.stream.CountingDataOutput;
@@ -38,8 +39,8 @@ public class DynamicTileLevel<T extends DynamicTile> extends TileLevel<T> {
 	private long nextStatId = 0;
 
 	@SuppressWarnings("unchecked")
-	public DynamicTileLevel(String name, Class<T> clazz, int size) {
-		super(name, clazz);
+	public DynamicTileLevel(Mod mod, String name, Class<T> clazz, int size) {
+		super(mod, name, clazz);
 		this.tiles = (T[]) Array.newInstance(clazz, size);
 	}
 
@@ -128,9 +129,14 @@ public class DynamicTileLevel<T extends DynamicTile> extends TileLevel<T> {
 			for (int i = 0; i < getTiles().length; ++i) {
 				T tile = getTileByDynId(i);
 				if (tile != null) {
-					tile.render(view,
-							(int) ((tile.getX() - 0.5)*TEXTURE_SIZE),
-							(int) ((tile.getY() - 0.5)*TEXTURE_SIZE));
+					try {
+						tile.render(view,
+								(int) ((tile.getX() - 0.5)*TEXTURE_SIZE),
+								(int) ((tile.getY() - 0.5)*TEXTURE_SIZE));
+					} catch (Exception e) {
+						failRender(e, tile);
+						break;
+					}
 				}
 			}
 		}

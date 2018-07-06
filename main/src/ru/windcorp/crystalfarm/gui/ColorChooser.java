@@ -67,13 +67,13 @@ public class ColorChooser extends ActivatableComponent {
 		
 		addInputListener((ComponentKeyInputListener) (comp, input) -> {
 			if (input.is(GLFW.GLFW_KEY_ENTER, KeyInput.PRESSED)) {
-				new ColorChooserLayer(this).show();
+				new ColorChooserLayer(this).show(false);
 				input.consume();
 			}
 		});
 		addInputListener((ComponentMouseButtonInputListener) (comp, input) -> {
 			if (input.isLeftButton() && input.isPressed()) {
-				new ColorChooserLayer(this).show();
+				new ColorChooserLayer(this).show(false);
 				input.consume();
 			}
 		});

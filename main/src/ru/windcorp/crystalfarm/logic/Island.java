@@ -34,19 +34,25 @@ import ru.windcorp.tge2.util.stream.CountingDataOutput;
 public class Island extends Nameable {
 	
 	private final IslandMeta meta = new IslandMeta();
+	private final int size;
 	private final Level[] levels;
 	private final Data[] data;
 	
 	private WeakReference<World> world = null;
 	
-	protected Island(String name, Level[] levels, Data[] data) {
+	protected Island(String name, int size, Level[] levels, Data[] data) {
 		super(name);
+		this.size = size;
 		this.levels = levels;
 		this.data = data;
 		
 		for (Level l : levels) {
 			l.setIsland(this);
 		}
+	}
+	
+	public int getSize() {
+		return size;
 	}
 	
 	public void setWorld(World world) {
@@ -100,7 +106,15 @@ public class Island extends Nameable {
 
 	public void render(View view) {
 		for (Level l : getLevels()) {
-			l.render(view);
+			try {
+				l.render(view);
+			} catch (Exception e) {
+				GameManager.failToMainMenu(e, "client.renderLevel",
+						"Could not render level %s due to a runtime exception: %s",
+						l.toString(),
+						e.toString());
+				break;
+			}
 		}
 	}
 	

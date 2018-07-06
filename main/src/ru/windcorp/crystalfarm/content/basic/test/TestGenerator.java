@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm.content.basic.test;
 
+import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.logic.Biome;
 import ru.windcorp.crystalfarm.logic.BiomeProcessor;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
@@ -24,19 +25,23 @@ import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
 import ru.windcorp.crystalfarm.logic.GridTileLevel;
 import ru.windcorp.crystalfarm.logic.Island;
 
-public class TestGenerator implements BiomeProcessor {
+public class TestGenerator extends BiomeProcessor {
+
+	public TestGenerator() {
+		super(InbuiltMod.INST, "TestGenerator");
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void process(Island island, Biome biome) {
-		GridTileLevel<TestTile> testLevel = island.getLevel("TestLevel", GridTileLevel.class);
+		GridTileLevel<TestTile> testLevel = island.getLevel("Inbuilt:TestLevel", GridTileLevel.class);
 		for (int x = 0; x < testLevel.getSize(); ++x) {
 			for (int y = 0; y < testLevel.getSize(); ++y) {
 				testLevel.setTile(new TestTile(), x, y);
 			}
 		}
 		
-		DynamicTileLevel<DynamicTile> testDynLevel = island.getLevel("TestDynLevel", DynamicTileLevel.class);
+		DynamicTileLevel<DynamicTile> testDynLevel = island.getLevel("Inbuilt:TestDynLevel", DynamicTileLevel.class);
 		testDynLevel.addTile(new TestCharTile());
 	}
 

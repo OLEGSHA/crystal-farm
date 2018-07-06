@@ -73,9 +73,9 @@ public class MenuLayer extends GuiLayer {
 	}
 	
 	@Override
-	public void render() {
+	public void renderImpl() {
 		fillRectangle(0, 0, getWindowWidth(), getWindowHeight(), gdGetCoverColor());
-		super.render();
+		super.renderImpl();
 	}
 	
 	public Menu getContents() {

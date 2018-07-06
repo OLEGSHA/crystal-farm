@@ -115,9 +115,15 @@ welcome = I can now speak English just as they speak it in the US!
 		failure.text.gm.gen.ioException =				Could not write %s due to an IO issue
 		failure.subtitle.gm.gen.exception =			Unhandled error while trying to save the world
 		failure.text.gm.gen.exception =					Could not write %s due to a runtime exception: %s
-	# Test
-		failure.subtitle.test = No errors have occurred, really. This is just a test.
-		failure.text.test = Could not load world from %s because I haven't written the code yet
+	# Client
+		failure.subtitle.client.renderIsland =		Unhandled error in client render routine
+		failure.text.client.renderIsland =				Could not render island due to a runtime exception: %s
+		failure.subtitle.client.renderLevel =		Unhandled error in level render routine
+		failure.text.client.renderLevel =				Could not render level %s due to a runtime exception: %s
+		failure.subtitle.client.renderTile =		Unhandled error in tile render routine
+		failure.text.client.renderTile =				Could not render tile %s due to a runtime exception: %s
+		failure.subtitle.client.handleKeyInput =	Unhandled error in key input routine
+		failure.text.client.handleKeyInput =			Could not handle key input %s due to a runtime exception: %s
 
 # Test
 TMP_1.5 = Test GUI

@@ -39,7 +39,7 @@ public class OpenPauseMenuAction extends KeyAction {
 	@Override
 	public void run(Agent agent, DataInput input) throws IOException, SyntaxException {
 		GameManager.getLocalClient().sendAction(new PauseAction(), null);
-		new PauseMenu().show();
+		new PauseMenu().show(false);
 	}
 
 	@Override

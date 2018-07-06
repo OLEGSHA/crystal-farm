@@ -77,21 +77,21 @@ public class MainMenu extends GuiLayer {
 						new Button(
 								"MainMenu.settings",
 								TString.translated("menu.SettingsMenu.title").toFont(),
-								button -> new SettingsMenu().show()
+								button -> new SettingsMenu().show(false)
 						));
 
 				menu.addChild(
 						new Button(
 								"MainMenu.about",
 								TString.translated("menu.MainMenu.about").toFont(),
-								button -> new AboutMenu().show()
+								button -> new AboutMenu().show(false)
 						));
 				
 				menu.addChild(
 						new Button(
 								"MainMenu.guiTest",
 								TString.translated("TMP_1.5").toFont(),
-								button -> new TestMenu().show()
+								button -> new TestMenu().show(false)
 						));
 				
 				menu.addChild(
@@ -156,7 +156,7 @@ public class MainMenu extends GuiLayer {
 	}
 	
 	@Override
-	public void render() {
+	public void renderImpl() {
 		double scale = Math.max(getWindowWidth() / (double) background.getUsableWidth(),
 				getWindowHeight() / (double) background.getUsableHeight());
 		
@@ -168,7 +168,7 @@ public class MainMenu extends GuiLayer {
 				(getWindowHeight() - height) / 2,
 				width,
 				height);
-		super.render();
+		super.renderImpl();
 	}
 
 }

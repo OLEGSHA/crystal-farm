@@ -40,7 +40,7 @@ public class GuiLayer extends Layer implements InputListener, WindowResizeListen
 	}
 
 	@Override
-	public void render() {
+	public void renderImpl() {
 		Component root = getRoot();
 		if (root != null) {
 			root.render();
@@ -62,7 +62,7 @@ public class GuiLayer extends Layer implements InputListener, WindowResizeListen
 	
 	@Override
 	public void dump(IndentedStringBuilder sb) {
-		sb.append("GUI layer " + toString() + " (" + this.getClass() + ")");
+		sb.append("GUI layer " + toString() + " (" + this.getClass() + ") " + GraphicsInterface.dumpIsRendered(lastFrame));
 		sb.indent();
 		sb.breakLine();
 		
@@ -77,12 +77,11 @@ public class GuiLayer extends Layer implements InputListener, WindowResizeListen
 	}
 	
 	@Override
-	public void show() {
+	public void preShow() {
 		Component root = getRoot();
 		if (root != null) {
 			root.focusNext();
 		}
-		super.show();
 	}
 
 }

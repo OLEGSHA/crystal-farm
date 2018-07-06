@@ -71,7 +71,7 @@ public class LayerFailure extends GuiLayer {
 						getY(),
 						getWidth(),
 						getHeight(),
-						Color.BLUE,
+						isHovered() ? Color.SOFT_BLUE : Color.BLUE,
 						Color.WHITE,
 						gdGetLine());
 			}

@@ -15,22 +15,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.graphics;
+package ru.windcorp.crystalfarm.struct.mod;
 
-import ru.windcorp.crystalfarm.struct.modules.Module;
-import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
+import ru.windcorp.tge2.util.Nameable;
 
-public class TMP_JobTestGUI extends ModuleJob {
+public abstract class ModNameable extends Nameable {
+	
+	private final Mod mod;
 
-	public TMP_JobTestGUI(Module module) {
-		super("TMP_JobTestGUI", "Debug job to fiddle with GUI", module);
-		
-		addDependency("Inbuilt:GraphicsInterface:LoadDefaultFonts");
+	public ModNameable(Mod mod, String name) {
+		super(mod.getName() + ":" + name);
+		this.mod = mod;
 	}
 
-	@Override
-	protected void runImpl() {
-		
+	public Mod getMod() {
+		return mod;
 	}
+	
+	public String getRawName() {
+		return getName().substring(getMod().getName().length() + 1);
+	}
+	
+	/*
+	 * Names are unique per mod, no need to override equals() and hashCode()
+	 */
 
 }

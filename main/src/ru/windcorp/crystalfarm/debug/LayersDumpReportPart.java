@@ -15,44 +15,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.client;
-
-import static org.lwjgl.opengl.GL11.*;
+package ru.windcorp.crystalfarm.debug;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport.ReportPart;
 
-public class View {
+public class LayersDumpReportPart extends ReportPart {
 	
-	private int x, y;
-	private double scale;
-	
-	public View(int x, int y, double scale) {
-		this.x = x;
-		this.y = y;
-		this.scale = scale;
+	public LayersDumpReportPart() {
+		super("LAYERS DUMP");
 	}
 
-	public void move(int xMod, int yMod) {
-		this.x += xMod;
-		this.y += yMod;
-	}
-	
-	public void zoom(double factor) {
-		this.scale *= factor;
-	}
-	
-	public void pushMatrix() {
-		glPushMatrix();
-		glMatrixMode(GL_MODELVIEW);
-		glTranslated(GraphicsInterface.getWindowWidth()/2, GraphicsInterface.getWindowHeight()/2, 0);
-		glScaled(scale, scale, 0);
-		glTranslated(-x, -y, 0);
+	@Override
+	protected void printBody(StringBuilder b) {
+		b.append('\n');
 		
-		GraphicsInterface.checkOpenGLErrors();
-	}
-	
-	public void popMatrix() {
-		glPopMatrix();
+		if (!GraphicsInterface.isGraphicsReady()) {
+			b.append("Graphics not ready");
+		}
+		b.append(GraphicsInterface.dumpLayers());
 	}
 
 }

@@ -24,17 +24,18 @@ import java.lang.ref.WeakReference;
 
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.logic.server.World;
-import ru.windcorp.tge2.util.Nameable;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
+import ru.windcorp.crystalfarm.struct.mod.ModNameable;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
 import ru.windcorp.tge2.util.stream.CountingDataOutput;
 
-public abstract class Level extends Nameable implements Cloneable {
+public abstract class Level extends ModNameable implements Cloneable {
 	
 	private WeakReference<Island> island = null;
 
-	public Level(String name) {
-		super(name);
+	public Level(Mod mod, String name) {
+		super(mod, name);
 	}
 	
 	void setIsland(Island island) {

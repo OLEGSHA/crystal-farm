@@ -161,9 +161,7 @@ public class Scroller extends Component {
 	}
 	
 	@Override
-	protected void render() {
-		super.render();
-		
+	protected void postRenderSelf() {
 		if (getContents().getHeight() > getHeight()) {
 			fillRectangle(
 					getX() + getWidth() - gdGetLine(),

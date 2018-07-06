@@ -48,7 +48,6 @@ public class ModuleAudioInterface extends Module {
 	public void registerJobs(JobManager<ModuleJob> manager) {
 		manager.addJob(new JobAudioInterfaceInit(this));
 		manager.addJob(new JobMusicInit(this));
-		manager.addJob(new TMP_JobTestAudio(this));
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			if (!isALInitialized) {

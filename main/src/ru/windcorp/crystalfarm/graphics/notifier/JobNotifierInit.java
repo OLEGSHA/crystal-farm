@@ -17,7 +17,6 @@
  */
 package ru.windcorp.crystalfarm.graphics.notifier;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
 
@@ -34,7 +33,7 @@ public class JobNotifierInit extends ModuleJob {
 	protected void runImpl() {
 		NotifierLayer layer = new NotifierLayer();
 		Notifier.setLayer(layer);
-		GraphicsInterface.addStickyLayer(layer);
+		layer.show(false);
 		Notifier.postQueuedNotifications();
 	}
 

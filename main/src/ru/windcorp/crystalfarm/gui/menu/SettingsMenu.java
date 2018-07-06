@@ -35,17 +35,17 @@ public class SettingsMenu extends MenuLayer {
 		add(new Button(
 				"SettingsMenu.sounds",
 				TString.translated("menu.SettingsSoundsMenu.title").toFont(),
-				button -> new SettingsSoundsMenu().show()
+				button -> new SettingsSoundsMenu().show(false)
 				));
 		add(new Button(
 				"SettingsMenu.graphics",
 				TString.translated("menu.SettingsGraphicsMenu.title").toFont(),
-				button -> new SettingsGraphicsMenu().show()
+				button -> new SettingsGraphicsMenu().show(false)
 				));
 		add(new Button(
 				"SettingsMenu.Advanced",
 				TString.translated("menu.SettingsAdvancedMenu.title").toFont(),
-				button -> new SettingsAdvancedMenu().show()
+				button -> new SettingsAdvancedMenu().show(false)
 				));
 		add(table);
 	}
