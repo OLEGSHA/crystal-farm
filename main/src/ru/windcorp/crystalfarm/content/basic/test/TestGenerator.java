@@ -23,6 +23,9 @@ import ru.windcorp.crystalfarm.logic.BiomeProcessor;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
 import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
 import ru.windcorp.crystalfarm.logic.FullGridTileLevel;
+import ru.windcorp.crystalfarm.logic.GameManager;
+import ru.windcorp.crystalfarm.logic.GridTile;
+import ru.windcorp.crystalfarm.logic.GridTileLevel;
 import ru.windcorp.crystalfarm.logic.Island;
 
 public class TestGenerator extends BiomeProcessor {
@@ -43,6 +46,15 @@ public class TestGenerator extends BiomeProcessor {
 		
 		DynamicTileLevel<DynamicTile> testDynLevel = island.getLevel("Inbuilt:TestDynLevel", DynamicTileLevel.class);
 		testDynLevel.addTile(new TestCharTile());
+		
+		GridTileLevel<GridTile> treeLevel = island.getLevel("Inbuilt:TreeLevel", GridTileLevel.class);
+		
+		for (int i = 0; i < treeLevel.getSize(); ++i) {
+			treeLevel.addTile(
+					treeLevel.getTileRegistry().createNew("Inbuilt:testTreeTile"),
+					GameManager.GENERIC_RANDOM.nextInt(treeLevel.getSize()),
+					GameManager.GENERIC_RANDOM.nextInt(treeLevel.getSize()));
+		}
 	}
 
 }

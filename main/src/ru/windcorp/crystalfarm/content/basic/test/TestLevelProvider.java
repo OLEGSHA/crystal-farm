@@ -23,6 +23,8 @@ import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
 import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
 import ru.windcorp.crystalfarm.logic.FullGridTileLevel;
+import ru.windcorp.crystalfarm.logic.GridTile;
+import ru.windcorp.crystalfarm.logic.GridTileLevel;
 import ru.windcorp.crystalfarm.logic.Level;
 import ru.windcorp.crystalfarm.logic.IslandFactory.IslandLevelProvider;
 
@@ -41,6 +43,10 @@ public class TestLevelProvider extends IslandLevelProvider {
 		DynamicTileLevel<DynamicTile> testDynLevel = new DynamicTileLevel<>(InbuiltMod.INST, "TestDynLevel", DynamicTile.class, 10);
 		testDynLevel.getTileRegistry().register(new TestCharTile());
 		output.accept(testDynLevel);
+		
+		GridTileLevel<GridTile> treeLevel = new GridTileLevel<>(InbuiltMod.INST, "TreeLevel", GridTile.class, size);
+		treeLevel.getTileRegistry().register(new TestTreeTile());
+		output.accept(treeLevel);
 	}
 
 }
