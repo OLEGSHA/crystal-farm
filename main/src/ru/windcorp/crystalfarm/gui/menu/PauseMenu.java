@@ -25,11 +25,17 @@ import ru.windcorp.crystalfarm.translation.TString;
 public class PauseMenu extends MenuLayer {
 
 	public PauseMenu() {
-		super("PauseMenu", true);
+		super("PauseMenu", false);
+		
 		add(new Button(
 				"PauseMenu.mainmenu",
 				TString.translated("menu.MainMenu.title").toFont(),
 				button -> GameManager.shutdownClient()
+				));
+		add(new Button(
+				"PauseMenu.settings",
+				TString.translated("menu.SettingsMenu.title").toFont(),
+				button -> new SettingsMenu().show()
 				));
 	}
 	
