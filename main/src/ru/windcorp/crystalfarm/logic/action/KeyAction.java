@@ -21,16 +21,16 @@ import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.crystalfarm.input.KeyStroke;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 
-public abstract class KeyAction extends Action {
+public abstract class KeyAction extends Action<KeyInput> {
 	
 	public KeyAction(Mod mod, String name, boolean isLocal) {
-		super(mod, name, isLocal);
+		super(mod, name, KeyInput.class, isLocal);
 	}
 
 	public abstract KeyStroke getKeyStroke();
 	
 	public boolean matches(KeyInput input) {
-		return getKeyStroke().matches(input);
+		return getKeyStroke().matches(input, true);
 	}
 
 }

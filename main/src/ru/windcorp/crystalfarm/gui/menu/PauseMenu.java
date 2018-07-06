@@ -42,7 +42,7 @@ public class PauseMenu extends MenuLayer {
 	@Override
 	public void close() {
 		super.close();
-		GameManager.getLocalClient().sendAction(new UnpauseAction());
+		GameManager.getLocalClient().sendAction(new UnpauseAction(), null);
 	}
 
 }

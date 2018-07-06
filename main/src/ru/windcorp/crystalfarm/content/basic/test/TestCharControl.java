@@ -18,27 +18,43 @@
 package ru.windcorp.crystalfarm.content.basic.test;
 
 import java.io.DataInput;
-import java.io.IOException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.logic.action.ControlAction;
+import ru.windcorp.crystalfarm.logic.DynamicTile;
+import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
+import ru.windcorp.crystalfarm.logic.action.HoldableControlAction;
 import ru.windcorp.crystalfarm.logic.server.Agent;
-import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
-public class TestCharControl extends ControlAction {
+public class TestCharControl extends HoldableControlAction {
+	
+	private final double vx, vy;
 
-	public TestCharControl(String name, String key, int vx, int vy) {
+	public TestCharControl(String name, String key, double vx, double vy) {
 		super(InbuiltMod.INST,
 				"TestCharMove" + name,
 				"Move " + name,
 				"PRESS " + key, false);
+		this.vx = vx;
+		this.vy = vy;
 	}
 
 	@Override
-	public void run(Agent agent, DataInput input) throws IOException, SyntaxException {
-		// TODO Auto-generated method stub
-		System.err.println("Called auto-generated method TestCharControl.TestCharControl");
+	public void onPressed(Agent agent, DataInput input) {
+		TestCharTile tile = getChar(agent);
+		tile.setWalkSpeedX(vx);
+		tile.setWalkSpeedY(vy);
+	}
 
+	@Override
+	public void onReleased(Agent agent, DataInput input) {
+		TestCharTile tile = getChar(agent);
+		tile.setWalkSpeedX(0);
+		tile.setWalkSpeedY(0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private TestCharTile getChar(Agent agent) {
+		return (TestCharTile) ((DynamicTileLevel<DynamicTile>) agent.getIsland().getLevel("TestDynLevel")).getTileByStatId(0);
 	}
 
 }

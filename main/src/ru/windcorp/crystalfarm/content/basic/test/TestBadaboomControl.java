@@ -15,25 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.content.basic;
+package ru.windcorp.crystalfarm.content.basic.test;
 
 import java.io.DataInput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.logic.action.Action;
+import ru.windcorp.crystalfarm.logic.DynamicTile;
+import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
+import ru.windcorp.crystalfarm.logic.action.ControlAction;
 import ru.windcorp.crystalfarm.logic.server.Agent;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
-public class PauseAction extends Action<Void> {
+public class TestBadaboomControl extends ControlAction {
 
-	public PauseAction() {
-		super(InbuiltMod.INST, "Pause", Void.TYPE, false);
+	public TestBadaboomControl() {
+		super(InbuiltMod.INST, "TestBadaboom", "Blow something up", "PRESS SPACE", false);
 	}
 
 	@Override
 	public void run(Agent agent, DataInput input) throws IOException, SyntaxException {
-		agent.getServer().pause();
+		TestCharTile tile = getChar(agent);
+		tile.setSpeedY(0.01);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private TestCharTile getChar(Agent agent) {
+		return (TestCharTile) ((DynamicTileLevel<DynamicTile>) agent.getIsland().getLevel("TestDynLevel")).getTileByStatId(0);
 	}
 
 }

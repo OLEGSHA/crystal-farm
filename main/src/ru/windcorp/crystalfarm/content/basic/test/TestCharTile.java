@@ -29,6 +29,8 @@ import ru.windcorp.crystalfarm.translation.TString;
 public class TestCharTile extends DynamicTile {
 	
 	private final ComplexTexture texture;
+	
+	private double walkSpeedX, walkSpeedY, speedX, speedY, deceleration = 0.00001;
 
 	public TestCharTile() {
 		super(InbuiltMod.INST, "testCharTile", TString.wrap("Test Tile Name"));
@@ -47,7 +49,51 @@ public class TestCharTile extends DynamicTile {
 	
 	@Override
 	public void tick(World world, Island island, Level level, long length, long time) {
-		setPosition((Math.sin(time / 10000.0) + 1) * 50 / 2, (Math.cos(time / 10000.0) + 1) * 50 / 2);
+		//setPosition((Math.sin(time / 10000.0) + 1) * 50 / 2, (Math.cos(time / 10000.0) + 1) * 50 / 2);
+		speedX = absMax(walkSpeedX, speedX - absMin(speedX, deceleration*Math.signum(speedX)*length));
+		speedY = absMax(walkSpeedY, speedY - absMin(speedY, deceleration*Math.signum(speedY)*length));
+		setPosition(getX() + speedX*length,
+				getY() + speedY*length);
+	}
+	
+	public double getWalkSpeedX() {
+		return walkSpeedX;
+	}
+
+	public void setWalkSpeedX(double walkSpeedX) {
+		this.walkSpeedX = walkSpeedX;
+	}
+
+	public double getWalkSpeedY() {
+		return walkSpeedY;
+	}
+
+	public void setWalkSpeedY(double walkSpeedY) {
+		this.walkSpeedY = walkSpeedY;
+	}
+
+	public double getSpeedX() {
+		return speedX;
+	}
+
+	public void setSpeedX(double speedX) {
+		this.speedX = speedX;
+	}
+
+	public double getSpeedY() {
+		return speedY;
+	}
+
+	public void setSpeedY(double speedY) {
+		this.speedY = speedY;
+	}
+
+	private static double absMax(double a, double b) {
+		return (Math.abs(a) > Math.abs(b)) ? a : b;
+	}
+	
+	private static double absMin(double a, double b) {
+		return (Math.abs(a) < Math.abs(b)) ? a : b;
 	}
 
 }
