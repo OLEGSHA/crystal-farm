@@ -22,7 +22,7 @@ import ru.windcorp.crystalfarm.logic.Biome;
 import ru.windcorp.crystalfarm.logic.BiomeProcessor;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
 import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
-import ru.windcorp.crystalfarm.logic.GridTileLevel;
+import ru.windcorp.crystalfarm.logic.FullGridTileLevel;
 import ru.windcorp.crystalfarm.logic.Island;
 
 public class TestGenerator extends BiomeProcessor {
@@ -34,7 +34,7 @@ public class TestGenerator extends BiomeProcessor {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void process(Island island, Biome biome) {
-		GridTileLevel<TestTile> testLevel = island.getLevel("Inbuilt:TestLevel", GridTileLevel.class);
+		FullGridTileLevel<TestTile> testLevel = island.getLevel("Inbuilt:TestLevel", FullGridTileLevel.class);
 		for (int x = 0; x < testLevel.getSize(); ++x) {
 			for (int y = 0; y < testLevel.getSize(); ++y) {
 				testLevel.setTile(new TestTile(), x, y);

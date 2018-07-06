@@ -30,13 +30,13 @@ import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
 import ru.windcorp.tge2.util.stream.CountingDataOutput;
 
-public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
+public class FullGridTileLevel<T extends FullGridTile> extends TileLevel<T> {
 	
 	private final int size;
 	private final T[][] tiles;
 
 	@SuppressWarnings("unchecked")
-	public GridTileLevel(Mod mod, String name, Class<T> clazz, int size) {
+	public FullGridTileLevel(Mod mod, String name, Class<T> clazz, int size) {
 		super(mod, name, clazz);
 		
 		this.size = size;
