@@ -24,6 +24,9 @@ import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 public class View {
 	
 	private int x, y;
+	
+	private int minX, maxX, minY, maxY;
+	
 	private double scale;
 	
 	public View(int x, int y, double scale) {
@@ -45,14 +48,45 @@ public class View {
 		glPushMatrix();
 		glMatrixMode(GL_MODELVIEW);
 		glTranslated(GraphicsInterface.getWindowWidth()/2, GraphicsInterface.getWindowHeight()/2, 0);
-		glScaled(scale, scale, 0);
+		if (!ModuleClient.DEBUG_OPTIMIZED_RENDER.get()) glScaled(scale, scale, 0);
 		glTranslated(-x, -y, 0);
+		
+		minX = (int) Math.floor(x - GraphicsInterface.getWindowWidth()/2/scale);
+		maxX = (int) Math.ceil(x + GraphicsInterface.getWindowWidth()/2/scale);
+		minY = (int) Math.floor(y - GraphicsInterface.getWindowHeight()/2/scale);
+		maxY = (int) Math.ceil(y + GraphicsInterface.getWindowHeight()/2/scale);
 		
 		GraphicsInterface.checkOpenGLErrors();
 	}
 	
 	public void popMatrix() {
+		if (ModuleClient.DEBUG_OPTIMIZED_RENDER.get()) {
+			glBegin(GL_LINE_LOOP);
+				glColor3d(0, 0, 0);
+				glVertex2d(getMinX(), getMinY());
+				glVertex2d(getMinX(), getMaxY());
+				glVertex2d(getMaxX(), getMaxY());
+				glVertex2d(getMaxX(), getMinY());
+			glEnd();
+		}
+		
 		glPopMatrix();
+	}
+
+	public int getMinX() {
+		return minX;
+	}
+
+	public int getMaxX() {
+		return maxX;
+	}
+
+	public int getMinY() {
+		return minY;
+	}
+
+	public int getMaxY() {
+		return maxY;
 	}
 
 }

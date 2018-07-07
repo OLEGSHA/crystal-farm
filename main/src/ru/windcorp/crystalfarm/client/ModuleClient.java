@@ -29,12 +29,17 @@ public class ModuleClient extends Module {
 	public static final SettingBoolean DRAW_COLLISION_BOUNDS = new SettingBoolean(
 			"DrawCollisionBounds", "When true, all collideable tiles draw their collision bounds",
 			false);
+	
+	public static final SettingBoolean DEBUG_OPTIMIZED_RENDER = new SettingBoolean(
+			"DebugOptimizedRender", "(Debug option) When true, the rendered image is never scaled (although class View acts as if it is)",
+			false);
 
 	public ModuleClient() {
 		super("Client", InbuiltMod.INST);
 		
 		addConfig(ActionRegistry.ROOT_SECTION);
 		addConfig(DRAW_COLLISION_BOUNDS);
+		addConfig(DEBUG_OPTIMIZED_RENDER);
 	}
 	
 	@Override

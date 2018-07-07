@@ -52,5 +52,9 @@ public abstract class GridTile extends Tile {
 		GridTile clone = (GridTile) super.clone();
 		return clone;
 	}
+	
+	public int getRenderSize() {
+		return 1;
+	}
 
 }

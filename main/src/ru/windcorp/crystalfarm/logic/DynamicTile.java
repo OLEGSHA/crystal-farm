@@ -94,5 +94,9 @@ public abstract class DynamicTile extends Tile {
 	protected DynamicTile clone() {
 		return (DynamicTile) super.clone();
 	}
+	
+	public double getRenderSize() {
+		return 1;
+	}
 
 }

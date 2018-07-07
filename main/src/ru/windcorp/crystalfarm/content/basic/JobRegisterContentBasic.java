@@ -49,8 +49,8 @@ public class JobRegisterContentBasic extends ModuleJob {
 				new TestCameraMoveControl("Left",	-40,   0, "PRESS A"),
 				new TestCameraMoveControl("Right",	+40,   0, "PRESS D"),
 				
-				new TestCameraZoomControl("In",    1.5, "PRESS EQUAL"),
-				new TestCameraZoomControl("Out", 1/1.5, "PRESS MINUS")
+				new TestCameraZoomControl("In",    2, "PRESS EQUAL"),
+				new TestCameraZoomControl("Out", 0.5, "PRESS MINUS")
 				);
 		
 		IslandFactory.registerIslandLevelProvider(new TestLevelProvider());

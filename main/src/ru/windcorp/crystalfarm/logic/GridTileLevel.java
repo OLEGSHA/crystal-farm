@@ -109,6 +109,19 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 	public void render(View view) {
 		synchronized (getTiles()) {
 			for (T tile : getTiles()) {
+				
+				int x = tile.getX();
+				int y = tile.getY();
+				
+				if (
+						(x + tile.getRenderSize())	* TEXTURE_SIZE < view.getMinX() ||
+						 x							* TEXTURE_SIZE > view.getMaxX() ||
+						(y + tile.getRenderSize())	* TEXTURE_SIZE < view.getMinY() ||
+						 y							* TEXTURE_SIZE > view.getMaxY()
+						) {
+					continue;
+				}
+				
 				try {
 					tile.render(view, tile.getX()*TEXTURE_SIZE, tile.getY()*TEXTURE_SIZE);
 				} catch (Exception e) {

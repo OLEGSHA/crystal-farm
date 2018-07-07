@@ -41,6 +41,7 @@ public class GameLayer extends Layer implements InputListener {
 			getView().pushMatrix();
 			getIsland().render(getView());
 			getView().popMatrix();
+			
 		} catch (Exception e) {
 			GameManager.failToMainMenu(e, "client.renderIsland",
 					"Could not render island due to a runtime exception: %s",

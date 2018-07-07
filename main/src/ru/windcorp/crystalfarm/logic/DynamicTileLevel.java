@@ -41,6 +41,7 @@ public class DynamicTileLevel<T extends DynamicTile> extends TileLevel<T> {
 	@SuppressWarnings("unchecked")
 	public DynamicTileLevel(Mod mod, String name, Class<T> clazz, int size) {
 		super(mod, name, clazz);
+		
 		this.tiles = (T[]) Array.newInstance(clazz, size);
 	}
 
@@ -129,6 +130,19 @@ public class DynamicTileLevel<T extends DynamicTile> extends TileLevel<T> {
 			for (int i = 0; i < getTiles().length; ++i) {
 				T tile = getTileByDynId(i);
 				if (tile != null) {
+					
+					double x = tile.getX();
+					double y = tile.getY();
+					
+					if (
+							(x + tile.getRenderSize())	* TEXTURE_SIZE < view.getMinX() ||
+							 x							* TEXTURE_SIZE > view.getMaxX() ||
+							(y + tile.getRenderSize())	* TEXTURE_SIZE < view.getMinY() ||
+							 y							* TEXTURE_SIZE > view.getMaxY()
+							) {
+						continue;
+					}
+					
 					try {
 						tile.render(view,
 								(int) ((tile.getX())*TEXTURE_SIZE),

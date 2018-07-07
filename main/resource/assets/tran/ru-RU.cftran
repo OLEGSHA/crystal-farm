@@ -83,6 +83,8 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		misc.debugInputListener.fps.disabled = Счётчик FPS выкл.
 		misc.debugInputListener.collisions.enabled = Отрисовка границ коллизий вкл.
 		misc.debugInputListener.collisions.disabled = Отрисовка границ коллизий выкл.
+		misc.debugInputListener.optimizedRender.enabled = Отладка оптимизированной отрисовки вкл.
+		misc.debugInputListener.optimizedRender.disabled = Отладка оптимизированной отрисовки выкл.
 
 # Execution Report
 	executionReport.notification.onProblem.debug = Отладочное уведомление:\nID: %1$s\nОписание: %2$s

@@ -75,9 +75,14 @@ public class FullGridTileLevel<T extends FullGridTile> extends TileLevel<T> {
 	@Override
 	public void render(View view) {
 		synchronized (getTiles()) {
+			int minX = Math.max(0, view.getMinX()/TEXTURE_SIZE);
+			int minY = Math.max(0, view.getMinY()/TEXTURE_SIZE);
+			int maxX = Math.min(getSize(), (view.getMaxX()-1)/TEXTURE_SIZE+1);
+			int maxY = Math.min(getSize(), (view.getMaxY()-1)/TEXTURE_SIZE+1);
+			
 			renderLoop:
-			for (int x = 0; x < size; ++x) {
-				for (int y = 0; y < getSize(); ++y) {
+			for (int x = minX; x < maxX; ++x) {
+				for (int y = minY; y < maxY; ++y) {
 					T tile = getTile(x, y);
 					try {
 						tile.render(view, x*TEXTURE_SIZE, y*TEXTURE_SIZE);

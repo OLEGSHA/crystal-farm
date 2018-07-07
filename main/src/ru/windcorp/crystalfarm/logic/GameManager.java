@@ -53,7 +53,7 @@ public class GameManager {
 		
 		try {
 			Log.info("Generating island Test");
-			Island island = IslandFactory.createIsland("TestIsland", 20);
+			Island island = IslandFactory.createIsland("TestIsland", 100);
 			island.getMeta().setDisplayName("Test Island");
 			BiomeRegistry.get("Inbuilt:TestBiome").generate(island);
 			

@@ -69,6 +69,10 @@ public class DebugInputListener implements InputListener {
 				ModuleClient.DRAW_COLLISION_BOUNDS.set(!ModuleClient.DRAW_COLLISION_BOUNDS.get());
 				Notifier.info(TString.translated("misc.debugInputListener.collisions." + (ModuleClient.DRAW_COLLISION_BOUNDS.get() ? "enabled" : "disabled")));
 				break;
+			case GLFW.GLFW_KEY_O:
+				ModuleClient.DEBUG_OPTIMIZED_RENDER.set(!ModuleClient.DEBUG_OPTIMIZED_RENDER.get());
+				Notifier.info(TString.translated("misc.debugInputListener.optimizedRender." + (ModuleClient.DEBUG_OPTIMIZED_RENDER.get() ? "enabled" : "disabled")));
+				break;
 			}
 			
 		}

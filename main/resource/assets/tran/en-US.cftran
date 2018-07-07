@@ -83,6 +83,8 @@ welcome = I can now speak English just as they speak it in the US!
 		misc.debugInputListener.fps.disabled = FPS display turned off
 		misc.debugInputListener.collisions.enabled = Collision bounds render turned on
 		misc.debugInputListener.collisions.disabled = Collision bounds render turned off
+		misc.debugInputListener.optimizedRender.enabled = Optimized render debugging turned on
+		misc.debugInputListener.optimizedRender.disabled = Optimized render debugging turned off
 
 # Execution Report
 	executionReport.notification.onProblem.debug = Debug notification reported:\nID: %1$s\nDescription: %2$s
