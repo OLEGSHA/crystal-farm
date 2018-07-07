@@ -20,6 +20,10 @@ package ru.windcorp.crystalfarm.content.basic;
 import java.util.function.Consumer;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.content.basic.entity.EntityLevel;
+import ru.windcorp.crystalfarm.content.basic.floor.FloorLevel;
+import ru.windcorp.crystalfarm.content.basic.ground.GroundLevel;
+import ru.windcorp.crystalfarm.content.basic.object.ObjectLevel;
 import ru.windcorp.crystalfarm.logic.IslandFactory.IslandLevelProvider;
 import ru.windcorp.crystalfarm.logic.Level;
 
@@ -32,6 +36,9 @@ public class BasicLevelProvider extends IslandLevelProvider {
 	@Override
 	public void provideLevels(Consumer<Level> output, String name, int size) {
 		output.accept(new GroundLevel(size));
+		output.accept(new FloorLevel(size));
+		output.accept(new ObjectLevel(size));
+		output.accept(new EntityLevel());
 	}
 
 }

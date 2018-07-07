@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.content.basic;
+package ru.windcorp.crystalfarm.content.basic.floor;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.logic.FullGridTileLevel;
+import ru.windcorp.crystalfarm.logic.GridTileLevel;
 
-public class GroundLevel extends FullGridTileLevel<GroundTile> {
+public class FloorLevel extends GridTileLevel<FloorTile> {
 
-	public GroundLevel(int size) {
-		super(InbuiltMod.INST, "GroundLevel", GroundTile.class, size);
+	public FloorLevel(int size) {
+		super(InbuiltMod.INST, "FloorLevel", FloorTile.class, size);
 	}
 
 }

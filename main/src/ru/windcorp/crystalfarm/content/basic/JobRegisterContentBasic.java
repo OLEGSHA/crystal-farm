@@ -18,6 +18,10 @@
 package ru.windcorp.crystalfarm.content.basic;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.content.basic.entity.EntityTile;
+import ru.windcorp.crystalfarm.content.basic.floor.*;
+import ru.windcorp.crystalfarm.content.basic.ground.*;
+import ru.windcorp.crystalfarm.content.basic.object.*;
 import ru.windcorp.crystalfarm.content.basic.test.*;
 import ru.windcorp.crystalfarm.logic.BiomeRegistry;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
@@ -40,6 +44,15 @@ public class JobRegisterContentBasic extends ModuleJob {
 		//IslandFactory.registerIslandLevelProvider(new BasicLevelProvider());
 		TileRegistry<GroundTile> groundLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "GroundLevel", GroundTile.class);
 		TileRegistries.register(groundLevelRegistry);
+		
+		TileRegistry<FloorTile> floorLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "FloorLevel", FloorTile.class);
+		TileRegistries.register(floorLevelRegistry);
+		
+		TileRegistry<ObjectTile> objectLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "ObjectLevel", ObjectTile.class);
+		TileRegistries.register(objectLevelRegistry);
+		
+		TileRegistry<EntityTile> entityLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "EntityLevel", EntityTile.class);
+		TileRegistries.register(entityLevelRegistry);
 		
 		/*
 		 * Test

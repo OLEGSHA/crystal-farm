@@ -58,7 +58,7 @@ public abstract class DynamicTile extends Tile {
 		return y;
 	}
 	
-	public synchronized void setPosition(double x, double y) {
+	protected synchronized void setPosition(double x, double y) {
 		this.x = x;
 		this.y = y;
 		setChangeBit(CHANGE_BIT_POSITION);

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.content.basic;
+package ru.windcorp.crystalfarm.content.basic.ground;
 
 import ru.windcorp.crystalfarm.logic.Collideable;
 import ru.windcorp.crystalfarm.logic.FullGridTile;
