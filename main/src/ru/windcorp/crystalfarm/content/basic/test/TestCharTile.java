@@ -20,13 +20,14 @@ package ru.windcorp.crystalfarm.content.basic.test;
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
+import ru.windcorp.crystalfarm.logic.DynamicCollideable;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.translation.TString;
 
-public class TestCharTile extends DynamicTile {
+public class TestCharTile extends DynamicTile implements DynamicCollideable {
 	
 	private final ComplexTexture texture;
 	
@@ -43,7 +44,7 @@ public class TestCharTile extends DynamicTile {
 	}
 
 	@Override
-	public void render(View view, int x, int y) {
+	public void renderImpl(View view, int x, int y) {
 		getTexture().render(x, y);
 	}
 	
@@ -52,7 +53,7 @@ public class TestCharTile extends DynamicTile {
 		//setPosition((Math.sin(time / 10000.0) + 1) * 50 / 2, (Math.cos(time / 10000.0) + 1) * 50 / 2);
 		speedX = absMax(walkSpeedX, speedX - absMin(speedX, deceleration*Math.signum(speedX)*length));
 		speedY = absMax(walkSpeedY, speedY - absMin(speedY, deceleration*Math.signum(speedY)*length));
-		setPosition(getX() + speedX*length,
+		move(getX() + speedX*length,
 				getY() + speedY*length);
 	}
 	
@@ -94,6 +95,38 @@ public class TestCharTile extends DynamicTile {
 	
 	private static double absMin(double a, double b) {
 		return (Math.abs(a) < Math.abs(b)) ? a : b;
+	}
+
+	@Override
+	public double getMinX() {
+		return getX() + 0.2;
+	}
+
+	@Override
+	public double getMinY() {
+		return getY();
+	}
+	
+	@Override
+	public double getWidth() {
+		return 0.6;
+	}
+	
+	@Override
+	public double getHeight() {
+		return 1;
+	}
+	
+	@Override
+	public void setXY(double x, double y) {
+		setPosition(x - 0.2, y);
+	}
+	
+	public void move(double x, double y) {
+		setPosition(x, y);
+		for (Level l : getLevel().getIsland().getLevels()) {
+			l.pushOutside(this);
+		}
 	}
 
 }

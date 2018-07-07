@@ -36,6 +36,7 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	private final Class<T> clazz;
 	
 	private final Collection<Tile> tickingTiles = new CopyOnWriteArrayList<>();
+	private final Collection<Collideable> collideables = new CopyOnWriteArrayList<>();
 
 	public TileLevel(Mod mod, String name, Class<T> clazz) {
 		super(mod, name);
@@ -152,6 +153,28 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	
 	public Collection<Tile> getTickableTiles() {
 		return tickingTiles;
+	}
+	
+	public Collection<Collideable> getCollideables() {
+		return collideables;
+	}
+
+	@Override
+	public boolean checkCollisions(Collideable col) {
+		for (Collideable c : getCollideables()) {
+			if (c.collides(col)) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public void pushOutside(DynamicCollideable col) {
+		for (Collideable c : getCollideables()) {
+			c.pushOutside(col);
+		}
 	}
 	
 	protected static void failRender(Exception e, Tile tile) {

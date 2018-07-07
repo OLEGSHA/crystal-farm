@@ -18,7 +18,6 @@
 package ru.windcorp.crystalfarm.content.basic.test;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.FullGridTile;
 import ru.windcorp.crystalfarm.logic.Island;
@@ -43,11 +42,6 @@ public class TestTile extends FullGridTile {
 		}
 		
 		return t;
-	}
-	
-	@Override
-	public void render(View view, int x, int y) {
-		super.render(view, x, y);
 	}
 	
 	@Override

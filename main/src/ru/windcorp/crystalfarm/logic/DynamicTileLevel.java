@@ -131,8 +131,8 @@ public class DynamicTileLevel<T extends DynamicTile> extends TileLevel<T> {
 				if (tile != null) {
 					try {
 						tile.render(view,
-								(int) ((tile.getX() - 0.5)*TEXTURE_SIZE),
-								(int) ((tile.getY() - 0.5)*TEXTURE_SIZE));
+								(int) ((tile.getX())*TEXTURE_SIZE),
+								(int) ((tile.getY())*TEXTURE_SIZE));
 					} catch (Exception e) {
 						failRender(e, tile);
 						break;

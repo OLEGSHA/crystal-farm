@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.graphics;
 
 import org.lwjgl.glfw.GLFW;
 
+import ru.windcorp.crystalfarm.client.ModuleClient;
 import ru.windcorp.crystalfarm.graphics.notifier.Notifier;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
@@ -63,6 +64,11 @@ public class DebugInputListener implements InputListener {
 			case GLFW.GLFW_KEY_F:
 				ModuleGraphicsInterface.SHOW_FPS.set(!ModuleGraphicsInterface.SHOW_FPS.get());
 				Notifier.info(TString.translated("misc.debugInputListener.fps." + (ModuleGraphicsInterface.SHOW_FPS.get() ? "enabled" : "disabled")));
+				break;
+			case GLFW.GLFW_KEY_C:
+				ModuleClient.DRAW_COLLISION_BOUNDS.set(!ModuleClient.DRAW_COLLISION_BOUNDS.get());
+				Notifier.info(TString.translated("misc.debugInputListener.collisions." + (ModuleClient.DRAW_COLLISION_BOUNDS.get() ? "enabled" : "disabled")));
+				break;
 			}
 			
 		}

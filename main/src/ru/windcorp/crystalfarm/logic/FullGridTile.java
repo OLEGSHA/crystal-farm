@@ -60,7 +60,7 @@ public abstract class FullGridTile extends Tile {
 	}
 	
 	@Override
-	public void render(View view, int x, int y) {
+	public void renderImpl(View view, int x, int y) {
 		getTexture().render(x, y);
 	}
 	

@@ -24,7 +24,10 @@ import java.io.DataOutput;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import ru.windcorp.crystalfarm.client.ModuleClient;
 import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.graphics.Color;
+import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
@@ -32,6 +35,8 @@ import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public abstract class Tile extends Updateable {
+	
+	private static final Color COLLISION_BOUNDS_FILL_COLOR = new Color(0xFFFFFF77);
 	
 	private final Mod mod;
 	private final String id;
@@ -50,6 +55,12 @@ public abstract class Tile extends Updateable {
 	
 	protected void setLevel(TileLevel<?> level) {
 		if (level == null) {
+			if (this instanceof Collideable) {
+				TileLevel<?> prevLevel = getLevel();
+				if (prevLevel != null) {
+					prevLevel.getCollideables().remove((Collideable) this);
+				}
+			}
 			this.level = null;
 			return;
 		}
@@ -58,6 +69,10 @@ public abstract class Tile extends Updateable {
 
 		if (isTickable()) {
 			level.getTickableTiles().add(this);
+		}
+		
+		if (this instanceof Collideable) {
+			level.getCollideables().add((Collideable) this);
 		}
 	}
 	
@@ -134,7 +149,21 @@ public abstract class Tile extends Updateable {
 		// Do nothing
 	}
 	
-	public abstract void render(View view, int x, int y);
+	public final void render(View view, int x, int y) {
+		if (this instanceof Collideable && ModuleClient.DRAW_COLLISION_BOUNDS.get()) {
+			Collideable c = (Collideable) this;
+			GraphicsInterface.fillRectangle(
+					(int) (c.getMinX()*TEXTURE_SIZE),
+					(int) (c.getMinY()*TEXTURE_SIZE),
+					(int) (c.getWidth()*TEXTURE_SIZE),
+					(int) (c.getHeight()*TEXTURE_SIZE),
+					COLLISION_BOUNDS_FILL_COLOR);
+		}
+		
+		renderImpl(view, x, y);
+	}
+	
+	protected abstract void renderImpl(View view, int x, int y);
 	
 	public void tick(World world, Island island, Level level, long length, long time) {
 		// Do nothing

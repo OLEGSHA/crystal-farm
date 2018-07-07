@@ -81,6 +81,8 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		misc.debugInputListener.layerDump = Дамп графических слоёв готов\nИщите его в логах
 		misc.debugInputListener.fps.enabled = Счётчик FPS вкл.
 		misc.debugInputListener.fps.disabled = Счётчик FPS выкл.
+		misc.debugInputListener.collisions.enabled = Отрисовка границ коллизий вкл.
+		misc.debugInputListener.collisions.disabled = Отрисовка границ коллизий выкл.
 
 # Execution Report
 	executionReport.notification.onProblem.debug = Отладочное уведомление:\nID: %1$s\nОписание: %2$s

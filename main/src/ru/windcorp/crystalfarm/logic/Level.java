@@ -80,5 +80,13 @@ public abstract class Level extends ModNameable implements Cloneable {
 	public abstract void writeUpdate(DataOutput output) throws IOException;
 
 	public abstract void tick(World world, Island island, long length, long time);
+	
+	public boolean checkCollisions(Collideable col) {
+		return false;
+	}
+	
+	public void pushOutside(DynamicCollideable col) {
+		// Do nothing
+	}
 
 }
