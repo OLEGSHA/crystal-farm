@@ -25,6 +25,9 @@ import ru.windcorp.crystalfarm.logic.ViewTarget;
 
 public class View {
 	
+	public static final double MAX_SCALE = 4;
+	public static final double MIN_SCALE = 1.0/2;
+	
 	private double scale;
 
 	private double x, y;
@@ -43,15 +46,18 @@ public class View {
 	public void move(int xMod, int yMod) {
 		this.x += xMod;
 		this.y += yMod;
-		update();
 	}
 
 	public void zoom(double factor) {
-		this.scale *= factor;
-		update();
+		this.scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, this.scale*factor));
 	}
 	
 	public void update() {
+		if (getTarget() != null) {
+			x = getTarget().getViewX();
+			y = getTarget().getViewY();
+		}
+		
 		this.x = max(
 				(int) ceil(GraphicsInterface.getWindowWidth()/2/scale),
 				min(
@@ -74,10 +80,7 @@ public class View {
 	}
 
 	public void pushMatrix() {
-		if (getTarget() != null) {
-			x = getTarget().getViewX();
-			y = getTarget().getViewY();
-		}
+		update();
 		
 		glPushMatrix();
 		glMatrixMode(GL_MODELVIEW);
