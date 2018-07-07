@@ -36,7 +36,7 @@ public class PauseMenu extends MenuLayer {
 		add(new Button(
 				"PauseMenu.settings",
 				TString.translated("menu.SettingsMenu.title").toFont(),
-				button -> new SettingsMenu().show()
+				button -> new SettingsMenu().show(false)
 				));
 	}
 	
