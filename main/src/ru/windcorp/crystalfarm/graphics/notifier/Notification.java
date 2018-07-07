@@ -192,7 +192,7 @@ public class Notification {
 	}
 	
 	public int render(int targetY) {
-		x = Math.min(gdGetLine(), (int) (x + vx * frame()));
+		x = Math.min(gdGetLine(), (int) (x + vx * frameLength()));
 		
 		if (x == gdGetLine()) {
 			if (!soundPlayed) {
@@ -214,13 +214,13 @@ public class Notification {
 				}
 			}
 		} else {
-			vx += ACCELERATION * frame();
+			vx += ACCELERATION * frameLength();
 		}
 		
 		int advance;
 		if (die || (!isModal() && hideAt < time())) {
-			y -= vy * frame();
-			vy += ACCELERATION * frame();
+			y -= vy * frameLength();
+			vy += ACCELERATION * frameLength();
 			
 			advance = 0;
 			
@@ -230,11 +230,11 @@ public class Notification {
 			
 			die = true;
 		} else {
-			y = Math.max(targetY, (int) (y - vy * frame()));
+			y = Math.max(targetY, (int) (y - vy * frameLength()));
 			if (y == targetY) {
 				vy = 0;
 			} else {
-				vy += ACCELERATION * frame();
+				vy += ACCELERATION * frameLength();
 			}
 			
 			advance = height;

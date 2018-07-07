@@ -17,6 +17,7 @@
  */
 package ru.windcorp.crystalfarm.gui.menu;
 
+import ru.windcorp.crystalfarm.client.Proxy;
 import ru.windcorp.crystalfarm.content.basic.UnpauseAction;
 import ru.windcorp.crystalfarm.gui.Button;
 import ru.windcorp.crystalfarm.logic.GameManager;
@@ -28,7 +29,7 @@ public class PauseMenu extends MenuLayer {
 		super("PauseMenu", false);
 		
 		add(new Button(
-				"PauseMenu.mainmenu",
+				"PauseMenu.toMainMenu",
 				TString.translated("menu.MainMenu.title").toFont(),
 				button -> GameManager.shutdownClient()
 				));
@@ -40,9 +41,9 @@ public class PauseMenu extends MenuLayer {
 	}
 	
 	@Override
-	public void close() {
-		super.close();
-		GameManager.getLocalClient().sendAction(new UnpauseAction(), null);
+	public void postClose() {
+		Proxy proxy = GameManager.getLocalClient();
+		if (proxy != null) proxy.sendAction(new UnpauseAction(), null);
 	}
 
 }

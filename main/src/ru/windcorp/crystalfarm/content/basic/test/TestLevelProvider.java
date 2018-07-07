@@ -17,25 +17,36 @@
  */
 package ru.windcorp.crystalfarm.content.basic.test;
 
-import java.util.Collection;
 import java.util.function.Consumer;
 
+import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
 import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
+import ru.windcorp.crystalfarm.logic.FullGridTileLevel;
+import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.logic.GridTileLevel;
 import ru.windcorp.crystalfarm.logic.Level;
+import ru.windcorp.crystalfarm.logic.IslandFactory.IslandLevelProvider;
 
-public class TestLevelProvider implements Consumer<Collection<Level>> {
+public class TestLevelProvider extends IslandLevelProvider {
+
+	public TestLevelProvider() {
+		super(InbuiltMod.INST, "TestLevelProvider");
+	}
 
 	@Override
-	public void accept(Collection<Level> arg0) {
-		GridTileLevel<TestTile> testLevel = new GridTileLevel<>("TestLevel", TestTile.class, 50);
+	public void provideLevels(Consumer<Level> output, String name, int size) {
+		FullGridTileLevel<TestTile> testLevel = new FullGridTileLevel<>(InbuiltMod.INST, "TestLevel", TestTile.class, size);
 		testLevel.getTileRegistry().register(new TestTile());
-		arg0.add(testLevel);
+		output.accept(testLevel);
 		
-		DynamicTileLevel<DynamicTile> testDynLevel = new DynamicTileLevel<>("TestDynLevel", DynamicTile.class, 10);
+		DynamicTileLevel<DynamicTile> testDynLevel = new DynamicTileLevel<>(InbuiltMod.INST, "TestDynLevel", DynamicTile.class, 10);
 		testDynLevel.getTileRegistry().register(new TestCharTile());
-		arg0.add(testDynLevel);
+		output.accept(testDynLevel);
+		
+		GridTileLevel<GridTile> treeLevel = new GridTileLevel<>(InbuiltMod.INST, "TreeLevel", GridTile.class, size);
+		treeLevel.getTileRegistry().register(new TestTreeTile());
+		output.accept(treeLevel);
 	}
 
 }

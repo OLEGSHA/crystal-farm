@@ -17,25 +17,6 @@
  */
 package ru.windcorp.crystalfarm.graphics;
 
-import ru.windcorp.crystalfarm.struct.modules.Module;
-import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
-import ru.windcorp.tge2.util.synch.SynchUtil;
-
-public class TMP_JobDelayLoad extends ModuleJob {
-
-	public TMP_JobDelayLoad(int i, Module module) {
-		super("TMP_JobDelayLoad_" + i, "Debug job to simulate lengthy load", module);
-		
-		if (i < 2) {
-			addDependency("Inbuilt:GraphicsInterface:TMP_JobTestGUI");
-		} else {
-			addDependency("Inbuilt:GraphicsInterface:TMP_JobDelayLoad_" + (i - 2));
-		}
-	}
-
-	@Override
-	protected void runImpl() {
-		SynchUtil.pause((long) (1500 + 500 * Math.random()));
-	}
+public interface StickyLayer {
 
 }

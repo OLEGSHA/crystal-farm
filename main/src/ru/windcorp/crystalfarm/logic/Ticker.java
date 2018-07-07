@@ -55,7 +55,12 @@ public class Ticker extends TimerTask {
 		synchronized (world.getIslands()) {
 			for (Island island : world.getIslands()) {
 				for (Level level : island.getLevels()) {
-					level.tick(world, island, length, time);
+					try {
+						level.tick(world, island, length, time);
+					} catch (Exception e) {
+						GameManager.shutdownLocalServer(e, "tickFailed",
+								"Level %s of island %s failed to tick", level, island);
+					}
 				}
 			}
 		}

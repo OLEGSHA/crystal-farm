@@ -30,7 +30,7 @@ public class ModuleServer extends Module {
 
 	@Override
 	public void registerJobs(JobManager<ModuleJob> manager) {
-		// TODO: add shutdown hook to save world
+		
 	}
 
 }

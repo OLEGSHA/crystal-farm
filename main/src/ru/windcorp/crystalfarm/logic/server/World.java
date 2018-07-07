@@ -134,11 +134,13 @@ public class World {
 		synchronized (getIslands()) {
 			for (int i = 0; i < amount; ++i) {
 				String name = input.readUTF();
-				Island island = getIsland(name);
-				if (island == null) {
-					island = IslandFactory.createIsland(name);
-					addIsland(island);
+				int size = input.readInt();
+				if (size < 0) {
+					throw new SyntaxException("Island size is negative (0x" + Integer.toHexString(size) + ")");
 				}
+				
+				Island island = IslandFactory.createIsland(name, size);
+				addIsland(island);
 				
 				input.pushCounter();
 				island.read(input);
@@ -201,6 +203,7 @@ public class World {
 			
 			for (Island island : getIslands()) {
 				output.writeUTF(island.getName());
+				output.writeInt(island.getSize());
 				
 				output.pushCounter();
 				island.write(output);

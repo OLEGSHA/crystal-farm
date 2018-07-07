@@ -22,6 +22,7 @@ import java.util.List;
 
 import ru.windcorp.tge2.util.Version;
 import ru.windcorp.tge2.util.debug.Log;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.unixarg.UnixArgumentSystem;
 
 public class CrystalFarm {
@@ -69,7 +70,8 @@ public class CrystalFarm {
 		
 		Log.topic("Exit");
 		Log.info("Exiting: " + reason + " (exit status " + status + ")");
-		System.exit(status);
+		//System.exit(status);
+		ExecutionReport.exitAsynch(status);
 	}
 	
 }

@@ -10,52 +10,52 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		menu.MainMenu.about = Об игре
 		menu.MainMenu.exit = Выход
 		menu.MainMenu.notice = %1$s версия %2$s\n© %3$s %4$s\nЛицензия %5$s
-	# Меню настроек
-		menu.SettingsMenu.title = Настройки
-		menu.SettingsMenu.language = Язык
-		# Меню настроек звука
-			menu.SettingsSoundsMenu.title = Звуки
-			menu.SettingsSoundsMenu.volume = Общее
-			menu.SettingsSoundsMenu.musicvolume = Музыка
-		# Меню настроек графики
-			menu.SettingsGraphicsMenu.title = Графика
-			menu.SettingsGraphicsMenu.fullscreen = Полный экран
-			# Меню расширенных настроек графики
-				menu.SettingsGraphicsAdvancedMenu.title = Графика (расширенные)
-				menu.SettingsGraphicsAdvancedMenu.showfps = Счётчик FPS
-				menu.SettingsGraphicsAdvancedMenu.vsync = Вертикальная синхронизация
-		# Меню расширенных настроек
-			menu.SettingsAdvancedMenu.title = Дополнительно
-			# Меню настроек уведомлений
-				menu.SettingsNotifierMenu.title = Уведомления
-				menu.SettingsNotifierMenu.volume = Громкость
-				menu.SettingsNotifierMenu.shakeinterval = Интервал напоминания
-				menu.SettingsNotifierMenu.timeout = Длительность
-			# Меню настроек дизайна
-				menu.SettingsDesignMenu.title = Дизайн
-				menu.SettingsDesignMenu.foreground = Передний план
-				menu.SettingsDesignMenu.foregroundalt = Альт. передний план
-				menu.SettingsDesignMenu.background = Задний план
-				menu.SettingsDesignMenu.backgroundalt = Альт. задний план
-				menu.SettingsDesignMenu.border = Границы
-				menu.SettingsDesignMenu.borderfocused = Границы (фокус)
-				menu.SettingsDesignMenu.borderhovered = Границы (выделение)
-				menu.SettingsDesignMenu.fontcolor = Цвет шрифта
-				menu.SettingsDesignMenu.fontaltcolor = Альт. цвет шрифта
-				menu.SettingsDesignMenu.cover = Фон
-				menu.SettingsDesignMenu.line = Толщина линий (эксперимент.)
-	# Меню "Об игре"
-		menu.AboutMenu.title = Об игре
-	# Тестовое меню
-		menu.TestMenu.title = Тестовое меню
-		menu.test.button = Кнопка
-		menu.test.choiceButton = Кнопка-переключатель
-		menu.test.sliderInt = Целочисленный ползунок
-		menu.test.textField = Текстовое поле
-		menu.test.gain = Общая громкость
-		menu.test.fullscreen = Полноэкранный режим
-		menu.test.foreground = Передний план
-		menu.test.fullscreenKey = Переключить полноэкранный режим
+		# Меню настроек
+			menu.SettingsMenu.title = Настройки
+			menu.SettingsMenu.language = Язык
+			# Меню настроек звука
+				menu.SettingsSoundsMenu.title = Звуки
+				menu.SettingsSoundsMenu.volume = Общее
+				menu.SettingsSoundsMenu.musicvolume = Музыка
+			# Меню настроек графики
+				menu.SettingsGraphicsMenu.title = Графика
+				menu.SettingsGraphicsMenu.fullscreen = Полный экран
+				# Меню расширенных настроек графики
+					menu.SettingsGraphicsAdvancedMenu.title = Графика (расширенные)
+					menu.SettingsGraphicsAdvancedMenu.showfps = Счётчик FPS
+					menu.SettingsGraphicsAdvancedMenu.vsync = Вертикальная синхронизация
+			# Меню расширенных настроек
+				menu.SettingsAdvancedMenu.title = Дополнительно
+				# Меню настроек уведомлений
+					menu.SettingsNotifierMenu.title = Уведомления
+					menu.SettingsNotifierMenu.volume = Громкость
+					menu.SettingsNotifierMenu.shakeinterval = Интервал напоминания
+					menu.SettingsNotifierMenu.timeout = Длительность
+				# Меню настроек дизайна
+					menu.SettingsDesignMenu.title = Дизайн
+					menu.SettingsDesignMenu.foreground = Передний план
+					menu.SettingsDesignMenu.foregroundalt = Альт. передний план
+					menu.SettingsDesignMenu.background = Задний план
+					menu.SettingsDesignMenu.backgroundalt = Альт. задний план
+					menu.SettingsDesignMenu.border = Границы
+					menu.SettingsDesignMenu.borderfocused = Границы (фокус)
+					menu.SettingsDesignMenu.borderhovered = Границы (выделение)
+					menu.SettingsDesignMenu.fontcolor = Цвет шрифта
+					menu.SettingsDesignMenu.fontaltcolor = Альт. цвет шрифта
+					menu.SettingsDesignMenu.cover = Фон
+					menu.SettingsDesignMenu.line = Толщина линий (эксперимент.)
+		# Меню "Об игре"
+			menu.AboutMenu.title = Об игре
+		# Тестовое меню
+			menu.TestMenu.title = Тестовое меню
+			menu.test.button = Кнопка
+			menu.test.choiceButton = Кнопка-переключатель
+			menu.test.sliderInt = Целочисленный ползунок
+			menu.test.textField = Текстовое поле
+			menu.test.gain = Общая громкость
+			menu.test.fullscreen = Полноэкранный режим
+			menu.test.foreground = Передний план
+			menu.test.fullscreenKey = Переключить полноэкранный режим
 	# Pause Menu
 		menu.PauseMenu.title = Меню паузы
 # Компоненты GUI
@@ -115,9 +115,15 @@ welcome = Теперь я могу говорить по-русски ну пр�
 		failure.text.gm.gen.ioException =				Не удалось записать %s из-за ошибки системы вывода
 		failure.subtitle.gm.gen.exception =			Необработанная ошибка при сохранении мира
 		failure.text.gm.gen.exception =					Не удалось записать %s из-за исключения времени исполнения: %s
-	# Test
-		failure.subtitle.test = Ну, не совсем. Ошибок не было. Это просто тест.
-		failure.text.test = Не удалось загрузить мир из %s потому что я ещё не написал для этого код
+	# Client
+		failure.subtitle.client.renderIsland =		Необработанная ошибка в процедуре отрисовки клиента
+		failure.text.client.renderIsland =				Не удалось отрисовать остров из-за исключения времени исполнения: %s
+		failure.subtitle.client.renderLevel =		Необработанная ошибка в процедуре отрисовки уровня
+		failure.text.client.renderLevel =				Не удалось отрисовать уровень %s из-за исключения времени исполнения: %s
+		failure.subtitle.client.renderTile =		Необработанная ошибка в процедуре отрисовки плитки
+		failure.text.client.renderTile =				Не удалось отрисовать плитку %s из-за исключения времени исполнения: %s
+		failure.subtitle.client.handleKeyInput =	Необработанная ошибка в процедуре обработки события клавиатуры
+		failure.text.client.handleKeyInput =			Не удалось обработать событие %s из-за исключения времени исполнения: %s
 
 # Тест
 TMP_1.5 = Тест GUI

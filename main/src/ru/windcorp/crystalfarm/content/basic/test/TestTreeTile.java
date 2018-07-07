@@ -15,42 +15,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic;
+package ru.windcorp.crystalfarm.content.basic.test;
 
-import ru.windcorp.crystalfarm.struct.mod.Mod;
+import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
+import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.translation.TString;
 
-public abstract class GridTile extends Tile {
+public class TestTreeTile extends GridTile {
 	
-	private int x, y;
+	private final ComplexTexture texture;
 
-	public GridTile(Mod mod, String id, TString name) {
-		super(mod, id, name);
+	public TestTreeTile() {
+		super(InbuiltMod.INST, "testTreeTile", TString.wrap("Test Tree Tile Name"));
+		this.texture = getTextureForTile(this, 1, 1000);
 	}
-	
-	synchronized void adopt(GridTileLevel<?> level, int x, int y) {
-		setLevel(level);
-		this.x = x;
-		this.y = y;
-	}
-	
+
 	@Override
-	public GridTileLevel<?> getLevel() {
-		return (GridTileLevel<?>) super.getLevel();
-	}
-
-	public synchronized int getX() {
-		return x;
-	}
-
-	public synchronized int getY() {
-		return y;
-	}
-	
-	@Override
-	protected GridTile clone() {
-		GridTile clone = (GridTile) super.clone();
-		return clone;
+	public void render(View view, int x, int y) {
+		texture.render(x, y);
 	}
 
 }

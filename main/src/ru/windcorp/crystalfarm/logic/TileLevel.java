@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.windcorp.crystalfarm.logic.server.World;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
@@ -36,8 +37,8 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	
 	private final Collection<Tile> tickingTiles = new CopyOnWriteArrayList<>();
 
-	public TileLevel(String name, Class<T> clazz) {
-		super(name);
+	public TileLevel(Mod mod, String name, Class<T> clazz) {
+		super(mod, name);
 		this.clazz = clazz;
 	}
 	
@@ -151,6 +152,13 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	
 	public Collection<Tile> getTickableTiles() {
 		return tickingTiles;
+	}
+	
+	protected static void failRender(Exception e, Tile tile) {
+		GameManager.failToMainMenu(e, "client.renderTile",
+				"Could not render tile %s due to a runtime exception: %s",
+				tile.toString(),
+				e.toString());
 	}
 	
 }

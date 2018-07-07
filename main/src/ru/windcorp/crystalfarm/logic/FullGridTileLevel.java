@@ -23,31 +23,26 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.Collection;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.tge2.util.NumberUtil;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
 import ru.windcorp.tge2.util.stream.CountingDataOutput;
 
-public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
+public class FullGridTileLevel<T extends FullGridTile> extends TileLevel<T> {
 	
 	private final int size;
-	
-	private final T[][] tilesByCoordinate;
-	private final Collection<T> tiles = new CopyOnWriteArrayList<>();
+	private final T[][] tiles;
 
 	@SuppressWarnings("unchecked")
-	public GridTileLevel(Mod mod, String name, Class<T> clazz, int size) {
+	public FullGridTileLevel(Mod mod, String name, Class<T> clazz, int size) {
 		super(mod, name, clazz);
 		
 		this.size = size;
-		this.tilesByCoordinate = (T[][]) Array.newInstance(clazz, size, size);
+		this.tiles = (T[][]) Array.newInstance(clazz, size, size);
 		for (int x = 0; x < size; ++x) {
-			this.tilesByCoordinate[x] = (T[]) Array.newInstance(clazz, size);
+			this.tiles[x] = (T[]) Array.newInstance(clazz, size);
 		}
 	}
 
@@ -55,65 +50,41 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 		return size;
 	}
 
-	private T[][] getTilesByCoordinate() {
-		return tilesByCoordinate;
-	}
-	
-	public Collection<T> getTiles() {
+	public T[][] getTiles() {
 		return tiles;
 	}
 	
 	public T getTile(int x, int y) {
 		synchronized (getTiles()) {
-			return getTilesByCoordinate()[x][y];
+			return getTiles()[x][y];
 		}
 	}
 	
-	public void addTile(T tile, int x, int y) {
+	public void setTile(T tile, int x, int y) {
 		synchronized (getTiles()) {
 			Tile previous = getTile(x, y);
 			if (previous != null) {
 				previous.setLevel(null);
-				getTiles().remove(previous);
 			}
 			
-			getTilesByCoordinate()[x][y] = tile;
-			getTiles().add(tile);
+			getTiles()[x][y] = tile;
 			tile.adopt(this, x, y);
 		}
-	}
-	
-	public void removeTile(T tile) {
-		removeTile(tile.getX(), tile.getY());
-	}
-	
-	public void removeTile(int x, int y) {
-		synchronized (getTiles()) {
-			T tile = getTile(x, y);
-			
-			if (tile == null) {
-				return;
-			}
-			
-			getTilesByCoordinate()[x][y] = null;
-			getTiles().remove(tile);
-			tile.setLevel(null);
-		}
-	}
-	
-	public void clearTiles() {
-		getTiles().forEach(tile -> removeTile(tile));
 	}
 
 	@Override
 	public void render(View view) {
 		synchronized (getTiles()) {
-			for (T tile : getTiles()) {
-				try {
-					tile.render(view, tile.getX()*TEXTURE_SIZE, tile.getY()*TEXTURE_SIZE);
-				} catch (Exception e) {
-					failRender(e, tile);
-					break;
+			renderLoop:
+			for (int x = 0; x < size; ++x) {
+				for (int y = 0; y < getSize(); ++y) {
+					T tile = getTile(x, y);
+					try {
+						tile.render(view, x*TEXTURE_SIZE, y*TEXTURE_SIZE);
+					} catch (Exception e) {
+						failRender(e, tile);
+						break renderLoop;
+					}
 				}
 			}
 		}
@@ -122,16 +93,10 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 	@Override
 	protected void readTiles(CountingDataInput input, T[] tileMap) throws IOException, SyntaxException {
 		synchronized (getTiles()) {
-			clearTiles();
-			
-			int x, y;
-			while ((x = input.readInt()) >= 0) {
-				y = input.readInt();
-				if (y < 0) {
-					throw new SyntaxException("Tile with x = " + new String(NumberUtil.toFullHex(x)) + " has negative y = " + new String(NumberUtil.toFullHex(y)));
+			for (int x = 0; x < getSize(); ++x) {
+				for (int y = 0; y < getSize(); ++y) {
+					setTile(readTile(input, tileMap), x, y);
 				}
-				
-				addTile(readTile(input, tileMap), x, y);
 			}
 		}
 	}
@@ -139,28 +104,40 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 	@Override
 	protected void writeTiles(CountingDataOutput output) throws IOException {
 		synchronized (getTiles()) {
-			for (T tile : getTiles()) {
-				output.writeInt(tile.getX());
-				output.writeInt(tile.getY());
-				writeTile(output, tile);
+			for (int x = 0; x < getSize(); ++x) {
+				for (int y = 0; y < getSize(); ++y) {
+					writeTile(output, getTile(x, y));
+				}
 			}
 		}
-		
-		output.writeInt(-1);
 	}
 
 	@Override
 	public void readUpdate(DataInput input) throws IOException, SyntaxException {
 		synchronized (getTiles()) {
-			// TODO: handle updates for GL (including tile removal)
-			throw new Error("Not implemented");
+			int x, y;
+			while ((x = input.readInt()) != -1) {
+				y = input.readInt();
+				getTile(x, y).readUpdate(input);
+			}
 		}
 	}
 
 	@Override
 	public void writeUpdate(DataOutput output) throws IOException {
 		synchronized (getTiles()) {
-			throw new Error("Not implemented");
+			for (int x = 0; x < getSize(); ++x) {
+				for (int y = 0; y < getSize(); ++y) {
+					T tile = getTile(x, y);
+					if (tile.getChange() != 0) {
+						output.writeInt(x);
+						output.writeInt(y);
+						tile.writeUpdate(output);
+					}
+				}
+			}
+			
+			output.writeInt(-1);
 		}
 	}
 

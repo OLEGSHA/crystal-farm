@@ -20,13 +20,13 @@ package ru.windcorp.crystalfarm.content.basic.test;
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.logic.GameManager;
-import ru.windcorp.crystalfarm.logic.GridTile;
+import ru.windcorp.crystalfarm.logic.FullGridTile;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.translation.TString;
 
-public class TestTile extends GridTile {
+public class TestTile extends FullGridTile {
 	
 	private static final TString NAME = TString.wrap("Test Tile Name");
 
@@ -35,8 +35,8 @@ public class TestTile extends GridTile {
 	}
 	
 	@Override
-	protected GridTile clone() {
-		GridTile t = super.clone();
+	protected FullGridTile clone() {
+		FullGridTile t = super.clone();
 
 		if (GameManager.GENERIC_RANDOM.nextBoolean()) {
 			t.setTickable(true);

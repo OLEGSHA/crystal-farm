@@ -15,21 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.audio;
+package ru.windcorp.crystalfarm.graphics;
 
-import ru.windcorp.crystalfarm.struct.modules.Module;
-import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
+public class OpenGLException extends RuntimeException {
 
-public class TMP_JobTestAudio extends ModuleJob {
+	private static final long serialVersionUID = -2075910827911613055L;
+	
+	private final int errorCode;
 
-	public TMP_JobTestAudio(Module module) {
-		super("TMP_JobTestAudio", "Debug job to fiddle with audio", module);
-
-		addDependency("Inbuilt:AudioInterface:AudioInterfaceInit");
-		addDependency("Inbuilt:GraphicsInterface:TMP_JobTestGUI");
+	public OpenGLException(int errorCode) {
+		super("OpenGL error detected: " + GraphicsInterface.getOpenGLErrorDescription(errorCode));
+		this.errorCode = errorCode;
 	}
 
-	@Override
-	protected void runImpl() { 
+	public int getErrorCode() {
+		return errorCode;
 	}
+
 }

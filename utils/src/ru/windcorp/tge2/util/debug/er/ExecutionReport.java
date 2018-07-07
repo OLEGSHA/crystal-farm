@@ -688,7 +688,7 @@ public class ExecutionReport {
 			
 			@Override
 			public void uncaughtException(Thread t, Throwable e) {
-				ExecutionReport.reportUncaughtThrowable(e, t);
+				if (!(e instanceof ThreadDeath)) ExecutionReport.reportUncaughtThrowable(e, t);
 			}
 			
 		});
@@ -959,5 +959,16 @@ public class ExecutionReport {
 			b.append("\n");
 		}
 		
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static void exitAsynch(int exitCode) {
+		new Thread() {
+			@Override
+			public void run() {
+				System.exit(exitCode);
+			}
+		}.start();
+		Thread.currentThread().stop();
 	}
 }

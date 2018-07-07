@@ -17,8 +17,15 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-public interface BiomeProcessor {
+import ru.windcorp.crystalfarm.struct.mod.Mod;
+import ru.windcorp.crystalfarm.struct.mod.ModNameable;
 
-	public void process(Island island, Biome biome);
+public abstract class BiomeProcessor extends ModNameable {
+
+	public BiomeProcessor(Mod mod, String name) {
+		super(mod, name);
+	}
+
+	public abstract void process(Island island, Biome biome);
 	
 }

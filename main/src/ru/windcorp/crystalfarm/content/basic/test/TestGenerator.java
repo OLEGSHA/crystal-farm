@@ -17,27 +17,44 @@
  */
 package ru.windcorp.crystalfarm.content.basic.test;
 
+import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.logic.Biome;
 import ru.windcorp.crystalfarm.logic.BiomeProcessor;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
 import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
+import ru.windcorp.crystalfarm.logic.FullGridTileLevel;
+import ru.windcorp.crystalfarm.logic.GameManager;
+import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.logic.GridTileLevel;
 import ru.windcorp.crystalfarm.logic.Island;
 
-public class TestGenerator implements BiomeProcessor {
+public class TestGenerator extends BiomeProcessor {
+
+	public TestGenerator() {
+		super(InbuiltMod.INST, "TestGenerator");
+	}
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public void process(Island island, Biome biome) {
-		GridTileLevel<TestTile> testLevel = island.getLevel("TestLevel", GridTileLevel.class);
+		FullGridTileLevel<TestTile> testLevel = island.getLevel("Inbuilt:TestLevel", FullGridTileLevel.class);
 		for (int x = 0; x < testLevel.getSize(); ++x) {
 			for (int y = 0; y < testLevel.getSize(); ++y) {
 				testLevel.setTile(new TestTile(), x, y);
 			}
 		}
 		
-		DynamicTileLevel<DynamicTile> testDynLevel = island.getLevel("TestDynLevel", DynamicTileLevel.class);
+		DynamicTileLevel<DynamicTile> testDynLevel = island.getLevel("Inbuilt:TestDynLevel", DynamicTileLevel.class);
 		testDynLevel.addTile(new TestCharTile());
+		
+		GridTileLevel<GridTile> treeLevel = island.getLevel("Inbuilt:TreeLevel", GridTileLevel.class);
+		
+		for (int i = 0; i < treeLevel.getSize(); ++i) {
+			treeLevel.addTile(
+					treeLevel.getTileRegistry().createNew("Inbuilt:testTreeTile"),
+					GameManager.GENERIC_RANDOM.nextInt(treeLevel.getSize()),
+					GameManager.GENERIC_RANDOM.nextInt(treeLevel.getSize()));
+		}
 	}
 
 }

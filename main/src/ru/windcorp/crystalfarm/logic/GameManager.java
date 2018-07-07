@@ -28,6 +28,7 @@ import ru.windcorp.crystalfarm.logic.exception.*;
 import ru.windcorp.crystalfarm.logic.server.*;
 import ru.windcorp.tge2.util.NumberUtil;
 import ru.windcorp.tge2.util.debug.Log;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.grh.Resource;
 
@@ -52,9 +53,9 @@ public class GameManager {
 		
 		try {
 			Log.info("Generating island Test");
-			Island island = IslandFactory.createIsland("TestIsland");
+			Island island = IslandFactory.createIsland("TestIsland", 20);
 			island.getMeta().setDisplayName("Test Island");
-			BiomeRegistry.get("TestBiome").generate(island);
+			BiomeRegistry.get("Inbuilt:TestBiome").generate(island);
 			
 			Log.info("Saving world");
 			World world = WorldFactory.createWorld(resource);
@@ -64,11 +65,11 @@ public class GameManager {
 			world.save();
 			return false;
 		} catch (IOException e) {
-			failWorldLoad(e, "gm.gen.ioException",
+			failToMainMenu(e, "gm.gen.ioException",
 					"Could not write %s due to an IO issue",
 					resource.toString());
 		} catch (Exception e) {
-			failWorldLoad(e, "gm.gen.exception",
+			failToMainMenu(e, "gm.gen.exception",
 					"Could not write %s due to a runtime exception: %s",
 					resource.toString(),
 					e.toString());
@@ -101,51 +102,51 @@ public class GameManager {
 			return false;
 			
 		} catch (IOException e) {
-			failWorldLoad(e, "gm.ioException",
+			failToMainMenu(e, "gm.ioException",
 					"Could not read %s due to an IO issue",
 					resource.toString());
 			
 		} catch (WrongMagicValueException e) {
-			failWorldLoad(e, "gm.wrongMagicValue",
+			failToMainMenu(e, "gm.wrongMagicValue",
 					"%s is probably not a world save: wrong magic value (expected %s, got %s)",
 					resource.toString(),
 					NumberUtil.toFullHex(e.getCorrectMagicValue()),
 					NumberUtil.toFullHex(e.getWrongMagicValue()));
 			
 		} catch (UnknownWorldDataException e) {
-			failWorldLoad(e, "gm.unknownWorldData",
+			failToMainMenu(e, "gm.unknownWorldData",
 					"%s contains an unknown World Data entry: %s",
 					resource.toString(),
 					e.getName());
 			
 		} catch (UnknownIslandDataException e) {
-			failWorldLoad(e, "gm.unknownIslandData",
+			failToMainMenu(e, "gm.unknownIslandData",
 					"%s contains an unknown Island Data entry: %s in island %s",
 					resource.toString(),
 					e.getName(),
 					e.getIsland().getName());
 			
 		} catch (UnknownLevelException e) {
-			failWorldLoad(e, "gm.unknownIslandLevel",
+			failToMainMenu(e, "gm.unknownIslandLevel",
 					"%s contains an unknown Island Level entry: %s in island %s",
 					resource.toString(),
 					e.getName(),
 					e.getIsland().getName());
 			
 		} catch (UnknownVersionException e) {
-			failWorldLoad(e, "gm.unknownVersion",
+			failToMainMenu(e, "gm.unknownVersion",
 					"%s uses an unknown version %s",
 					resource.toString(),
 					NumberUtil.toFullHex(e.getUnknownVersion()));
 			
 		} catch (SyntaxException e) {
-			failWorldLoad(e, "gm.other",
+			failToMainMenu(e, "gm.other",
 					"Could not load %s: %s",
 					resource.toString(),
 					e.toString());
 			
 		} catch (Exception e) {
-			failWorldLoad(e, "gm.exception",
+			failToMainMenu(e, "gm.exception",
 					"Could not read %s due to a runtime exception: %s",
 					resource.toString(),
 					e.toString());
@@ -157,9 +158,9 @@ public class GameManager {
 		return true;
 	}
 
-	private static void failWorldLoad(Exception e, String code, String format, Object... args) {
+	public static void failToMainMenu(Exception e, String code, String format, Object... args) {
 		GraphicsInterface.removeAllNormalLayers();
-		GraphicsInterface.addLayer(new MainMenu());
+		new MainMenu().show(true);
 		LayerFailure.displayFailure(e, code, format, args);
 	}
 
@@ -170,10 +171,14 @@ public class GameManager {
 		getLocalServer().addAgent(agent);
 		GameLayer layer = new GameLayer(getLocalClient());
 		GraphicsInterface.removeAllNormalLayers();
-		GraphicsInterface.addLayerToBottom(layer);
+		layer.show(true);
 	}
 	
 	public static void shutdownLocalServer() {
+		shutdownLocalServer(null, null, null, (Object[]) null);
+	}
+	
+	public static void shutdownLocalServer(Exception e, String format, Object... args) {
 		if (getLocalServer() == null) {
 			throw new IllegalStateException("No local server present");
 		}
@@ -183,13 +188,26 @@ public class GameManager {
 		try {
 			Server server = getLocalServer();
 			localServer = null;
+			
+			if (e != null) {
+				ExecutionReport.reportError(e, null, format, args);
+			}
+			
 			server.shutdown();
+		} catch (Exception e1) {
+			ExecutionReport.reportError(e1, null,
+					"Failed to shut down the local server due to a runtime exception: %s",
+					e1.toString());
 		} finally {
 			Log.end("Server Shutdown");			
 		}
 	}
-
+	
 	public static void shutdownClient() {
+		shutdownClient(null, null, null, (Object[]) null);
+	}
+
+	public static void shutdownClient(Exception e, String code, String format, Object... args) {
 		if (getLocalClient() == null) {
 			throw new IllegalStateException("No client present");
 		}
@@ -197,13 +215,17 @@ public class GameManager {
 		Proxy client = getLocalClient();
 		localClient = null;
 		
+		if (e != null) {
+			failToMainMenu(e, code, format, args);
+		}
+		
 		if (client instanceof LocalProxy
 				&& getLocalServer() != null) {
 			shutdownLocalServer();
 		}
 
 		GraphicsInterface.removeAllNormalLayers();
-		GraphicsInterface.addLayerToBottom(new MainMenu());
+		new MainMenu().show(true);
 	}
 	
 }

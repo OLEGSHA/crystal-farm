@@ -27,6 +27,7 @@ import ru.windcorp.crystalfarm.debug.CrystalFarmExecutionReportBackend;
 import ru.windcorp.crystalfarm.debug.CrystalFarmExecutionReportListener;
 import ru.windcorp.crystalfarm.debug.JobReportPart;
 import ru.windcorp.crystalfarm.debug.LWJGLValueSection;
+import ru.windcorp.crystalfarm.debug.LayersDumpReportPart;
 import ru.windcorp.crystalfarm.debug.LoadThreadsUnixArgument;
 import ru.windcorp.crystalfarm.debug.ModReportPart;
 import ru.windcorp.crystalfarm.debug.ModlistSuggestionProvider;
@@ -130,6 +131,7 @@ public class CrystalFarmLauncher {
 		ExecutionReport.addExtraReportPart(new ModReportPart());
 		ExecutionReport.addExtraReportPart(new ModuleReportPart());
 		ExecutionReport.addExtraReportPart(new JobReportPart());
+		ExecutionReport.addExtraReportPart(new LayersDumpReportPart());
 		
 		ExecutionReport.addSuggestionProvider(new ModlistSuggestionProvider());
 	}

@@ -24,10 +24,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import ru.windcorp.crystalfarm.graphics.InputListener;
 import ru.windcorp.crystalfarm.graphics.Layer;
+import ru.windcorp.crystalfarm.graphics.StickyLayer;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.MouseButtonInput;
 
-public class NotifierLayer extends Layer implements InputListener {
+public class NotifierLayer extends Layer implements InputListener, StickyLayer {
 
 	private final Collection<Notification> notesOnScreen = new ConcurrentLinkedQueue<>();
 	
@@ -52,7 +53,7 @@ public class NotifierLayer extends Layer implements InputListener {
 	}
 
 	@Override
-	public void render() {
+	public void renderImpl() {
 		int targetY = gdGetLine();
 		for (Notification n : getNotesOnScreen()) {
 			targetY += n.render(targetY);

@@ -41,7 +41,7 @@ public class TestBadaboomControl extends ControlAction {
 	
 	@SuppressWarnings("unchecked")
 	private TestCharTile getChar(Agent agent) {
-		return (TestCharTile) ((DynamicTileLevel<DynamicTile>) agent.getIsland().getLevel("TestDynLevel")).getTileByStatId(0);
+		return (TestCharTile) ((DynamicTileLevel<DynamicTile>) agent.getIsland().getLevel("Inbuilt:TestDynLevel")).getTileByStatId(0);
 	}
 
 }

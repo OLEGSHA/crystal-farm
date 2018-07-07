@@ -66,7 +66,7 @@ public class Server {
 	
 	public void start() {
 		getTicker().start();
-		Log.info("Started server ticker");
+		Log.info("Started server ticker at " + getWorld().getMeta().getTickLength() + "ms (" + (1000.0 / getWorld().getMeta().getTickLength()) + " TPS)");
 		
 		Runtime.getRuntime().addShutdownHook(shutdownHook);
 		Log.debug("Shutdown hook added");

@@ -21,6 +21,7 @@ import ru.windcorp.crystalfarm.graphics.InputListener;
 import ru.windcorp.crystalfarm.graphics.Layer;
 import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
+import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.action.ActionRegistry;
 import ru.windcorp.crystalfarm.logic.action.KeyAction;
@@ -35,10 +36,16 @@ public class GameLayer extends Layer implements InputListener {
 	}
 
 	@Override
-	public void render() {
-		getView().pushMatrix();
-		getIsland().render(getView());
-		getView().popMatrix();
+	public void renderImpl() {
+		try {
+			getView().pushMatrix();
+			getIsland().render(getView());
+			getView().popMatrix();
+		} catch (Exception e) {
+			GameManager.failToMainMenu(e, "client.renderIsland",
+					"Could not render island due to a runtime exception: %s",
+					e.toString());
+		}
 	}
 	
 	public Proxy getProxy() {
@@ -56,15 +63,22 @@ public class GameLayer extends Layer implements InputListener {
 	@Override
 	public void onInput(Input input) {
 		if (input instanceof KeyInput) {
-			KeyInput keyInput = (KeyInput) input;
-			KeyAction action = ActionRegistry.IN_GAME.getAction(keyInput, null);
-			
-			if (action != null) {
-				if (action.isLocal()) {
-					getProxy().runLocally(action, keyInput);
-				} else {
-					getProxy().sendAction(action, keyInput);
+			try {
+				KeyInput keyInput = (KeyInput) input;
+				KeyAction action = ActionRegistry.IN_GAME.getAction(keyInput, null);
+				
+				if (action != null) {
+					if (action.isLocal()) {
+						getProxy().runLocally(action, keyInput);
+					} else {
+						getProxy().sendAction(action, keyInput);
+					}
 				}
+			} catch (Exception e) {
+				GameManager.failToMainMenu(e, "client.handleKeyInput",
+						"Could not handle key input %s due to a runtime exception: %s",
+						input.toString(),
+						e.toString());
 			}
 		}
 		

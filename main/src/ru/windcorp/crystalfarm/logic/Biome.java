@@ -21,14 +21,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ru.windcorp.tge2.util.Nameable;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
+import ru.windcorp.crystalfarm.struct.mod.ModNameable;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
-public class Biome extends Nameable {
+public class Biome extends ModNameable {
 	
 	private final List<BiomeProcessor> processors = Collections.synchronizedList(new ArrayList<>());
 
-	public Biome(String name, BiomeProcessor... processors) {
-		super(name);
+	public Biome(Mod mod, String name, BiomeProcessor... processors) {
+		super(mod, name);
 		for (BiomeProcessor processor : processors) {
 			addProcessor(processor);
 		}
@@ -44,7 +46,14 @@ public class Biome extends Nameable {
 
 	public void generate(Island island) {
 		island.getMeta().setBiome(this);
-		getProcessors().forEach(p -> p.process(island, this));
+		getProcessors().forEach(processor -> {
+			try {
+				processor.process(island, this);
+			} catch (Exception e) {
+				ExecutionReport.reportError(e, null,
+						"Biome processor %s for biome %s failed to execute", processor, this);
+			}
+		});
 	}
 
 }

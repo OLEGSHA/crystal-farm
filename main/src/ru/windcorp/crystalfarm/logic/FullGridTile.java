@@ -17,26 +17,30 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
+import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.translation.TString;
 
-public abstract class GridTile extends Tile {
+public abstract class FullGridTile extends Tile {
 	
+	private ComplexTexture texture;
 	private int x, y;
 
-	public GridTile(Mod mod, String id, TString name) {
+	public FullGridTile(Mod mod, String id, TString name, int... textureData) {
 		super(mod, id, name);
+		this.setTexture(getTextureForTile(this, textureData));
 	}
 	
-	synchronized void adopt(GridTileLevel<?> level, int x, int y) {
+	synchronized void adopt(FullGridTileLevel<?> level, int x, int y) {
 		setLevel(level);
 		this.x = x;
 		this.y = y;
 	}
 	
 	@Override
-	public GridTileLevel<?> getLevel() {
-		return (GridTileLevel<?>) super.getLevel();
+	public FullGridTileLevel<?> getLevel() {
+		return (FullGridTileLevel<?>) super.getLevel();
 	}
 
 	public synchronized int getX() {
@@ -46,10 +50,24 @@ public abstract class GridTile extends Tile {
 	public synchronized int getY() {
 		return y;
 	}
+
+	public ComplexTexture getTexture() {
+		return texture;
+	}
+
+	public void setTexture(ComplexTexture texture) {
+		this.texture = texture;
+	}
 	
 	@Override
-	protected GridTile clone() {
-		GridTile clone = (GridTile) super.clone();
+	public void render(View view, int x, int y) {
+		getTexture().render(x, y);
+	}
+	
+	@Override
+	protected FullGridTile clone() {
+		FullGridTile clone = (FullGridTile) super.clone();
+		clone.texture = clone.texture.clone();
 		return clone;
 	}
 

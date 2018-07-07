@@ -25,6 +25,7 @@ import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.opengl.GL;
 import ru.windcorp.crystalfarm.CrystalFarm;
 import ru.windcorp.crystalfarm.debug.CrystalFarmGLFWErrorHandler;
+import ru.windcorp.crystalfarm.graphics.fonts.Font;
 import ru.windcorp.crystalfarm.graphics.fonts.FontManager;
 import ru.windcorp.crystalfarm.graphics.fonts.FontStyle;
 import ru.windcorp.crystalfarm.graphics.texture.TextureManager;
@@ -65,38 +66,50 @@ public class RenderThread implements Runnable {
 		lock.unlock();
 		
 		double lastFrame = glfwGetTime();
-		while (!glfwWindowShouldClose(getWindow())) {
-			TextureManager.processLoadQueue();
-			processRunQueue();
-			
-			glClear(GL_COLOR_BUFFER_BIT);
+		try {
+			while (!glfwWindowShouldClose(getWindow())) {
+				TextureManager.processLoadQueue();
+				processRunQueue();
+				
+				glClear(GL_COLOR_BUFFER_BIT);
 
-			doRender();
-
-			glfwSwapBuffers(getWindow());
-			glfwPollEvents();
-			
-			frame = (-lastFrame + (lastFrame = glfwGetTime())) * 1000;
-		}
-		
-	}
-
-	private void doRender() {
-		synchronized (GraphicsInterface.getLayers()) {
-			for (Layer l : GraphicsInterface.getLayers()) {
-				l.render();
+				render();
+				drawFps();
+	
+				glfwSwapBuffers(getWindow());
+				glfwPollEvents();
+				
+				frameLength = (-lastFrame + (lastFrame = glfwGetTime())) * 1000;
+				
+				checkOpenGLErrors();
 			}
+		} catch (OpenGLException e) {
+			ExecutionReport.reportCriticalError(e, null,
+					"OpenGL error detected: %s",
+					getOpenGLErrorDescription(e.getErrorCode()));
+		} catch (Exception e) {
+			ExecutionReport.reportCriticalError(e, null,
+					"Unhandled error in master render loop: %s",
+					e.toString());
 		}
 		
-		drawFps();
 	}
 
 	private void drawFps() {
-		if (ModuleGraphicsInterface.SHOW_FPS.get() && FontManager.getDefaultFont() != null) {
-			FontManager.getDefaultFont().render(
-					String.valueOf((int) getFps()),
+		Font font = FontManager.getDefaultFont();
+		if (ModuleGraphicsInterface.SHOW_FPS.get() && font != null) {
+			char[] text = String.valueOf((int) getFps()).toCharArray();
+			int length = font.getLength(text, false);
+			fillRectangle(
 					0,
-					getWindowHeight() - FontManager.getDefaultFont().getHeight(),
+					getWindowHeight() - font.getHeight(),
+					length,
+					font.getHeight(),
+					Color.WHITE);
+			font.render(
+					text,
+					0,
+					getWindowHeight() - font.getHeight(),
 					false,
 					FontStyle.PLAIN,
 					Color.BLACK);
@@ -188,6 +201,8 @@ public class RenderThread implements Runnable {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+		
+		checkOpenGLErrors();
 		handleWindowResize(getWindow(), getWindowWidth(), getWindowHeight());
 	}
 	

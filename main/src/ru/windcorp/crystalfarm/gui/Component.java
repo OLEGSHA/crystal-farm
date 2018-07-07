@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.lwjgl.glfw.GLFW;
 
+import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.gui.listener.ComponentFocusListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentHierarchyListener;
 import ru.windcorp.crystalfarm.gui.listener.ComponentInputListener;
@@ -35,6 +36,7 @@ import ru.windcorp.crystalfarm.input.Input;
 import ru.windcorp.crystalfarm.input.KeyInput;
 import ru.windcorp.tge2.util.IndentedStringBuilder;
 import ru.windcorp.tge2.util.Nameable;
+import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
 public class Component extends Nameable {
 
@@ -58,6 +60,8 @@ public class Component extends Nameable {
 	private boolean isFocused = false;
 	
 	private boolean isHovered = false;
+	
+	private long lastFrame = -1;
 
 	public Component(String name) {
 		super(name);
@@ -208,15 +212,22 @@ public class Component extends Nameable {
 	}
 	
 	protected synchronized void layoutSelf() {
-		if (getLayout() != null) {
-			getLayout().layout(this);
+		try {
+			if (getLayout() != null) {
+				getLayout().layout(this);
+			}
+			
+			getChildren().forEach(child -> {
+				child.layoutSelf();
+			});
+			
+			valid = true;
+		} catch (Exception e) {
+			ExecutionReport.reportCriticalError(e, null,
+					"Could not layout component %s with layout %s",
+					this,
+					String.valueOf(getLayout()));
 		}
-		
-		getChildren().forEach(child -> {
-			child.layoutSelf();
-		});
-		
-		valid = true;
 	}
 	
 	public synchronized Size getPreferredSize() {
@@ -225,7 +236,14 @@ public class Component extends Nameable {
 		}
 		
 		if (getLayout() != null) {
-			return getLayout().calculatePreferredSize(this);
+			try {
+				return getLayout().calculatePreferredSize(this);
+			} catch (Exception e) {
+				ExecutionReport.reportCriticalError(e, null,
+						"Could not calculate preferred size for component %s with layout %s",
+						this,
+						String.valueOf(getLayout()));
+			}
 		}
 		
 		return new Size(0, 0);
@@ -476,7 +494,15 @@ public class Component extends Nameable {
 		synchronized (getInputListeners()) {
 			for (ComponentInputListener<?> listener : getInputListeners()) {
 				if (listener.getInputClass().isInstance(input)) {
-					((ComponentInputListener<Input>) listener).onInput(this, input);
+					try {
+						((ComponentInputListener<Input>) listener).onInput(this, input);
+					} catch (Exception e) {
+						ExecutionReport.reportCriticalError(e, null,
+								"Component input listener %s of component %s has thrown an exception while handling input %s",
+								listener.toString(),
+								this,
+								input.toString());
+					}
 					if (input.isConsumed()) return false;
 				}
 			}
@@ -487,60 +513,67 @@ public class Component extends Nameable {
 	}
 	
 	public boolean onInput(Input input) {
-		switch (input.getTarget()) {
-		
-		case FOCUSED:
-			Component c = findFocused();
+		try {
+			switch (input.getTarget()) {
 			
-			if (c == null) {
-				return false;
-			}
-			
-			if (attemptFocusTransfer(input, c)) {
-				return false;
-			}
-			
-			while (c != null && c.dispatchInput(input)) {
-				c = c.getParent();
-			}
-			
-			break;
-			
-		case HOVERED:
-			
-			synchronized (getChildren()) {
-				for (Component child : getChildren()) {
-					if (child.contains(input.getCursorX(), input.getCursorY())) {
-						
-						child.setHovered(true);
-						
-						if (!input.isConsumed()) {
-							child.onInput(input);
+			case FOCUSED:
+				Component c = findFocused();
+				
+				if (c == null) {
+					return false;
+				}
+				
+				if (attemptFocusTransfer(input, c)) {
+					return false;
+				}
+				
+				while (c != null && c.dispatchInput(input)) {
+					c = c.getParent();
+				}
+				
+				break;
+				
+			case HOVERED:
+				
+				synchronized (getChildren()) {
+					for (Component child : getChildren()) {
+						if (child.contains(input.getCursorX(), input.getCursorY())) {
+							
+							child.setHovered(true);
+							
+							if (!input.isConsumed()) {
+								child.onInput(input);
+							}
+						} else {
+							child.setHovered(false);
 						}
-					} else {
-						child.setHovered(false);
 					}
 				}
-			}
-
-			if (!input.isConsumed()) dispatchInput(input);
-			
-			break;
-			
-		case ALL:
-		default:
-			synchronized (getChildren()) {
-				for (Component child : getChildren()) {
-					if (!child.onInput(input)) {
-						return false;
+	
+				if (!input.isConsumed()) dispatchInput(input);
+				
+				break;
+				
+			case ALL:
+			default:
+				synchronized (getChildren()) {
+					for (Component child : getChildren()) {
+						if (!child.onInput(input)) {
+							return false;
+						}
 					}
 				}
+	
+				if (!input.isConsumed()) dispatchInput(input);
+				
+				break;
+				
 			}
-
-			if (!input.isConsumed()) dispatchInput(input);
-			
-			break;
-			
+		} catch (Exception e) {
+			ExecutionReport.reportCriticalError(e, null,
+					"Component %s has thrown an exception while handling input %s",
+					this,
+					input.toString());
 		}
 
 		return input.isConsumed();
@@ -571,7 +604,7 @@ public class Component extends Nameable {
 				y >= getY() && y < getY() + getHeight();
 	}
 
-	protected synchronized void render() {
+	protected synchronized final void render() {
 		if (width == 0 || height == 0) {
 			return;
 		}
@@ -580,12 +613,33 @@ public class Component extends Nameable {
 			validate();
 		}
 		
-		renderSelf();
+		try {
+			renderSelf();
+		} catch (Exception e) {
+			ExecutionReport.reportCriticalError(e, null,
+					"Could not render component %s (pre-children)",
+					this);
+		}
+		
 		renderChildren();
+		
+		try {
+			postRenderSelf();
+		} catch (Exception e) {
+			ExecutionReport.reportCriticalError(e, null,
+					"Could not render component %s (post-children)",
+					this);
+		}
+		
+		lastFrame = GraphicsInterface.getFrame();
 	}
 	
 	protected void renderSelf() {
-		// Do nothing - override expected
+		// To be overridden
+	}
+	
+	protected void postRenderSelf() {
+		// To be overridden
 	}
 	
 	protected void renderChildren() {
@@ -596,6 +650,8 @@ public class Component extends Nameable {
 		sb.append(getClass().getSimpleName());
 		sb.append(" ");
 		sb.append(getName());
+		sb.append(" ");
+		sb.append(GraphicsInterface.dumpIsRendered(lastFrame));
 		
 		Map<String, String> chars = new HashMap<>();
 		getDumpCharacteristics(chars);

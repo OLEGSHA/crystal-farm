@@ -17,10 +17,13 @@
  */
 package ru.windcorp.crystalfarm.debug;
 
-import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFW;
+import static org.lwjgl.glfw.GLFW.*;
 
-import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
+import static ru.windcorp.crystalfarm.audio.AudioInterface.*;
+import static ru.windcorp.crystalfarm.graphics.GraphicsInterface.*;
+
+import org.lwjgl.Version;
+
 import ru.windcorp.tge2.util.debug.er.ExecutionReport.DebugValueSection;
 
 public class LWJGLValueSection extends DebugValueSection {
@@ -35,6 +38,8 @@ public class LWJGLValueSection extends DebugValueSection {
 				"LWJGL version",
 				"Graphics ready",
 				"OpenGL version",
+				"Last OpenGL error code",
+				"Audio ready",
 				"GLFW version"
 		};
 	}
@@ -43,50 +48,52 @@ public class LWJGLValueSection extends DebugValueSection {
 	public Object[] getValues() {
 		return new String[] {
 				Version.getVersion(),
-				String.valueOf(GraphicsInterface.isGraphicsReady()),
+				String.valueOf(isGraphicsReady()),
 				getHighestGLVersion(),
-				GLFW.glfwGetVersionString()
+				isGraphicsReady() ? getOpenGLErrorDescription(getLastError()) : "N/A",
+				String.valueOf(isAudioReady()),
+				glfwGetVersionString()
 		};
 	}
 
 	private String getHighestGLVersion() {
-		if (GraphicsInterface.getGlCapabilities() == null) {
+		if (getGlCapabilities() == null) {
 			return "Context not created";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL46) {
+		} else if (getGlCapabilities().OpenGL46) {
 			return "4.6";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL45) {
+		} else if (getGlCapabilities().OpenGL45) {
 			return "4.5";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL44) {
+		} else if (getGlCapabilities().OpenGL44) {
 			return "4.4";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL43) {
+		} else if (getGlCapabilities().OpenGL43) {
 			return "4.3";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL42) {
+		} else if (getGlCapabilities().OpenGL42) {
 			return "4.2";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL41) {
+		} else if (getGlCapabilities().OpenGL41) {
 			return "4.1";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL40) {
+		} else if (getGlCapabilities().OpenGL40) {
 			return "4.0";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL33) {
+		} else if (getGlCapabilities().OpenGL33) {
 			return "3.3";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL32) {
+		} else if (getGlCapabilities().OpenGL32) {
 			return "3.2";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL31) {
+		} else if (getGlCapabilities().OpenGL31) {
 			return "3.1";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL30) {
+		} else if (getGlCapabilities().OpenGL30) {
 			return "3.0";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL21) {
+		} else if (getGlCapabilities().OpenGL21) {
 			return "2.1";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL20) {
+		} else if (getGlCapabilities().OpenGL20) {
 			return "2.0";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL15) {
+		} else if (getGlCapabilities().OpenGL15) {
 			return "1.5";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL14) {
+		} else if (getGlCapabilities().OpenGL14) {
 			return "1.4";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL13) {
+		} else if (getGlCapabilities().OpenGL13) {
 			return "1.3";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL12) {
+		} else if (getGlCapabilities().OpenGL12) {
 			return "1.2";
-		} else if (GraphicsInterface.getGlCapabilities().OpenGL11) {
+		} else if (getGlCapabilities().OpenGL11) {
 			return "1.1";
 		} else {
 			return "1.0";
