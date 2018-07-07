@@ -22,17 +22,21 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import ru.windcorp.tge2.util.Nameable;
+import ru.windcorp.crystalfarm.struct.mod.Mod;
+import ru.windcorp.crystalfarm.struct.mod.ModNameable;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
-public class TileRegistry<T extends Tile> extends Nameable {
-	
-	public TileRegistry(String name) {
-		super(name);
-	}
+public class TileRegistry<T extends Tile> extends ModNameable {
 
 	private final Map<String, T> tileMap = Collections.synchronizedMap(new HashMap<>());
 	private T fallbackTile = null;
+	
+	private final Class<T> tileClass;
+	
+	public TileRegistry(Mod mod, String name, Class<T> tileClass) {
+		super(mod, name);
+		this.tileClass = tileClass;
+	}
 	
 	protected Map<String, T> getTileMap() {
 		return tileMap;
@@ -91,6 +95,10 @@ public class TileRegistry<T extends Tile> extends Nameable {
 	
 	public void setFallbackTile(T fallbackTile) {
 		this.fallbackTile = fallbackTile;
+	}
+
+	public Class<T> getTileClass() {
+		return tileClass;
 	}
 
 }

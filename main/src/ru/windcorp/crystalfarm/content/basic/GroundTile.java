@@ -15,52 +15,46 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic;
+package ru.windcorp.crystalfarm.content.basic;
 
+import ru.windcorp.crystalfarm.logic.Collideable;
+import ru.windcorp.crystalfarm.logic.FullGridTile;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.translation.TString;
 
-public abstract class GridTile extends Tile {
+public abstract class GroundTile extends FullGridTile implements Collideable {
 	
-	private int x, y;
+	private boolean canCollide = false;
 
-	public GridTile(Mod mod, String id, TString name) {
-		super(mod, id, name);
-	}
-	
-	synchronized void adopt(GridTileLevel<?> level, int x, int y) {
-		setLevel(level);
-		this.x = x;
-		this.y = y;
-	}
-	
-	@Override
-	public GridTileLevel<?> getLevel() {
-		return (GridTileLevel<?>) super.getLevel();
+	public GroundTile(Mod mod, String id, TString name, int... textureData) {
+		super(mod, id, name, textureData);
 	}
 
-	public synchronized int getX() {
-		return x;
+	@Override
+	public boolean canCollide() {
+		return canCollide;
 	}
-
-	public synchronized int getY() {
-		return y;
+	
+	public void setCanCollide(boolean canCollide) {
+		if (canCollide == this.canCollide) {
+			return;
+		}
+		
+		this.canCollide = canCollide;
+		
+		GroundLevel level = getLevel();
+		if (level != null) {
+			if (canCollide) {
+				level.getCollideables().add(this);
+			} else {
+				level.getCollideables().remove(null);
+			}
+		}
 	}
 	
 	@Override
-	protected GridTile clone() {
-		GridTile clone = (GridTile) super.clone();
-		return clone;
-	}
-	
-	@Override
-	public double getViewX() {
-		return (getX() - getSize()/2)*GameManager.TEXTURE_SIZE;
-	}
-	
-	@Override
-	public double getViewY() {
-		return (getY() - getSize()/2)*GameManager.TEXTURE_SIZE;
+	public GroundLevel getLevel() {
+		return (GroundLevel) super.getLevel();
 	}
 
 }

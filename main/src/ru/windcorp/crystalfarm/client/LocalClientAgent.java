@@ -17,13 +17,17 @@
  */
 package ru.windcorp.crystalfarm.client;
 
+import java.lang.ref.WeakReference;
+
 import ru.windcorp.crystalfarm.logic.GameManager;
+import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.server.Agent;
 import ru.windcorp.crystalfarm.logic.server.Server;
 
 public class LocalClientAgent extends Agent {
 	
 	private final Server server;
+	private WeakReference<LocalProxy> proxy;
 
 	public LocalClientAgent(Server server) {
 		this.server = server;
@@ -34,10 +38,33 @@ public class LocalClientAgent extends Agent {
 	}
 	
 	@Override
+	public void setIsland(Island island) {
+		super.setIsland(island);
+		
+		Proxy proxy = getProxy();
+		if (proxy != null) {
+			proxy.setIsland(island);
+		}
+	}
+	
+	@Override
 	public void onServerShutdown() {
 		if (GameManager.getLocalClient() != null) {
 			GameManager.shutdownClient();
 		}
+	}
+
+	public LocalProxy getProxy() {
+		if (proxy == null) {
+			return null;
+		}
+		
+		return proxy.get();
+	}
+
+	public void setProxy(LocalProxy proxy) {
+		this.proxy = new WeakReference<LocalProxy>(proxy);
+		if (getIsland() != null) proxy.setIsland(getIsland());
 	}
 
 }

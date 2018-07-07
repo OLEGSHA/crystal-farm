@@ -70,5 +70,15 @@ public abstract class FullGridTile extends Tile {
 		clone.texture = clone.texture.clone();
 		return clone;
 	}
+	
+	@Override
+	public double getViewX() {
+		return (getX() - getSize()/2)*GameManager.TEXTURE_SIZE;
+	}
+	
+	@Override
+	public double getViewY() {
+		return (getY() - getSize()/2)*GameManager.TEXTURE_SIZE;
+	}
 
 }

@@ -32,7 +32,7 @@ import ru.windcorp.tge2.util.stream.CountingDataOutput;
 
 public abstract class TileLevel<T extends Tile> extends Level {
 	
-	private final TileRegistry<T> tileRegistry = new TileRegistry<>(getName());
+	private final TileRegistry<T> tileRegistry;
 	private final Class<T> clazz;
 	
 	private final Collection<Tile> tickingTiles = new CopyOnWriteArrayList<>();
@@ -41,10 +41,15 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	public TileLevel(Mod mod, String name, Class<T> clazz) {
 		super(mod, name);
 		this.clazz = clazz;
+		this.tileRegistry = TileRegistries.getRegistry(this);
 	}
 	
 	public TileRegistry<T> getTileRegistry() {
 		return tileRegistry;
+	}
+	
+	public Class<T> getTileClass() {
+		return clazz;
 	}
 	
 	@Override

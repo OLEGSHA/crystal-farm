@@ -15,36 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.client;
+package ru.windcorp.crystalfarm.logic;
 
-import ru.windcorp.crystalfarm.logic.Island;
-import ru.windcorp.crystalfarm.logic.action.Action;
+public interface ViewTarget {
 
-public class LocalProxy extends Proxy {
+	public double getViewX();
+	public double getViewY();
 	
-	private LocalClientAgent agent;
-
-	public LocalProxy(LocalClientAgent agent) {
-		this.agent = agent;
-		agent.setProxy(this);
-	}
-
-	@Override
-	public <T> void sendAction(Action<T> action, T param) {
-		runLocally(getAgent(), action, param);
-	}
-	
-	@Override
-	public Island getIsland() {
-		return getAgent().getIsland();
-	}
-
-	public LocalClientAgent getAgent() {
-		return agent;
-	}
-
-	public void setAgent(LocalClientAgent agent) {
-		this.agent = agent;
-	}
-
 }

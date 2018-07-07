@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
+import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.action.Action;
 import ru.windcorp.crystalfarm.logic.server.Agent;
@@ -34,15 +35,13 @@ import ru.windcorp.tge2.util.exceptions.SyntaxException;
 public abstract class Proxy {
 	
 	private final View view = new View(0, 0, 1);
-	private final Island island;
+	private Island island;
 	
 	private PipedInputStream buffer;
 	private final DataInput loopbackInput;
 	private final DataOutput loopbackOutput;
 	
-	public Proxy(Island island) {
-		this.island = island;
-		
+	public Proxy() {
 		this.buffer = new PipedInputStream();
 		this.loopbackInput = new DataInputStream(this.buffer);
 		try {
@@ -58,6 +57,12 @@ public abstract class Proxy {
 
 	public Island getIsland() {
 		return island;
+	}
+	
+	public void setIsland(Island island) {
+		this.island = island;
+		getView().setIslandSize(getIsland().getSize() * GameManager.TEXTURE_SIZE);
+		getView().update();
 	}
 
 	public abstract <T> void sendAction(Action<T> action, T param);

@@ -22,6 +22,10 @@ public interface Collideable {
 	double getMinX();
 	double getMinY();
 	
+	default boolean canCollide() {
+		return true;
+	}
+	
 	default double getMaxX() {
 		return getMinX() + getWidth();
 	}

@@ -34,7 +34,7 @@ import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
-public abstract class Tile extends Updateable {
+public abstract class Tile extends Updateable implements ViewTarget {
 	
 	private static final Color COLLISION_BOUNDS_FILL_COLOR = new Color(0xFFFFFF77);
 	
@@ -71,7 +71,7 @@ public abstract class Tile extends Updateable {
 			level.getTickableTiles().add(this);
 		}
 		
-		if (this instanceof Collideable) {
+		if (this instanceof Collideable && ((Collideable) this).canCollide()) {
 			level.getCollideables().add((Collideable) this);
 		}
 	}
@@ -171,6 +171,10 @@ public abstract class Tile extends Updateable {
 	
 	protected static ComplexTexture getTextureForTile(Tile tile, int... textureData) {
 		return ComplexTexture.get("tile/" + tile.getMod().getName() + "/" + tile.getRawId(), TEXTURE_SIZE, textureData);
+	}
+	
+	public double getSize() {
+		return 1;
 	}
 
 }

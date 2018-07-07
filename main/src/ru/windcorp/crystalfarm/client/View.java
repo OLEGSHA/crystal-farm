@@ -18,16 +18,21 @@
 package ru.windcorp.crystalfarm.client;
 
 import static org.lwjgl.opengl.GL11.*;
+import static java.lang.Math.*;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
+import ru.windcorp.crystalfarm.logic.ViewTarget;
 
 public class View {
 	
-	private int x, y;
-	
+	private double scale;
+
+	private double x, y;
 	private int minX, maxX, minY, maxY;
 	
-	private double scale;
+	private int islandSize;
+	
+	private ViewTarget target;
 	
 	public View(int x, int y, double scale) {
 		this.x = x;
@@ -38,23 +43,52 @@ public class View {
 	public void move(int xMod, int yMod) {
 		this.x += xMod;
 		this.y += yMod;
+		update();
 	}
-	
+
 	public void zoom(double factor) {
 		this.scale *= factor;
+		update();
 	}
 	
+	public void update() {
+		this.x = max(
+				(int) ceil(GraphicsInterface.getWindowWidth()/2/scale),
+				min(
+						getIslandSize() - (int) floor(GraphicsInterface.getWindowWidth()/2/scale),
+						this.x));
+		
+		this.y = max(
+				(int) ceil(GraphicsInterface.getWindowHeight()/2/scale),
+				min(
+						getIslandSize() - (int) floor(GraphicsInterface.getWindowHeight()/2/scale),
+						this.y));
+	}
+	
+	public int getIslandSize() {
+		return islandSize;
+	}
+
+	public void setIslandSize(int islandSize) {
+		this.islandSize = islandSize;
+	}
+
 	public void pushMatrix() {
+		if (getTarget() != null) {
+			x = getTarget().getViewX();
+			y = getTarget().getViewY();
+		}
+		
 		glPushMatrix();
 		glMatrixMode(GL_MODELVIEW);
 		glTranslated(GraphicsInterface.getWindowWidth()/2, GraphicsInterface.getWindowHeight()/2, 0);
 		if (!ModuleClient.DEBUG_OPTIMIZED_RENDER.get()) glScaled(scale, scale, 0);
 		glTranslated(-x, -y, 0);
 		
-		minX = (int) Math.floor(x - GraphicsInterface.getWindowWidth()/2/scale);
-		maxX = (int) Math.ceil(x + GraphicsInterface.getWindowWidth()/2/scale);
-		minY = (int) Math.floor(y - GraphicsInterface.getWindowHeight()/2/scale);
-		maxY = (int) Math.ceil(y + GraphicsInterface.getWindowHeight()/2/scale);
+		minX = (int) floor(x - GraphicsInterface.getWindowWidth()/2/scale);
+		maxX = (int) ceil(x + GraphicsInterface.getWindowWidth()/2/scale);
+		minY = (int) floor(y - GraphicsInterface.getWindowHeight()/2/scale);
+		maxY = (int) ceil(y + GraphicsInterface.getWindowHeight()/2/scale);
 		
 		GraphicsInterface.checkOpenGLErrors();
 	}
@@ -87,6 +121,14 @@ public class View {
 
 	public int getMaxY() {
 		return maxY;
+	}
+
+	public ViewTarget getTarget() {
+		return target;
+	}
+
+	public void setTarget(ViewTarget target) {
+		this.target = target;
 	}
 
 }

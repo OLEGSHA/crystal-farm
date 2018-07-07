@@ -135,9 +135,9 @@ public class DynamicTileLevel<T extends DynamicTile> extends TileLevel<T> {
 					double y = tile.getY();
 					
 					if (
-							(x + tile.getRenderSize())	* TEXTURE_SIZE < view.getMinX() ||
+							(x + tile.getSize())	* TEXTURE_SIZE < view.getMinX() ||
 							 x							* TEXTURE_SIZE > view.getMaxX() ||
-							(y + tile.getRenderSize())	* TEXTURE_SIZE < view.getMinY() ||
+							(y + tile.getSize())	* TEXTURE_SIZE < view.getMinY() ||
 							 y							* TEXTURE_SIZE > view.getMaxY()
 							) {
 						continue;

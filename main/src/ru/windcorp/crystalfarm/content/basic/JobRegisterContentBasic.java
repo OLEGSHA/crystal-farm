@@ -17,9 +17,14 @@
  */
 package ru.windcorp.crystalfarm.content.basic;
 
+import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.content.basic.test.*;
 import ru.windcorp.crystalfarm.logic.BiomeRegistry;
+import ru.windcorp.crystalfarm.logic.DynamicTile;
+import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.logic.IslandFactory;
+import ru.windcorp.crystalfarm.logic.TileRegistries;
+import ru.windcorp.crystalfarm.logic.TileRegistry;
 import ru.windcorp.crystalfarm.logic.action.ActionRegistry;
 import ru.windcorp.crystalfarm.struct.modules.Module;
 import ru.windcorp.crystalfarm.struct.modules.ModuleJob;
@@ -32,6 +37,13 @@ public class JobRegisterContentBasic extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
+		//IslandFactory.registerIslandLevelProvider(new BasicLevelProvider());
+		TileRegistry<GroundTile> groundLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "GroundLevel", GroundTile.class);
+		TileRegistries.register(groundLevelRegistry);
+		
+		/*
+		 * Test
+		 */
 		ActionRegistry.IN_GAME.register(
 				new PauseAction(),
 				new UnpauseAction(),
@@ -52,6 +64,18 @@ public class JobRegisterContentBasic extends ModuleJob {
 				new TestCameraZoomControl("In",    2, "PRESS EQUAL"),
 				new TestCameraZoomControl("Out", 0.5, "PRESS MINUS")
 				);
+		
+		TileRegistry<TestTile> testLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "TestLevel", TestTile.class);
+		testLevelRegistry.register(new TestTile());
+		TileRegistries.register(testLevelRegistry);
+		
+		TileRegistry<DynamicTile> testDynLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "TestDynLevel", DynamicTile.class);
+		testDynLevelRegistry.register(new TestCharTile());
+		TileRegistries.register(testDynLevelRegistry);
+		
+		TileRegistry<GridTile> treeLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "TreeLevel", GridTile.class);
+		treeLevelRegistry.register(new TestTreeTile());
+		TileRegistries.register(treeLevelRegistry);
 		
 		IslandFactory.registerIslandLevelProvider(new TestLevelProvider());
 		BiomeRegistry.register(new TestBiome());

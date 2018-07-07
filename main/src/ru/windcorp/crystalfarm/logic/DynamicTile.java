@@ -95,8 +95,14 @@ public abstract class DynamicTile extends Tile {
 		return (DynamicTile) super.clone();
 	}
 	
-	public double getRenderSize() {
-		return 1;
+	@Override
+	public double getViewX() {
+		return (getX() - getSize()/2)*GameManager.TEXTURE_SIZE;
+	}
+	
+	@Override
+	public double getViewY() {
+		return (getY() - getSize()/2)*GameManager.TEXTURE_SIZE;
 	}
 
 }
