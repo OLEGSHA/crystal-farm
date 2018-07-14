@@ -1,6 +1,10 @@
 # Welcome message
 welcome = I can now speak English just as they speak it in the US!
 
+# Tiles
+	# Entities
+		tiles.entity.player.name = Player
+
 # Menus
 	# Generic
 		menu.generic.close = Done

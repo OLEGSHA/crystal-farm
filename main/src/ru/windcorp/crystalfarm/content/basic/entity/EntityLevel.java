@@ -28,4 +28,10 @@ public class EntityLevel extends DynamicTileLevel<EntityTile> {
 		super(InbuiltMod.INST, "EntityLevel", EntityTile.class, ENTITY_LEVEL_SIZE);
 	}
 
+	public void spawnPlayer(PlayerEntity entity) {
+		addTile(entity);
+		
+		entity.setXY(0, 0);
+	}
+
 }

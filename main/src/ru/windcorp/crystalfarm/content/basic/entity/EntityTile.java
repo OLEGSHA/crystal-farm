@@ -17,6 +17,10 @@
  */
 package ru.windcorp.crystalfarm.content.basic.entity;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.DynamicCollideable;
@@ -26,9 +30,12 @@ import ru.windcorp.crystalfarm.logic.Level;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.translation.TString;
+import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public abstract class EntityTile extends DynamicTile implements DynamicCollideable {
 	
+	public static final int CHANGE_BIT_VELOCITY = 1;
+
 	private ComplexTexture texture;
 	
 	private double velocityX = 0, velocityY = 0;
@@ -72,6 +79,11 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	
 	@Override
 	public synchronized void tick(World world, Island island, Level level, long length, long time) {
+		move(
+				getX() + getVelocityX() * length,
+				getY() + getVelocityY() * length
+				);
+		
 		setVelocityX(
 				getVelocityX() - absMin(
 						getVelocityX(),
@@ -84,11 +96,6 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 						getVelocityY(),
 						length * Math.copySign(getVelocityY(), getDeceleration())
 						)
-				);
-		
-		move(
-				getX() + getVelocityX() * length,
-				getY() + getVelocityY() * length
 				);
 	}
 
@@ -104,6 +111,8 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	protected EntityTile clone() {
 		EntityTile clone = (EntityTile) super.clone();
 		clone.texture = clone.texture.clone();
+		clone.velocityX = 0;
+		clone.velocityY = 0;
 		return clone;
 	}
 	
@@ -133,6 +142,7 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 
 	public synchronized void setVelocityX(double velocityX) {
 		this.velocityX = velocityX;
+		setChangeBit(CHANGE_BIT_VELOCITY);
 	}
 
 	public synchronized double getVelocityY() {
@@ -141,6 +151,27 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 
 	public synchronized void setVelocityY(double velocityY) {
 		this.velocityY = velocityY;
+		setChangeBit(CHANGE_BIT_VELOCITY);
+	}
+	
+	@Override
+	public void read(DataInput input, int change) throws IOException, SyntaxException {
+		super.read(input, change);
+		
+		if (getChangeBit(change, CHANGE_BIT_VELOCITY)) {
+			velocityX = input.readDouble();
+			velocityY = input.readDouble();
+		}
+	}
+	
+	@Override
+	public void write(DataOutput output, int change) throws IOException {
+		super.write(output, change);
+		
+		if (getChangeBit(change, CHANGE_BIT_VELOCITY)) {
+			output.writeDouble(velocityX);
+			output.writeDouble(velocityY);
+		}
 	}
 
 }

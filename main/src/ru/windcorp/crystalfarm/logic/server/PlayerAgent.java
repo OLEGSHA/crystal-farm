@@ -17,6 +17,18 @@
  */
 package ru.windcorp.crystalfarm.logic.server;
 
-public class PlayerAgent extends Agent {
+public abstract class PlayerAgent extends Agent {
+	
+	private PlayerProfile profile;
+
+	public PlayerProfile getProfile() {
+		return profile;
+	}
+
+	public void setProfile(PlayerProfile profile) {
+		this.profile = profile;
+	}
+	
+	public abstract String getLogin();
 
 }

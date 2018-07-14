@@ -21,10 +21,11 @@ import java.lang.ref.WeakReference;
 
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.Island;
-import ru.windcorp.crystalfarm.logic.server.Agent;
+import ru.windcorp.crystalfarm.logic.server.PlayerAgent;
+import ru.windcorp.crystalfarm.logic.server.PlayerProfile;
 import ru.windcorp.crystalfarm.logic.server.Server;
 
-public class LocalClientAgent extends Agent {
+public class LocalClientAgent extends PlayerAgent {
 	
 	private final Server server;
 	private WeakReference<LocalProxy> proxy;
@@ -65,6 +66,21 @@ public class LocalClientAgent extends Agent {
 	public void setProxy(LocalProxy proxy) {
 		this.proxy = new WeakReference<LocalProxy>(proxy);
 		if (getIsland() != null) proxy.setIsland(getIsland());
+	}
+
+	@Override
+	public String getLogin() {
+		return "Frozenfield";
+	}
+	
+	@Override
+	public void setProfile(PlayerProfile profile) {
+		super.setProfile(profile);
+		
+		Proxy proxy = getProxy();
+		if (proxy != null) {
+			proxy.getView().setTarget(profile.getEntity());
+		}
 	}
 
 }

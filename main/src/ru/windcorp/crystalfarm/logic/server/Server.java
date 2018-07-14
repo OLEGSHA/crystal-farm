@@ -108,9 +108,14 @@ public class Server {
 	
 	public void addAgent(Agent agent) {
 		agent.setServer(this);
-		// TODO: find island for new agent
+		
 		agent.setIsland(getWorld().getIslands().iterator().next());
 		getAgents().add(agent);
+		
+		if (agent instanceof PlayerAgent) {
+			PlayerAgent playerAgent = (PlayerAgent) agent;
+			playerAgent.setProfile(getWorld().getPlayerProfile(playerAgent.getLogin()));
+		}
 	}
 	
 	public void removeAgent(Agent agent) {

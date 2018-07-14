@@ -60,6 +60,9 @@ public class GameManager {
 			Log.info("Saving world");
 			World world = WorldFactory.createWorld(resource);
 			world.getMeta().setDisplayName("Test World");
+			
+			world.spawnPlayer(island, world.addPlayer("Frozenfield"));
+			
 			world.addIsland(island);
 			
 			world.save();

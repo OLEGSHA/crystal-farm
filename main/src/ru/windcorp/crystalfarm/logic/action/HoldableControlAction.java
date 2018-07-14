@@ -61,9 +61,9 @@ public abstract class HoldableControlAction extends ControlAction {
 		}
 	}
 
-	public abstract void onPressed(Agent agent, DataInput input);
+	public abstract void onPressed(Agent agent, DataInput input) throws IOException, SyntaxException;
 	
-	public abstract void onReleased(Agent agent, DataInput input);
+	public abstract void onReleased(Agent agent, DataInput input) throws IOException, SyntaxException;
 
 	@Override
 	public void write(Proxy proxy, KeyInput param, DataOutput output) throws IOException {

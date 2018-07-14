@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.content.basic;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.content.basic.entity.EntityTile;
+import ru.windcorp.crystalfarm.content.basic.entity.PlayerEntity;
 import ru.windcorp.crystalfarm.content.basic.floor.*;
 import ru.windcorp.crystalfarm.content.basic.ground.*;
 import ru.windcorp.crystalfarm.content.basic.object.*;
@@ -41,7 +42,6 @@ public class JobRegisterContentBasic extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
-		//IslandFactory.registerIslandLevelProvider(new BasicLevelProvider());
 		TileRegistry<GroundTile> groundLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "GroundLevel", GroundTile.class);
 		TileRegistries.register(groundLevelRegistry);
 		
@@ -51,8 +51,7 @@ public class JobRegisterContentBasic extends ModuleJob {
 		TileRegistry<ObjectTile> objectLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "ObjectLevel", ObjectTile.class);
 		TileRegistries.register(objectLevelRegistry);
 		
-		TileRegistry<EntityTile> entityLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "EntityLevel", EntityTile.class);
-		TileRegistries.register(entityLevelRegistry);
+		registerEntityLevel();
 		
 		/*
 		 * Test
@@ -62,17 +61,17 @@ public class JobRegisterContentBasic extends ModuleJob {
 				new UnpauseAction(),
 				new OpenPauseMenuAction(),
 				
-				new TestCharControl("Up",		"UP",		 0,		-0.003),
-				new TestCharControl("Down", 	"DOWN",		 0,		+0.003),
-				new TestCharControl("Left", 	"LEFT",		-0.003,		 0),
-				new TestCharControl("Right", 	"RIGHT",	+0.003,		 0),
+//				new TestCharControl("Up",		"UP",		 0,		-0.003),
+//				new TestCharControl("Down", 	"DOWN",		 0,		+0.003),
+//				new TestCharControl("Left", 	"LEFT",		-0.003,		 0),
+//				new TestCharControl("Right", 	"RIGHT",	+0.003,		 0),
 				
 				new TestBadaboomControl(),
 				
-				new TestCameraMoveControl("Up",		  0, -40, "PRESS W"),
-				new TestCameraMoveControl("Down",	  0, +40, "PRESS S"),
-				new TestCameraMoveControl("Left",	-40,   0, "PRESS A"),
-				new TestCameraMoveControl("Right",	+40,   0, "PRESS D"),
+				new TestCameraMoveControl("Up",		  0, -40, "PRESS UP"),
+				new TestCameraMoveControl("Down",	  0, +40, "PRESS DOWN"),
+				new TestCameraMoveControl("Left",	-40,   0, "PRESS LEFT"),
+				new TestCameraMoveControl("Right",	+40,   0, "PRESS RIGHT"),
 				
 				new TestCameraZoomControl("In",    1.25, "PRESS EQUAL"),
 				new TestCameraZoomControl("Out", 1/1.25, "PRESS MINUS")
@@ -92,6 +91,15 @@ public class JobRegisterContentBasic extends ModuleJob {
 		
 		IslandFactory.registerIslandLevelProvider(new TestLevelProvider());
 		BiomeRegistry.register(new TestBiome());
+
+		IslandFactory.registerIslandLevelProvider(new BasicLevelProvider());
+	}
+
+	private void registerEntityLevel() {
+		TileRegistry<EntityTile> reg = new TileRegistry<>(InbuiltMod.INST, "EntityLevel", EntityTile.class);
+		TileRegistries.register(reg);
+		
+		reg.register(new PlayerEntity());
 	}
 
 }

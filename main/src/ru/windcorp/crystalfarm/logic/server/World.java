@@ -27,7 +27,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import ru.windcorp.crystalfarm.content.basic.entity.EntityLevel;
+import ru.windcorp.crystalfarm.content.basic.entity.PlayerEntity;
 import ru.windcorp.crystalfarm.logic.Data;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.IslandFactory;
@@ -49,6 +52,7 @@ public class World {
 	private final WorldMeta meta = new WorldMeta();
 	private final Collection<Island> islands = Collections.synchronizedCollection(new ArrayList<>());
 	private final Map<String, Data> data = Collections.synchronizedMap(new HashMap<>());
+	private final Map<String, PlayerProfile> players = Collections.synchronizedMap(new HashMap<>());
 	
 	protected World(Resource resource) {
 		this.resource = resource;
@@ -91,6 +95,45 @@ public class World {
 		getIslands().add(island);
 	}
 	
+	public Map<String, PlayerProfile> getPlayerProfiles() {
+		return players;
+	}
+	
+	public Stream<PlayerEntity> getPlayers() {
+		return getPlayerProfiles().values().stream().map(profile -> profile.getEntity()).filter(entity -> entity != null);
+	}
+
+	public PlayerProfile getPlayerProfile(String login) {
+		return getPlayerProfiles().get(login);
+	}
+	
+	public PlayerEntity getPlayer(String login) {
+		PlayerProfile profile = getPlayerProfile(login);
+		
+		if (profile == null) {
+			return null;
+		}
+		
+		return profile.getEntity();
+	}
+	
+	public PlayerProfile addPlayer(String login) {
+		PlayerProfile profile = new PlayerProfile(login, this);
+		getPlayerProfiles().put(login, profile);
+		return profile;
+	}
+
+	public void spawnPlayer(Island island, PlayerProfile profile) {
+		if (profile.hasEntity()) {
+			return;
+		}
+		
+		PlayerEntity entity = new PlayerEntity();
+		profile.setEntity(entity);
+		
+		island.getLevel("Inbuilt:EntityLevel", EntityLevel.class).spawnPlayer(entity);
+	}
+	
 	public long getTime() {
 		return getMeta().getTime();
 	}
@@ -123,6 +166,19 @@ public class World {
 				if (read != length) {
 					throw new SyntaxException("Island Data " + name + " corrupted: expected length 0x" + Integer.toHexString(length) + ", got length 0x" + Integer.toHexString(read));
 				}
+			}
+		}
+		
+		amount = input.readInt();
+		if (amount < 0) {
+			throw new SyntaxException("Player amount is negative (0x" + Integer.toHexString(amount) + ")");
+		}
+		
+		synchronized (getPlayerProfiles()) {
+			for (int i = 0; i < amount; ++i) {
+				String login = input.readUTF();
+				PlayerProfile profile = addPlayer(login);
+				profile.read(input);
 			}
 		}
 		
@@ -195,6 +251,14 @@ public class World {
 				output.pushCounter();
 				data.writeAll(output);
 				output.writeInt((int) output.popCounter());
+			}
+		}
+		
+		synchronized (getPlayerProfiles()) {
+			output.writeInt(getPlayerProfiles().size());
+			
+			for (PlayerProfile profile : getPlayerProfiles().values()) {
+				profile.write(output);
 			}
 		}
 		
