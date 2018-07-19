@@ -19,35 +19,35 @@ package ru.windcorp.crystalfarm.logic;
 
 public interface Collideable {
 	
-	double getMinX();
-	double getMinY();
+	double getCollisionMinX();
+	double getCollisionMinY();
 	
 	default boolean canCollide() {
 		return true;
 	}
 	
-	default double getMaxX() {
-		return getMinX() + getWidth();
+	default double getCollisionMaxX() {
+		return getCollisionMinX() + getCollisionWidth();
 	}
 	
-	default double getMaxY() {
-		return getMinY() + getHeight();
+	default double getCollisionMaxY() {
+		return getCollisionMinY() + getCollisionHeight();
 	}
 	
-	default double getCenterX() {
-		return (getMinX() + getMaxX()) / 2;
+	default double getCollisionCenterX() {
+		return (getCollisionMinX() + getCollisionMaxX()) / 2;
 	}
 	
-	default double getCenterY() {
-		return (getMinY() + getMaxY()) / 2;
+	default double getCollisionCenterY() {
+		return (getCollisionMinY() + getCollisionMaxY()) / 2;
 	}
 	
-	default double getWidth() {
-		return getMaxX() - getMinX();
+	default double getCollisionWidth() {
+		return getCollisionMaxX() - getCollisionMinX();
 	}
 	
-	default double getHeight() {
-		return getMaxY() - getMinY();
+	default double getCollisionHeight() {
+		return getCollisionMaxY() - getCollisionMinY();
 	}
 	
 	default boolean collides(Collideable other) {
@@ -56,36 +56,14 @@ public interface Collideable {
 		}
 		
 		if (
-				getMinX() >= other.getMaxX() ||
-				getMinY() >= other.getMaxY() ||
-				getMaxX() <= other.getMinX() ||
-				getMaxY() <= other.getMinY()) {
+				getCollisionMinX() >= other.getCollisionMaxX() ||
+				getCollisionMinY() >= other.getCollisionMaxY() ||
+				getCollisionMaxX() <= other.getCollisionMinX() ||
+				getCollisionMaxY() <= other.getCollisionMinY()) {
 			return false;
 		}
 		
 		return true;
-	}
-	
-	default void pushOutside(DynamicCollideable other) {
-		if (collides(other)) {
-			double dX = other.getCenterX() - getCenterX();
-			double dY = other.getCenterY() - getCenterY();
-			double k = getHeight() / getWidth();
-			
-			if (dY > k*dX) {
-				if (dY > -k*dX) {
-					other.setXY(other.getMinX(), getMaxY());
-				} else {
-					other.setXY(getMinX() - other.getWidth(), other.getMinY());
-				}
-			} else {
-				if (dY > -k*dX) {
-					other.setXY(getMaxX(), other.getMinY());
-				} else {
-					other.setXY(other.getMinX(), getMinY() - other.getHeight());
-				}
-			}
-		}
 	}
 
 }

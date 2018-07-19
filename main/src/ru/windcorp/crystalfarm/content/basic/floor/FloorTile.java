@@ -44,8 +44,8 @@ public abstract class FloorTile extends GridTile {
 	}
 
 	@Override
-	protected void renderImpl(View view, int x, int y) {
-		getTexture().render(x, y);
+	protected void renderImpl(View view) {
+		getTexture().render(getTextureX(), getTextureY());
 	}
 	
 	@Override

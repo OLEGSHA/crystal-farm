@@ -17,9 +17,9 @@
  */
 package ru.windcorp.crystalfarm.graphics.texture;
 
-import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
+import ru.windcorp.crystalfarm.logic.Units;
 import ru.windcorp.crystalfarm.util.Direction;
 
 public class ComplexTexture extends TiledTexture {
@@ -32,12 +32,10 @@ public class ComplexTexture extends TiledTexture {
 	protected ComplexTexture(TexturePrimitive texture, int tileSize, int[] data) {
 		super(texture, tileSize);
 		
-		if ((data.length & 1) != 0) {
-			throw new IllegalArgumentException("Data for ComplexTexture " + texture.getName() + " has odd length");
-		}
-		
 		if (data == null || data.length == 0) {
 			this.data = STATIC_DATA;
+		} else if ((data.length & 1) != 0) {
+			throw new IllegalArgumentException("Data for ComplexTexture " + texture.getName() + " has odd length");
 		} else {
 			this.data = data;
 		}

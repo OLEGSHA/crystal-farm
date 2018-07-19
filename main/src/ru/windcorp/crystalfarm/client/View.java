@@ -21,6 +21,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static java.lang.Math.*;
 
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
+import ru.windcorp.crystalfarm.logic.Units;
 import ru.windcorp.crystalfarm.logic.ViewTarget;
 
 public class View {
@@ -59,15 +60,15 @@ public class View {
 		}
 		
 		this.x = max(
-				(int) ceil(GraphicsInterface.getWindowWidth()/2/scale),
+				(int) ceil(GraphicsInterface.getWindowWidth()/2/scale - Units.PX_PER_TILE/2),
 				min(
-						getIslandSize() - (int) floor(GraphicsInterface.getWindowWidth()/2/scale),
+						getIslandSize() - (int) floor(GraphicsInterface.getWindowWidth()/2/scale + Units.PX_PER_TILE/2),
 						this.x));
 		
 		this.y = max(
-				(int) ceil(GraphicsInterface.getWindowHeight()/2/scale),
+				(int) ceil(GraphicsInterface.getWindowHeight()/2/scale) - Units.PX_PER_TILE/2,
 				min(
-						getIslandSize() - (int) floor(GraphicsInterface.getWindowHeight()/2/scale),
+						getIslandSize() - (int) floor(GraphicsInterface.getWindowHeight()/2/scale + Units.PX_PER_TILE/2),
 						this.y));
 	}
 	

@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.logic.Units;
 import ru.windcorp.crystalfarm.logic.action.Action;
 import ru.windcorp.crystalfarm.logic.server.Agent;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
@@ -61,7 +61,7 @@ public abstract class Proxy {
 	
 	public void setIsland(Island island) {
 		this.island = island;
-		getView().setIslandSize(getIsland().getSize() * GameManager.TEXTURE_SIZE);
+		getView().setIslandSize(getIsland().getSize() * Units.PX_PER_TILE);
 		getView().update();
 	}
 

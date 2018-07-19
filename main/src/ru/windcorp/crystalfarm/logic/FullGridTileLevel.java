@@ -17,8 +17,6 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-import static ru.windcorp.crystalfarm.logic.GameManager.TEXTURE_SIZE;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -75,17 +73,17 @@ public class FullGridTileLevel<T extends FullGridTile> extends TileLevel<T> {
 	@Override
 	public void render(View view) {
 		synchronized (getTiles()) {
-			int minX = Math.max(0, view.getMinX()/TEXTURE_SIZE);
-			int minY = Math.max(0, view.getMinY()/TEXTURE_SIZE);
-			int maxX = Math.min(getSize(), (view.getMaxX()-1)/TEXTURE_SIZE+1);
-			int maxY = Math.min(getSize(), (view.getMaxY()-1)/TEXTURE_SIZE+1);
+			int minX = Math.max(0, view.getMinX()/Units.PX_PER_TILE);
+			int minY = Math.max(0, view.getMinY()/Units.PX_PER_TILE);
+			int maxX = Math.min(getSize(), (view.getMaxX()-1)/Units.PX_PER_TILE+2);
+			int maxY = Math.min(getSize(), (view.getMaxY()-1)/Units.PX_PER_TILE+2);
 			
 			renderLoop:
 			for (int x = minX; x < maxX; ++x) {
 				for (int y = minY; y < maxY; ++y) {
 					T tile = getTile(x, y);
 					try {
-						tile.render(view, x*TEXTURE_SIZE, y*TEXTURE_SIZE);
+						tile.render(view);
 					} catch (Exception e) {
 						failRender(e, tile);
 						break renderLoop;

@@ -20,8 +20,8 @@ package ru.windcorp.crystalfarm.logic;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 
 public abstract class GridTile extends Tile {
-	
-	private int x, y;
+
+	private int intX, intY;
 
 	public GridTile(Mod mod, String id) {
 		super(mod, id);
@@ -29,8 +29,10 @@ public abstract class GridTile extends Tile {
 	
 	synchronized void adopt(GridTileLevel<?> level, int x, int y) {
 		setLevel(level);
-		this.x = x;
-		this.y = y;
+		
+		super.setXY(x, y);
+		this.intX = x;
+		this.intY = y;
 	}
 	
 	@Override
@@ -38,28 +40,23 @@ public abstract class GridTile extends Tile {
 		return (GridTileLevel<?>) super.getLevel();
 	}
 
-	public synchronized int getX() {
-		return x;
+	public int getIntX() {
+		return intX;
 	}
 
-	public synchronized int getY() {
-		return y;
+	public int getIntY() {
+		return intY;
+	}
+	
+	@Override
+	protected synchronized void setXY(double x, double y) {
+		throw new UnsupportedOperationException("FullGridTile cannot be moved");
 	}
 	
 	@Override
 	protected GridTile clone() {
 		GridTile clone = (GridTile) super.clone();
 		return clone;
-	}
-	
-	@Override
-	public double getViewX() {
-		return (getX() - getSize()/2)*GameManager.TEXTURE_SIZE;
-	}
-	
-	@Override
-	public double getViewY() {
-		return (getY() - getSize()/2)*GameManager.TEXTURE_SIZE;
 	}
 
 }

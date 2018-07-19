@@ -17,8 +17,6 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-import static ru.windcorp.crystalfarm.logic.GameManager.TEXTURE_SIZE;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -26,7 +24,6 @@ import java.lang.ref.WeakReference;
 
 import ru.windcorp.crystalfarm.client.ModuleClient;
 import ru.windcorp.crystalfarm.client.View;
-import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
@@ -35,7 +32,7 @@ import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
-public abstract class Tile extends Updateable implements ViewTarget {
+public abstract class Tile extends Updateable implements ViewTarget, Collideable {
 	
 	private static final Color COLLISION_BOUNDS_FILL_COLOR = new Color(0xFFFFFF77);
 	
@@ -46,7 +43,10 @@ public abstract class Tile extends Updateable implements ViewTarget {
 	private WeakReference<TileLevel<?>> level = null;
 	private int nid;
 	
-	private boolean isTickable;
+	private double x, y;
+	
+	private boolean isTickable = false;
+	private boolean canCollide = false;
 
 	public Tile(Mod mod, String id) {
 		this.mod = mod;
@@ -59,12 +59,13 @@ public abstract class Tile extends Updateable implements ViewTarget {
 	
 	protected void setLevel(TileLevel<?> level) {
 		if (level == null) {
-			if (this instanceof Collideable) {
+			if (canCollide()) {
 				TileLevel<?> prevLevel = getLevel();
 				if (prevLevel != null) {
-					prevLevel.getCollideables().remove((Collideable) this);
+					prevLevel.getCollideables().remove(this);
 				}
 			}
+				
 			this.level = null;
 			return;
 		}
@@ -75,8 +76,8 @@ public abstract class Tile extends Updateable implements ViewTarget {
 			level.getTickableTiles().add(this);
 		}
 		
-		if (this instanceof Collideable && ((Collideable) this).canCollide()) {
-			level.getCollideables().add((Collideable) this);
+		if (this.canCollide()) {
+			level.getCollideables().add(this);
 		}
 	}
 	
@@ -165,8 +166,103 @@ public abstract class Tile extends Updateable implements ViewTarget {
 		this.isTickable = isTickable;
 	}
 	
+	@Override
+	public boolean canCollide() {
+		return canCollide;
+	}
+	
+	public void setCanCollide(boolean canCollide) {
+		if (canCollide == this.canCollide) {
+			return;
+		}
+		
+		this.canCollide = canCollide;
+		onUpdateCanCollide();
+	}
+	
+	protected void onUpdateCanCollide() {
+		TileLevel<?> level = getLevel();
+		if (level != null) {
+			if (canCollide()) {
+				level.getCollideables().add(this);
+			} else {
+				level.getCollideables().remove(null);
+			}
+		}
+	}
+	
+	public double getX() {
+		return x;
+	}
+	
+	public double getY() {
+		return y;
+	}
+	
+	protected synchronized void setXY(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
+	
+	@Override
+	public double getCollisionMinX() {
+		return getX() - getCollisionWidth() / 2;
+	}
+	
+	@Override
+	public double getCollisionMinY() {
+		return getY() - getCollisionHeight() / 2;
+	}
+	
+	@Override
+	public double getCollisionWidth() {
+		return getSize();
+	}
+	
+	@Override
+	public double getCollisionHeight() {
+		return getSize();
+	}
+	
+	@Override
+	public double getViewX() {
+		return getX() * Units.PX_PER_TILE;
+	}
+	
+	@Override
+	public double getViewY() {
+		return getY() * Units.PX_PER_TILE;
+	}
+	
+	protected double getTextureSize() {
+		return 1;
+	}
+	
+	protected int getTextureX() {
+		return (int) ((getX() - getTextureSize() / 2) * Units.PX_PER_TILE);
+	}
+	
+	protected int getTextureY() {
+		return (int) ((getY() - getTextureSize() / 2) * Units.PX_PER_TILE);
+	}
+	
+	public boolean isVisible(View view) {
+		double x = getTextureX();
+		double y = getTextureY();
+		
+		return
+				x + getTextureSize() * Units.PX_PER_TILE	>= view.getMinX() &&
+				x											<= view.getMaxX() &&
+				y + getTextureSize() * Units.PX_PER_TILE	>= view.getMinY() &&
+				y											<= view.getMaxY();
+	}
+	
 	public double getSize() {
 		return 1 * Units.METERS;
+	}
+	
+	public double getMass() {
+		return 80 * Units.KILOGRAMS;
 	}
 
 	@Override
@@ -184,28 +280,43 @@ public abstract class Tile extends Updateable implements ViewTarget {
 		// Do nothing
 	}
 	
-	public final void render(View view, int x, int y) {
-		if (this instanceof Collideable && ModuleClient.DRAW_COLLISION_BOUNDS.get()) {
-			Collideable c = (Collideable) this;
+	public final void render(View view) {
+		if (ModuleClient.DRAW_COLLISION_BOUNDS.get() && canCollide()) {
 			GraphicsInterface.fillRectangle(
-					(int) (c.getMinX()*TEXTURE_SIZE),
-					(int) (c.getMinY()*TEXTURE_SIZE),
-					(int) (c.getWidth()*TEXTURE_SIZE),
-					(int) (c.getHeight()*TEXTURE_SIZE),
+					(int) (getCollisionMinX()	* Units.PX_PER_TILE),
+					(int) (getCollisionMinY()	* Units.PX_PER_TILE),
+					(int) (getCollisionWidth()	* Units.PX_PER_TILE),
+					(int) (getCollisionHeight()	* Units.PX_PER_TILE),
 					COLLISION_BOUNDS_FILL_COLOR);
 		}
 		
-		renderImpl(view, x, y);
+		renderImpl(view);
+		
+		if (ModuleClient.DEBUG_OPTIMIZED_RENDER.get()) {
+			GraphicsInterface.fillRectangle(
+					(int) (getX()	* Units.PX_PER_TILE) - 1,
+					(int) (getY()	* Units.PX_PER_TILE) - 1,
+					2,
+					2,
+					Color.BLUE);
+			
+			GraphicsInterface.fillRectangle(
+					(int) (getViewX()	* Units.PX_PER_TILE) - 1,
+					(int) (getViewY()	* Units.PX_PER_TILE) - 1,
+					2,
+					2,
+					Color.BLACK);
+		}
 	}
 	
-	protected abstract void renderImpl(View view, int x, int y);
+	protected abstract void renderImpl(View view);
 	
 	public void tick(World world, Island island, Level level, long length, long time) {
 		// Do nothing
 	}
 	
 	protected static ComplexTexture getTextureForTile(Tile tile, int... textureData) {
-		return ComplexTexture.get(tile.getResourceId().replace('.', '/'), TEXTURE_SIZE, textureData);
+		return ComplexTexture.get(tile.getResourceId().replace('.', '/'), Units.PX_PER_TILE, textureData);
 	}
 
 }

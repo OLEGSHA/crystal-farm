@@ -17,8 +17,6 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-import static ru.windcorp.crystalfarm.logic.GameManager.TEXTURE_SIZE;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -84,7 +82,7 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 	}
 	
 	public void removeTile(T tile) {
-		removeTile(tile.getX(), tile.getY());
+		removeTile(tile.getIntX(), tile.getIntY());
 	}
 	
 	public void removeTile(int x, int y) {
@@ -109,21 +107,12 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 	public void render(View view) {
 		synchronized (getTiles()) {
 			for (T tile : getTiles()) {
-				
-				int x = tile.getX();
-				int y = tile.getY();
-				
-				if (
-						(x + tile.getSize())	* TEXTURE_SIZE < view.getMinX() ||
-						 x							* TEXTURE_SIZE > view.getMaxX() ||
-						(y + tile.getSize())	* TEXTURE_SIZE < view.getMinY() ||
-						 y							* TEXTURE_SIZE > view.getMaxY()
-						) {
+				if (!tile.isVisible(view)) {
 					continue;
 				}
 				
 				try {
-					tile.render(view, tile.getX()*TEXTURE_SIZE, tile.getY()*TEXTURE_SIZE);
+					tile.render(view);
 				} catch (Exception e) {
 					failRender(e, tile);
 					break;
@@ -153,8 +142,8 @@ public class GridTileLevel<T extends GridTile> extends TileLevel<T> {
 	protected void writeTiles(CountingDataOutput output) throws IOException {
 		synchronized (getTiles()) {
 			for (T tile : getTiles()) {
-				output.writeInt(tile.getX());
-				output.writeInt(tile.getY());
+				output.writeInt(tile.getIntX());
+				output.writeInt(tile.getIntY());
 				writeTile(output, tile);
 			}
 		}

@@ -38,7 +38,6 @@ public class GameManager {
 	private static Proxy localClient = null;
 	
 	public static final Random GENERIC_RANDOM = new Random();
-	public static final int TEXTURE_SIZE = 64;
 	
 	public static Server getLocalServer() {
 		return localServer;

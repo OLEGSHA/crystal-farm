@@ -24,7 +24,8 @@ import ru.windcorp.crystalfarm.struct.mod.Mod;
 public abstract class FullGridTile extends Tile {
 	
 	private ComplexTexture texture;
-	private int x, y;
+	
+	private int intX, intY;
 
 	public FullGridTile(Mod mod, String id, int... textureData) {
 		super(mod, id);
@@ -37,8 +38,10 @@ public abstract class FullGridTile extends Tile {
 	
 	synchronized void adopt(FullGridTileLevel<?> level, int x, int y) {
 		setLevel(level);
-		this.x = x;
-		this.y = y;
+		
+		super.setXY(x, y);
+		this.intX = x;
+		this.intY = y;
 	}
 	
 	@Override
@@ -46,12 +49,17 @@ public abstract class FullGridTile extends Tile {
 		return (FullGridTileLevel<?>) super.getLevel();
 	}
 
-	public synchronized int getX() {
-		return x;
+	public int getIntX() {
+		return intX;
 	}
 
-	public synchronized int getY() {
-		return y;
+	public int getIntY() {
+		return intY;
+	}
+	
+	@Override
+	protected synchronized void setXY(double x, double y) {
+		throw new UnsupportedOperationException("FullGridTile cannot be moved");
 	}
 
 	public ComplexTexture getTexture() {
@@ -63,8 +71,8 @@ public abstract class FullGridTile extends Tile {
 	}
 	
 	@Override
-	public void renderImpl(View view, int x, int y) {
-		getTexture().render(x, y);
+	public void renderImpl(View view) {
+		getTexture().render(getTextureX(), getTextureY());
 	}
 	
 	@Override
@@ -72,16 +80,6 @@ public abstract class FullGridTile extends Tile {
 		FullGridTile clone = (FullGridTile) super.clone();
 		clone.texture = clone.texture.clone();
 		return clone;
-	}
-	
-	@Override
-	public double getViewX() {
-		return (getX() - getSize()/2)*GameManager.TEXTURE_SIZE;
-	}
-	
-	@Override
-	public double getViewY() {
-		return (getY() - getSize()/2)*GameManager.TEXTURE_SIZE;
 	}
 
 }

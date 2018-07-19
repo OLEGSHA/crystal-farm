@@ -20,11 +20,11 @@ package ru.windcorp.crystalfarm.content.basic.test;
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
-import ru.windcorp.crystalfarm.logic.Collideable;
 import ru.windcorp.crystalfarm.logic.GridTile;
+import ru.windcorp.crystalfarm.logic.Units;
 import ru.windcorp.crystalfarm.translation.TString;
 
-public class TestTreeTile extends GridTile implements Collideable {
+public class TestTreeTile extends GridTile {
 	
 	private final ComplexTexture texture;
 
@@ -32,31 +32,17 @@ public class TestTreeTile extends GridTile implements Collideable {
 		super(InbuiltMod.INST, "testTreeTile");
 		this.texture = getTextureForTile(this);
 		setName(TString.wrap("Test Tree Tile Name"));
+		setCanCollide(true);
 	}
 
 	@Override
-	public void renderImpl(View view, int x, int y) {
-		texture.render(x, y);
-	}
-
-	@Override
-	public double getMinX() {
-		return getX() + 0.1;
-	}
-
-	@Override
-	public double getMinY() {
-		return getY() + 0.1;
+	public void renderImpl(View view) {
+		texture.render(getTextureX(), getTextureY());
 	}
 	
 	@Override
-	public double getWidth() {
-		return 0.8;
-	}
-	
-	@Override
-	public double getHeight() {
-		return 0.8;
+	public double getSize() {
+		return 0.8 * Units.METERS;
 	}
 
 }

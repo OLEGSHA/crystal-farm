@@ -22,9 +22,9 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
+import ru.windcorp.crystalfarm.logic.Units;
 import ru.windcorp.crystalfarm.logic.server.PlayerProfile;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;

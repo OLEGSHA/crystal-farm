@@ -17,8 +17,6 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-import static ru.windcorp.crystalfarm.logic.GameManager.TEXTURE_SIZE;
-
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
@@ -130,23 +128,12 @@ public class DynamicTileLevel<T extends DynamicTile> extends TileLevel<T> {
 			for (int i = 0; i < getTiles().length; ++i) {
 				T tile = getTileByDynId(i);
 				if (tile != null) {
-					
-					double x = tile.getX();
-					double y = tile.getY();
-					
-					if (
-							(x + tile.getSize())	* TEXTURE_SIZE < view.getMinX() ||
-							 x							* TEXTURE_SIZE > view.getMaxX() ||
-							(y + tile.getSize())	* TEXTURE_SIZE < view.getMinY() ||
-							 y							* TEXTURE_SIZE > view.getMaxY()
-							) {
+					if (!tile.isVisible(view)) {
 						continue;
 					}
 					
 					try {
-						tile.render(view,
-								(int) ((tile.getX())*TEXTURE_SIZE),
-								(int) ((tile.getY())*TEXTURE_SIZE));
+						tile.render(view);
 					} catch (Exception e) {
 						failRender(e, tile);
 						break;

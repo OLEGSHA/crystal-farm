@@ -19,11 +19,10 @@ package ru.windcorp.crystalfarm.content.basic.object;
 
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
-import ru.windcorp.crystalfarm.logic.Collideable;
 import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 
-public abstract class ObjectTile extends GridTile implements Collideable {
+public abstract class ObjectTile extends GridTile {
 	
 	private ComplexTexture texture;
 	
@@ -45,28 +44,8 @@ public abstract class ObjectTile extends GridTile implements Collideable {
 	}
 
 	@Override
-	protected void renderImpl(View view, int x, int y) {
-		getTexture().render(x, y);
-	}
-	
-	@Override
-	public double getMinX() {
-		return getX();
-	}
-	
-	@Override
-	public double getMaxX() {
-		return getY();
-	}
-	
-	@Override
-	public double getWidth() {
-		return 1;
-	}
-	
-	@Override
-	public double getHeight() {
-		return 1;
+	protected void renderImpl(View view) {
+		getTexture().render(getTextureX(), getTextureY());
 	}
 	
 	@Override

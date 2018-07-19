@@ -31,7 +31,7 @@ public class EntityLevel extends DynamicTileLevel<EntityTile> {
 	public void spawnPlayer(PlayerEntity entity) {
 		addTile(entity);
 		
-		entity.setXY(0, 0);
+		entity.setCollisionMinXY(0, 0);
 	}
 
 }

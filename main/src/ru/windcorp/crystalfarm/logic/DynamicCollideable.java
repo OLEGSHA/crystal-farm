@@ -19,6 +19,28 @@ package ru.windcorp.crystalfarm.logic;
 
 public interface DynamicCollideable extends Collideable {
 
-	void setXY(double x, double y);
+	void setCollisionMinXY(double x, double y);
+	
+	default void pushOutside(Collideable obstacle) {
+		if (obstacle.collides(this)) {
+			double dX = getCollisionCenterX() - obstacle.getCollisionCenterX();
+			double dY = getCollisionCenterY() - obstacle.getCollisionCenterY();
+			double k = obstacle.getCollisionHeight() / obstacle.getCollisionWidth();
+			
+			if (dY > k*dX) {
+				if (dY > -k*dX) {
+					setCollisionMinXY(getCollisionMinX(), obstacle.getCollisionMaxY());
+				} else {
+					setCollisionMinXY(obstacle.getCollisionMinX() - getCollisionWidth(), getCollisionMinY());
+				}
+			} else {
+				if (dY > -k*dX) {
+					setCollisionMinXY(obstacle.getCollisionMaxX(), getCollisionMinY());
+				} else {
+					setCollisionMinXY(getCollisionMinX(), obstacle.getCollisionMinY() - getCollisionHeight());
+				}
+			}
+		}
+	}
 	
 }

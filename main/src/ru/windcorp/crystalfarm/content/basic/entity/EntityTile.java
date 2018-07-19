@@ -22,12 +22,12 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.client.View;
-import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.DynamicCollideable;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
+import ru.windcorp.crystalfarm.logic.Units;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
@@ -43,6 +43,7 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	public EntityTile(Mod mod, String id) {
 		super(mod, id);
 		setTickable(true);
+		setCanCollide(true);
 	}
 	
 	public EntityTile(Mod mod, String id, int... textureData) {
@@ -63,28 +64,8 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	}
 
 	@Override
-	public double getMinX() {
-		return getX() + 0.5 - getWidth()/2;
-	}
-
-	@Override
-	public double getMinY() {
-		return getY() + 0.5 - getHeight()/2;
-	}
-	
-	@Override
-	public double getWidth() {
-		return getSize();
-	}
-	
-	@Override
-	public double getHeight() {
-		return getSize();
-	}
-
-	@Override
-	protected void renderImpl(View view, int x, int y) {
-		getTexture().render(x, y);
+	protected void renderImpl(View view) {
+		getTexture().render(getTextureX(), getTextureY());
 	}
 	
 	@Override
@@ -141,12 +122,15 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	}
 
 	@Override
-	public synchronized void setXY(double x, double y) {
-		setPosition(x - 0.5 + getWidth()/2, y - 0.5 + getHeight()/2);
+	public synchronized void setCollisionMinXY(double x, double y) {
+		setXY(
+				x + getCollisionWidth() / 2,
+				y + getCollisionHeight() / 2
+				);
 	}
 	
 	public synchronized void move(double x, double y) {
-		setPosition(x, y);
+		setXY(x, y);
 		
 		Island island = getIsland();
 		if (island != null) {

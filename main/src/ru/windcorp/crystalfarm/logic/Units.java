@@ -15,17 +15,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.content.basic;
+package ru.windcorp.crystalfarm.logic;
 
 public class Units {
 	
 	private Units() {}
 	
+	public static final int PX_PER_TILE = 64;
+	
 	public static final double METERS = 1;
 	public static final int MILLISECONDS = 1;
-	public static final double KILOGRAM = 1;
+	public static final double KILOGRAMS = 1;
 	
 	public static final int SECONDS = 1000 * MILLISECONDS;
+	public static final int MINUTES = 60 * SECONDS;
+	public static final int HOURS = 60 * SECONDS;
 	
 	public static final double METERS_PER_SECOND = METERS / SECONDS;
 	public static final double METERS_PER_SECOND_SQUARED = METERS_PER_SECOND / SECONDS;

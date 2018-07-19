@@ -18,11 +18,11 @@
 package ru.windcorp.crystalfarm.content.basic.test;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.FullGridTile;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
+import ru.windcorp.crystalfarm.logic.Units;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.translation.TString;
 

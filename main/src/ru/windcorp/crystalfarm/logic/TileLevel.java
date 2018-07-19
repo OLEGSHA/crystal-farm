@@ -178,7 +178,7 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	@Override
 	public void pushOutside(DynamicCollideable col) {
 		for (Collideable c : getCollideables()) {
-			c.pushOutside(col);
+			col.pushOutside(c);
 		}
 	}
 	

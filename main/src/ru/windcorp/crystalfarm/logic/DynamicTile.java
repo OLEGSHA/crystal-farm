@@ -30,8 +30,6 @@ public abstract class DynamicTile extends Tile {
 	
 	private int dynId;
 	private long statId;
-	
-	private double x, y;
 
 	public DynamicTile(Mod mod, String id) {
 		super(mod, id);
@@ -48,18 +46,10 @@ public abstract class DynamicTile extends Tile {
 	public void setStatId(long statId) {
 		this.statId = statId;
 	}
-
-	public synchronized double getX() {
-		return x;
-	}
-
-	public synchronized double getY() {
-		return y;
-	}
 	
-	protected synchronized void setPosition(double x, double y) {
-		this.x = x;
-		this.y = y;
+	@Override
+	protected synchronized void setXY(double x, double y) {
+		super.setXY(x, y);
 		setChangeBit(CHANGE_BIT_POSITION);
 	}
 
@@ -74,8 +64,7 @@ public abstract class DynamicTile extends Tile {
 		super.read(input, change);
 		
 		if (getChangeBit(change, CHANGE_BIT_POSITION)) {
-			x = input.readDouble();
-			y = input.readDouble();
+			setXY(input.readDouble(), input.readDouble());
 		}
 	}
 	
@@ -92,16 +81,6 @@ public abstract class DynamicTile extends Tile {
 	@Override
 	protected DynamicTile clone() {
 		return (DynamicTile) super.clone();
-	}
-	
-	@Override
-	public double getViewX() {
-		return (getX() + getSize()/2)*GameManager.TEXTURE_SIZE;
-	}
-	
-	@Override
-	public double getViewY() {
-		return (getY() + getSize()/2)*GameManager.TEXTURE_SIZE;
 	}
 
 }
