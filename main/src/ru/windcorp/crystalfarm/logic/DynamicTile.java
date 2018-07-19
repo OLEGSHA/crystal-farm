@@ -22,7 +22,6 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public abstract class DynamicTile extends Tile {
@@ -34,8 +33,8 @@ public abstract class DynamicTile extends Tile {
 	
 	private double x, y;
 
-	public DynamicTile(Mod mod, String id, TString name) {
-		super(mod, id, name);
+	public DynamicTile(Mod mod, String id) {
+		super(mod, id);
 	}
 
 	public int getDynId() {

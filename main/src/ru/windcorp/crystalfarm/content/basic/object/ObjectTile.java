@@ -22,18 +22,17 @@ import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.Collideable;
 import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.translation.TString;
 
 public abstract class ObjectTile extends GridTile implements Collideable {
 	
 	private ComplexTexture texture;
 	
-	public ObjectTile(Mod mod, String id, TString name) {
-		super(mod, id, name);
+	public ObjectTile(Mod mod, String id) {
+		super(mod, id);
 	}
 
-	public ObjectTile(Mod mod, String id, TString name, int... textureData) {
-		this(mod, id, name);
+	public ObjectTile(Mod mod, String id, int... textureData) {
+		this(mod, id);
 		setTexture(getTextureForTile(this, textureData));
 	}
 
@@ -73,6 +72,11 @@ public abstract class ObjectTile extends GridTile implements Collideable {
 	@Override
 	public ObjectLevel getLevel() {
 		return (ObjectLevel) super.getLevel();
+	}
+	
+	@Override
+	protected String getPrefix() {
+		return super.getPrefix() + "object.";
 	}
 	
 	@Override

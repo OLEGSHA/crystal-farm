@@ -20,14 +20,17 @@ package ru.windcorp.crystalfarm.content.basic.ground;
 import ru.windcorp.crystalfarm.logic.Collideable;
 import ru.windcorp.crystalfarm.logic.FullGridTile;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.translation.TString;
 
 public abstract class GroundTile extends FullGridTile implements Collideable {
 	
 	private boolean canCollide = false;
 
-	public GroundTile(Mod mod, String id, TString name, int... textureData) {
-		super(mod, id, name, textureData);
+	public GroundTile(Mod mod, String id, int... textureData) {
+		super(mod, id, textureData);
+	}
+	
+	public GroundTile(Mod mod, String id) {
+		super(mod, id);
 	}
 
 	@Override
@@ -55,6 +58,11 @@ public abstract class GroundTile extends FullGridTile implements Collideable {
 	@Override
 	public GroundLevel getLevel() {
 		return (GroundLevel) super.getLevel();
+	}
+	
+	@Override
+	protected String getPrefix() {
+		return super.getPrefix() + "ground.";
 	}
 
 }

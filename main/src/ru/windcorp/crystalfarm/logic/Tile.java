@@ -26,6 +26,7 @@ import java.lang.ref.WeakReference;
 
 import ru.windcorp.crystalfarm.client.ModuleClient;
 import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
@@ -40,17 +41,20 @@ public abstract class Tile extends Updateable implements ViewTarget {
 	
 	private final Mod mod;
 	private final String id;
-	private final TString name;
+	private TString name = null;
 	
 	private WeakReference<TileLevel<?>> level = null;
 	private int nid;
 	
 	private boolean isTickable;
 
-	public Tile(Mod mod, String id, TString name) {
+	public Tile(Mod mod, String id) {
 		this.mod = mod;
 		this.id = mod.getName() + ":" + id;
-		this.name = name;
+	}
+	
+	protected Tile(Mod mod, String id, String prefix) {
+		this(mod, id);
 	}
 	
 	protected void setLevel(TileLevel<?> level) {
@@ -122,8 +126,35 @@ public abstract class Tile extends Updateable implements ViewTarget {
 		return id.substring(getMod().getName().length() + 1);
 	}
 
+	protected String getPrefix() {
+		return "";
+	}
+	
+	public String getResourceId() {
+		return "tile." + getMod().getName() + "." + getPrefix() + getRawId();
+	}
+	
 	public TString getName() {
 		return name;
+	}
+	
+	public Tile setName(TString name) {
+		this.name = name;
+		return this;
+	}
+	
+	public Tile setName(String name) {
+		if (name == null) {
+			setName(TString.translated(getResourceId() + ".name"));
+		} else {
+			setName(TString.translated(getResourceId() + ".name." + name));
+		}
+		
+		return this;
+	}
+	
+	public Tile setDefaultName() {
+		return setName((String) null);
 	}
 	
 	public boolean isTickable() {
@@ -132,6 +163,10 @@ public abstract class Tile extends Updateable implements ViewTarget {
 
 	public void setTickable(boolean isTickable) {
 		this.isTickable = isTickable;
+	}
+	
+	public double getSize() {
+		return 1 * Units.METERS;
 	}
 
 	@Override
@@ -170,11 +205,7 @@ public abstract class Tile extends Updateable implements ViewTarget {
 	}
 	
 	protected static ComplexTexture getTextureForTile(Tile tile, int... textureData) {
-		return ComplexTexture.get("tile/" + tile.getMod().getName() + "/" + tile.getRawId(), TEXTURE_SIZE, textureData);
-	}
-	
-	public double getSize() {
-		return 1;
+		return ComplexTexture.get(tile.getResourceId().replace('.', '/'), TEXTURE_SIZE, textureData);
 	}
 
 }

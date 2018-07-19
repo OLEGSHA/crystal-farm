@@ -30,7 +30,6 @@ import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public abstract class EntityTile extends DynamicTile implements DynamicCollideable {
@@ -41,13 +40,13 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	
 	private double velocityX = 0, velocityY = 0;
 
-	public EntityTile(Mod mod, String id, TString name) {
-		super(mod, id, name);
+	public EntityTile(Mod mod, String id) {
+		super(mod, id);
 		setTickable(true);
 	}
 	
-	public EntityTile(Mod mod, String id, TString name, int... textureData) {
-		this(mod, id, name);
+	public EntityTile(Mod mod, String id, int... textureData) {
+		this(mod, id);
 		setTexture(getTextureForTile(this, textureData));
 	}
 	
@@ -119,6 +118,16 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	}
 	
 	@Override
+	public EntityLevel getLevel() {
+		return (EntityLevel) super.getLevel();
+	}
+	
+	@Override
+	protected String getPrefix() {
+		return super.getPrefix() + "entity.";
+	}
+	
+	@Override
 	protected EntityTile clone() {
 		EntityTile clone = (EntityTile) super.clone();
 		clone.texture = clone.texture.clone();
@@ -128,7 +137,7 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	}
 	
 	public double getDeceleration() {
-		return 50 * Units.METERS_PER_SECOND_SQUARED;
+		return 40 * Units.METERS_PER_SECOND_SQUARED;
 	}
 
 	@Override

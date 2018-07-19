@@ -31,9 +31,11 @@ public class TestTile extends FullGridTile {
 	private static final TString NAME = TString.wrap("Test Tile Name");
 
 	public TestTile() {
-		super(InbuiltMod.INST, "testTile", NAME,
+		super(InbuiltMod.INST, "testTile",
 				4, 400 * Units.MILLISECONDS,
 				3, 300 * Units.MILLISECONDS);
+		
+		setName(NAME);
 	}
 	
 	@Override

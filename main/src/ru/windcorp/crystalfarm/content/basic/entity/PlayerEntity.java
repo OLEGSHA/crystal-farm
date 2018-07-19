@@ -27,7 +27,6 @@ import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
 import ru.windcorp.crystalfarm.logic.server.PlayerProfile;
 import ru.windcorp.crystalfarm.logic.server.World;
-import ru.windcorp.crystalfarm.translation.TString;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public class PlayerEntity extends EntityTile {
@@ -45,7 +44,8 @@ public class PlayerEntity extends EntityTile {
 	private int walkControlsY = 0;
 
 	public PlayerEntity() {
-		super(InbuiltMod.INST, "Player", TString.translated("tile.entity.player.name"), 1, 1 * Units.SECONDS);
+		super(InbuiltMod.INST, "Player", null);
+		setDefaultName();
 	}
 	
 	public PlayerProfile getProfile() {

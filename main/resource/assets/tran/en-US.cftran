@@ -3,7 +3,7 @@ welcome = I can now speak English just as they speak it in the US!
 
 # Tiles
 	# Entities
-		tiles.entity.player.name = Player
+		tile.Inbuilt.entity.Player.name = Player
 
 # Menus
 	# Generic

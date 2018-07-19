@@ -20,16 +20,19 @@ package ru.windcorp.crystalfarm.logic;
 import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.translation.TString;
 
 public abstract class FullGridTile extends Tile {
 	
 	private ComplexTexture texture;
 	private int x, y;
 
-	public FullGridTile(Mod mod, String id, TString name, int... textureData) {
-		super(mod, id, name);
+	public FullGridTile(Mod mod, String id, int... textureData) {
+		super(mod, id);
 		this.setTexture(getTextureForTile(this, textureData));
+	}
+	
+	public FullGridTile(Mod mod, String id) {
+		super(mod, id);
 	}
 	
 	synchronized void adopt(FullGridTileLevel<?> level, int x, int y) {

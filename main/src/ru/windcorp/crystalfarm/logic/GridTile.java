@@ -18,14 +18,13 @@
 package ru.windcorp.crystalfarm.logic;
 
 import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.translation.TString;
 
 public abstract class GridTile extends Tile {
 	
 	private int x, y;
 
-	public GridTile(Mod mod, String id, TString name) {
-		super(mod, id, name);
+	public GridTile(Mod mod, String id) {
+		super(mod, id);
 	}
 	
 	synchronized void adopt(GridTileLevel<?> level, int x, int y) {

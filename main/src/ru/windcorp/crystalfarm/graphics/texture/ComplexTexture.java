@@ -17,18 +17,30 @@
  */
 package ru.windcorp.crystalfarm.graphics.texture;
 
+import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.graphics.Color;
 import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.util.Direction;
 
 public class ComplexTexture extends TiledTexture {
 	
+	private static final int[] STATIC_DATA = new int[] { 1, 1 * Units.SECONDS };
+	
 	private final int[] data;
 	private long start = 0;
 
 	protected ComplexTexture(TexturePrimitive texture, int tileSize, int[] data) {
 		super(texture, tileSize);
-		this.data = data;
+		
+		if ((data.length & 1) != 0) {
+			throw new IllegalArgumentException("Data for ComplexTexture " + texture.getName() + " has odd length");
+		}
+		
+		if (data == null || data.length == 0) {
+			this.data = STATIC_DATA;
+		} else {
+			this.data = data;
+		}
 	}
 	
 	public static ComplexTexture get(String name, int tileSize, int... data) {

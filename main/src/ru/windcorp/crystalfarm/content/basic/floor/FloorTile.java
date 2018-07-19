@@ -21,18 +21,17 @@ import ru.windcorp.crystalfarm.client.View;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.translation.TString;
 
 public abstract class FloorTile extends GridTile {
 	
 	private ComplexTexture texture;
 	
-	public FloorTile(Mod mod, String id, TString name) {
-		super(mod, id, name);
+	public FloorTile(Mod mod, String id) {
+		super(mod, id);
 	}
 
-	public FloorTile(Mod mod, String id, TString name, int... textureData) {
-		this(mod, id, name);
+	public FloorTile(Mod mod, String id, int... textureData) {
+		this(mod, id);
 		setTexture(getTextureForTile(this, textureData));
 	}
 
@@ -52,6 +51,11 @@ public abstract class FloorTile extends GridTile {
 	@Override
 	public FloorLevel getLevel() {
 		return (FloorLevel) super.getLevel();
+	}
+	
+	@Override
+	protected String getPrefix() {
+		return super.getPrefix() + "floor.";
 	}
 	
 	@Override
