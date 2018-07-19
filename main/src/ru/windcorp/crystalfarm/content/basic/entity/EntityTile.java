@@ -64,12 +64,22 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 
 	@Override
 	public double getMinX() {
-		return getX() + getSize()/2;
+		return getX() + 0.5 - getWidth()/2;
 	}
 
 	@Override
 	public double getMinY() {
-		return getY() + getSize()/2;
+		return getY() + 0.5 - getHeight()/2;
+	}
+	
+	@Override
+	public double getWidth() {
+		return getSize();
+	}
+	
+	@Override
+	public double getHeight() {
+		return getSize();
 	}
 
 	@Override
@@ -117,12 +127,12 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	}
 	
 	public double getDeceleration() {
-		return 0.01;
+		return 0.00002;
 	}
 
 	@Override
 	public synchronized void setXY(double x, double y) {
-		setPosition(x, y);
+		setPosition(x - 0.5 + getWidth()/2, y - 0.5 + getHeight()/2);
 	}
 	
 	public synchronized void move(double x, double y) {

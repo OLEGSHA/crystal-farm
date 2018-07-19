@@ -20,8 +20,6 @@ package ru.windcorp.crystalfarm.content.basic.test;
 import java.util.function.Consumer;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.logic.DynamicTile;
-import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
 import ru.windcorp.crystalfarm.logic.FullGridTileLevel;
 import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.logic.GridTileLevel;
@@ -37,7 +35,6 @@ public class TestLevelProvider extends IslandLevelProvider {
 	@Override
 	public void provideLevels(Consumer<Level> output, String name, int size) {
 		output.accept(new FullGridTileLevel<TestTile>(InbuiltMod.INST, "TestLevel", TestTile.class, size));
-		output.accept(new DynamicTileLevel<DynamicTile>(InbuiltMod.INST, "TestDynLevel", DynamicTile.class, 10));
 		output.accept(new GridTileLevel<GridTile>(InbuiltMod.INST, "TreeLevel", GridTile.class, size));
 	}
 

@@ -36,7 +36,7 @@ public class PlayerEntity extends EntityTile {
 	private String login;
 
 	private static final double SQRT_2_HALVED = Math.sqrt(2) / 2;
-	private static final double BASIC_PLAYER_SPEED = 0.003;
+	private static final double BASIC_PLAYER_SPEED = 0.005;
 	
 	private double walkSpeed = 1;
 	private int walkControlsX = 0;

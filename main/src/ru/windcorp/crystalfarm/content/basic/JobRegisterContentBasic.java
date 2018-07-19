@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.content.basic;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.content.basic.controls.PlayerMoveControl;
 import ru.windcorp.crystalfarm.content.basic.entity.EntityTile;
 import ru.windcorp.crystalfarm.content.basic.entity.PlayerEntity;
 import ru.windcorp.crystalfarm.content.basic.floor.*;
@@ -25,7 +26,6 @@ import ru.windcorp.crystalfarm.content.basic.ground.*;
 import ru.windcorp.crystalfarm.content.basic.object.*;
 import ru.windcorp.crystalfarm.content.basic.test.*;
 import ru.windcorp.crystalfarm.logic.BiomeRegistry;
-import ru.windcorp.crystalfarm.logic.DynamicTile;
 import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.logic.IslandFactory;
 import ru.windcorp.crystalfarm.logic.TileRegistries;
@@ -61,12 +61,12 @@ public class JobRegisterContentBasic extends ModuleJob {
 				new UnpauseAction(),
 				new OpenPauseMenuAction(),
 				
-//				new TestCharControl("Up",		"UP",		 0,		-0.003),
-//				new TestCharControl("Down", 	"DOWN",		 0,		+0.003),
-//				new TestCharControl("Left", 	"LEFT",		-0.003,		 0),
-//				new TestCharControl("Right", 	"RIGHT",	+0.003,		 0),
-				
 				new TestBadaboomControl(),
+				
+				new PlayerMoveControl(PlayerMoveControl.NORTH),
+				new PlayerMoveControl(PlayerMoveControl.EAST),
+				new PlayerMoveControl(PlayerMoveControl.SOUTH),
+				new PlayerMoveControl(PlayerMoveControl.WEST),
 				
 				new TestCameraMoveControl("Up",		  0, -40, "PRESS UP"),
 				new TestCameraMoveControl("Down",	  0, +40, "PRESS DOWN"),
@@ -80,10 +80,6 @@ public class JobRegisterContentBasic extends ModuleJob {
 		TileRegistry<TestTile> testLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "TestLevel", TestTile.class);
 		testLevelRegistry.register(new TestTile());
 		TileRegistries.register(testLevelRegistry);
-		
-		TileRegistry<DynamicTile> testDynLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "TestDynLevel", DynamicTile.class);
-		testDynLevelRegistry.register(new TestCharTile());
-		TileRegistries.register(testDynLevelRegistry);
 		
 		TileRegistry<GridTile> treeLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "TreeLevel", GridTile.class);
 		treeLevelRegistry.register(new TestTreeTile());

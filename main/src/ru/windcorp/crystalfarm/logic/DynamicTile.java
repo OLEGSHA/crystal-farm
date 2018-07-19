@@ -97,12 +97,12 @@ public abstract class DynamicTile extends Tile {
 	
 	@Override
 	public double getViewX() {
-		return (getX() - getSize()/2)*GameManager.TEXTURE_SIZE;
+		return (getX() + getSize()/2)*GameManager.TEXTURE_SIZE;
 	}
 	
 	@Override
 	public double getViewY() {
-		return (getY() - getSize()/2)*GameManager.TEXTURE_SIZE;
+		return (getY() + getSize()/2)*GameManager.TEXTURE_SIZE;
 	}
 
 }

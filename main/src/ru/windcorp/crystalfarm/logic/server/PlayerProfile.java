@@ -33,8 +33,8 @@ public class PlayerProfile {
 	private String login;
 	private final WeakReference<World> world;
 	
-	private long statId;
-	private String island;
+	private long statId = -1;
+	private String island = "";
 	
 	private PlayerEntity entity;
 	

@@ -21,10 +21,10 @@ import java.io.DataInput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
-import ru.windcorp.crystalfarm.logic.DynamicTile;
-import ru.windcorp.crystalfarm.logic.DynamicTileLevel;
+import ru.windcorp.crystalfarm.content.basic.entity.PlayerEntity;
 import ru.windcorp.crystalfarm.logic.action.ControlAction;
 import ru.windcorp.crystalfarm.logic.server.Agent;
+import ru.windcorp.crystalfarm.logic.server.PlayerAgent;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public class TestBadaboomControl extends ControlAction {
@@ -35,13 +35,10 @@ public class TestBadaboomControl extends ControlAction {
 
 	@Override
 	public void run(Agent agent, DataInput input) throws IOException, SyntaxException {
-		TestCharTile tile = getChar(agent);
-		tile.setSpeedY(0.01);
-	}
-	
-	@SuppressWarnings("unchecked")
-	private TestCharTile getChar(Agent agent) {
-		return (TestCharTile) ((DynamicTileLevel<DynamicTile>) agent.getIsland().getLevel("Inbuilt:TestDynLevel")).getTileByStatId(0);
+		if (agent instanceof PlayerAgent) {
+			PlayerEntity player = ((PlayerAgent) agent).getProfile().getEntity();
+			player.setVelocityY(player.getVelocityY() + 1);
+		}
 	}
 
 }

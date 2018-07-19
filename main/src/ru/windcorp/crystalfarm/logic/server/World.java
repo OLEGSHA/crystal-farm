@@ -129,9 +129,9 @@ public class World {
 		}
 		
 		PlayerEntity entity = new PlayerEntity();
-		profile.setEntity(entity);
-		
 		island.getLevel("Inbuilt:EntityLevel", EntityLevel.class).spawnPlayer(entity);
+
+		profile.setEntity(entity);
 	}
 	
 	public long getTime() {
@@ -258,6 +258,7 @@ public class World {
 			output.writeInt(getPlayerProfiles().size());
 			
 			for (PlayerProfile profile : getPlayerProfiles().values()) {
+				output.writeUTF(profile.getLogin());
 				profile.write(output);
 			}
 		}
