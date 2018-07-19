@@ -69,17 +69,21 @@ public class GraphicsInterface {
 	private static int firstStickyLayer = 0;
 	
 	private static final Collection<WindowResizeListener> LISTENERS_WINDOW_RESIZE = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
+	
+	@SuppressWarnings("unchecked")
 	static Stream<WindowResizeListener> getWindowResizeListeners() {
 		return Stream.concat(
-				LAYERS.stream().filter(layer -> layer instanceof WindowResizeListener),
+				(Stream<? extends WindowResizeListener>) LAYERS.stream().filter(layer -> layer instanceof WindowResizeListener),
 				LISTENERS_WINDOW_RESIZE.stream());
 	}
 	
 	private static final Collection<InputListener> LISTENERS_INPUT = Collections.synchronizedCollection(new CopyOnWriteArrayList<>());
+	
+	@SuppressWarnings("unchecked")
 	static Stream<InputListener> getInputListeners() {
 		return Stream.concat(
 				LISTENERS_INPUT.stream(),
-				LAYERS_REVERSE.stream().filter(layer -> layer instanceof InputListener));
+				(Stream<? extends InputListener>) LAYERS_REVERSE.stream().filter(layer -> layer instanceof InputListener));
 	}
 	
 	private static int cursorX = 0, cursorY = 0;
