@@ -22,6 +22,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.DynamicCollideable;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
@@ -97,14 +98,14 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 		setVelocityX(
 				getVelocityX() - absMin(
 						getVelocityX(),
-						length * Math.copySign(getVelocityX(), getDeceleration())
+						length * Math.copySign(getDeceleration(), getVelocityX())
 						)
 				);
 		
 		setVelocityY(
 				getVelocityY() - absMin(
 						getVelocityY(),
-						length * Math.copySign(getVelocityY(), getDeceleration())
+						length * Math.copySign(getDeceleration(), getVelocityY())
 						)
 				);
 	}
@@ -127,7 +128,7 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	}
 	
 	public double getDeceleration() {
-		return 0.00002;
+		return 50 * Units.METERS_PER_SECOND_SQUARED;
 	}
 
 	@Override

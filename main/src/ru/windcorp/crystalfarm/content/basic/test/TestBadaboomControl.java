@@ -37,7 +37,7 @@ public class TestBadaboomControl extends ControlAction {
 	public void run(Agent agent, DataInput input) throws IOException, SyntaxException {
 		if (agent instanceof PlayerAgent) {
 			PlayerEntity player = ((PlayerAgent) agent).getProfile().getEntity();
-			player.setVelocityY(player.getVelocityY() + 1);
+			player.setVelocityY(player.getVelocityY() + 0.01);
 		}
 	}
 

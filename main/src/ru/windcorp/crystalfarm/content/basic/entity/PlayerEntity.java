@@ -22,6 +22,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
 import ru.windcorp.crystalfarm.logic.server.PlayerProfile;
@@ -36,14 +37,15 @@ public class PlayerEntity extends EntityTile {
 	private String login;
 
 	private static final double SQRT_2_HALVED = Math.sqrt(2) / 2;
-	private static final double BASIC_PLAYER_SPEED = 0.005;
+	private static final double BASIC_PLAYER_SPEED = 5 * Units.METERS_PER_SECOND;
+	private static final double PLAYER_ACCELERATION = 80 * Units.METERS_PER_SECOND_SQUARED;
 	
 	private double walkSpeed = 1;
 	private int walkControlsX = 0;
 	private int walkControlsY = 0;
 
 	public PlayerEntity() {
-		super(InbuiltMod.INST, "Player", TString.translated("tile.entity.player.name"), 1, 1000);
+		super(InbuiltMod.INST, "Player", TString.translated("tile.entity.player.name"), 1, 1 * Units.SECONDS);
 	}
 	
 	public PlayerProfile getProfile() {
@@ -85,23 +87,44 @@ public class PlayerEntity extends EntityTile {
 
 	@Override
 	public synchronized void tick(World world, Island island, Level level, long length, long time) {
-		double walkX, walkY;
+		double walkSpeedModX, walkSpeedModY;
+		double walkMaxSpeed = BASIC_PLAYER_SPEED * walkSpeed;
+		double vX = getVelocityX(), vY = getVelocityY();
 		
 		if (walkControlsY == 0) {
-			walkX = walkControlsX;
-			walkY = 0;
+			walkSpeedModX = walkControlsX;
+			walkSpeedModY = 0;
 		} else {
 			if (walkControlsX == 0) {
-				walkX = 0;
-				walkY = walkControlsY;
+				walkSpeedModX = 0;
+				walkSpeedModY = walkControlsY;
 			} else {
-				walkX = SQRT_2_HALVED * walkControlsX;
-				walkY = SQRT_2_HALVED * walkControlsY;
+				walkSpeedModX = SQRT_2_HALVED * walkControlsX;
+				walkSpeedModY = SQRT_2_HALVED * walkControlsY;
 			}
 		}
 		
-		setVelocityX(absMax(BASIC_PLAYER_SPEED * walkX * walkSpeed, getVelocityX()));
-		setVelocityY(absMax(BASIC_PLAYER_SPEED * walkY * walkSpeed, getVelocityY()));
+		walkSpeedModX *= walkSpeed * PLAYER_ACCELERATION * length;
+		walkSpeedModY *= walkSpeed * PLAYER_ACCELERATION * length;
+		
+		if (Math.abs(vX + walkSpeedModX) > walkMaxSpeed) {
+			if (Math.abs(vX) > walkMaxSpeed) {
+				walkSpeedModX = 0;
+			} else {
+				walkSpeedModX = Math.copySign(walkMaxSpeed, vX) - vX;
+			}
+		}
+		
+		if (Math.abs(vY + walkSpeedModY) > walkMaxSpeed) {
+			if (Math.abs(vY) > walkMaxSpeed) {
+				walkSpeedModY = 0;
+			} else {
+				walkSpeedModY = Math.copySign(walkMaxSpeed, vY) - vY;
+			}
+		}
+		
+		setVelocityX(vX + walkSpeedModX);
+		setVelocityY(vY + walkSpeedModY);
 		
 		super.tick(world, island, level, length, time);
 	}

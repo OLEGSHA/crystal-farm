@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.content.basic.test;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.FullGridTile;
 import ru.windcorp.crystalfarm.logic.Island;
@@ -30,7 +31,9 @@ public class TestTile extends FullGridTile {
 	private static final TString NAME = TString.wrap("Test Tile Name");
 
 	public TestTile() {
-		super(InbuiltMod.INST, "testTile", NAME, 4, 400, 3, 300);
+		super(InbuiltMod.INST, "testTile", NAME,
+				4, 400 * Units.MILLISECONDS,
+				3, 300 * Units.MILLISECONDS);
 	}
 	
 	@Override
@@ -46,7 +49,7 @@ public class TestTile extends FullGridTile {
 	
 	@Override
 	public void tick(World world, Island island, Level level, long length, long time) {
-		getTexture().setState(time % 10000 > 5000 ? 0 : 1);
+		getTexture().setState(time % (10 * Units.SECONDS) > (5 * Units.SECONDS) ? 0 : 1);
 	}
 
 }

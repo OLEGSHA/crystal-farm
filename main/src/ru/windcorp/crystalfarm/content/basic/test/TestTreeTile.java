@@ -19,6 +19,7 @@ package ru.windcorp.crystalfarm.content.basic.test;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.content.basic.Units;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.Collideable;
 import ru.windcorp.crystalfarm.logic.GridTile;
@@ -30,7 +31,7 @@ public class TestTreeTile extends GridTile implements Collideable {
 
 	public TestTreeTile() {
 		super(InbuiltMod.INST, "testTreeTile", TString.wrap("Test Tree Tile Name"));
-		this.texture = getTextureForTile(this, 1, 1000);
+		this.texture = getTextureForTile(this, 1, 1 * Units.SECONDS);
 	}
 
 	@Override
