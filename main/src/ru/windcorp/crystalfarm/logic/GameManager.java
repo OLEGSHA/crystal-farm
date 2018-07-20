@@ -46,6 +46,14 @@ public class GameManager {
 	public static Proxy getLocalClient() {
 		return localClient;
 	}
+	
+	public static boolean isServer() {
+		return localServer != null;
+	}
+	
+	public static boolean isClient() {
+		return localClient != null;
+	}
 
 	public static boolean generateNewWorld(Resource resource) {
 		Log.topic("Worldgen");

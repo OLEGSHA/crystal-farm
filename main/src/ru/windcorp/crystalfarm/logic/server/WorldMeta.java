@@ -23,16 +23,21 @@ import java.io.IOException;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
 import ru.windcorp.crystalfarm.logic.Data;
+import ru.windcorp.crystalfarm.logic.Units;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
 public class WorldMeta extends Data {
 
 	private String displayName	= null;
 	private long time			= 0;
-	private long tickLength		= 1000 / 20;
+	private long tickLength		= Units.SECONDS / getDefaultTps();
 	
 	public WorldMeta() {
 		super(InbuiltMod.INST, "IslandMeta");
+	}
+
+	private static int getDefaultTps() {
+		return 20;
 	}
 
 	@Override

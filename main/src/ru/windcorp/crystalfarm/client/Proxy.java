@@ -37,6 +37,8 @@ public abstract class Proxy {
 	private final View view = new View(0, 0, 1);
 	private Island island;
 	
+	private long tickLength = 0;
+	
 	private PipedInputStream buffer;
 	private final DataInput loopbackInput;
 	private final DataOutput loopbackOutput;
@@ -93,6 +95,14 @@ public abstract class Proxy {
 	
 	public <T> void runLocally(Action<T> action, T param) {
 		runLocally(null, action, param);
+	}
+	
+	public void setTickLength(long tickLength) {
+		this.tickLength = tickLength;
+	}
+	
+	public long getTickLength() {
+		return tickLength;
 	}
 	
 }

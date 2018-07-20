@@ -22,9 +22,11 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import ru.windcorp.crystalfarm.client.View;
+import ru.windcorp.crystalfarm.graphics.GraphicsInterface;
 import ru.windcorp.crystalfarm.graphics.texture.ComplexTexture;
 import ru.windcorp.crystalfarm.logic.DynamicCollideable;
 import ru.windcorp.crystalfarm.logic.DynamicTile;
+import ru.windcorp.crystalfarm.logic.GameManager;
 import ru.windcorp.crystalfarm.logic.Island;
 import ru.windcorp.crystalfarm.logic.Level;
 import ru.windcorp.crystalfarm.logic.Units;
@@ -39,6 +41,9 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	private ComplexTexture texture;
 	
 	private double velocityX = 0, velocityY = 0;
+	
+	private double lastX, lastY;
+	private double lastMove = 0;
 
 	public EntityTile(Mod mod, String id) {
 		super(mod, id);
@@ -62,6 +67,30 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	public void setTexture(ComplexTexture texture) {
 		this.texture = texture;
 	}
+	
+	@Override
+	public double getViewX() {
+		double coeff = (GraphicsInterface.time() - lastMove) / GameManager.getLocalClient().getTickLength();
+		return (lastX * (1 - coeff) + getX() * coeff) * Units.PX_PER_TILE;
+	}
+	
+	@Override
+	public double getViewY() {
+		double coeff = (GraphicsInterface.time() - lastMove) / GameManager.getLocalClient().getTickLength();
+		return (lastY * (1 - coeff) + getY() * coeff) * Units.PX_PER_TILE;
+	}
+	
+	@Override
+	protected int getTextureX() {
+		double coeff = (GraphicsInterface.time() - lastMove) / GameManager.getLocalClient().getTickLength();
+		return (int) Math.round((lastX * (1 - coeff) + getX() * coeff - getTextureSize() / 2) * Units.PX_PER_TILE);
+	}
+	
+	@Override
+	protected int getTextureY() {
+		double coeff = (GraphicsInterface.time() - lastMove) / GameManager.getLocalClient().getTickLength();
+		return (int) Math.round((lastY * (1 - coeff) + getY() * coeff - getTextureSize() / 2) * Units.PX_PER_TILE);
+	}
 
 	@Override
 	protected void renderImpl(View view) {
@@ -70,6 +99,12 @@ public abstract class EntityTile extends DynamicTile implements DynamicCollideab
 	
 	@Override
 	public synchronized void tick(World world, Island island, Level level, long length, long time) {
+		lastX = getX();
+		lastY = getY();
+		if (GameManager.isClient()) {
+			lastMove = GraphicsInterface.time();
+		}
+		
 		move(
 				getX() + getVelocityX() * length,
 				getY() + getVelocityY() * length

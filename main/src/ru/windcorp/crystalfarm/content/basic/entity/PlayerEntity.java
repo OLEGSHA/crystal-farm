@@ -111,7 +111,7 @@ public class PlayerEntity extends EntityTile {
 			if (Math.abs(vX) > walkMaxSpeed) {
 				walkSpeedModX = 0;
 			} else {
-				walkSpeedModX = Math.copySign(walkMaxSpeed, vX) - vX;
+				walkSpeedModX = Math.copySign(Math.copySign(walkMaxSpeed, vX) - vX, walkSpeedModX);
 			}
 		}
 		
@@ -119,7 +119,7 @@ public class PlayerEntity extends EntityTile {
 			if (Math.abs(vY) > walkMaxSpeed) {
 				walkSpeedModY = 0;
 			} else {
-				walkSpeedModY = Math.copySign(walkMaxSpeed, vY) - vY;
+				walkSpeedModY = Math.copySign(Math.copySign(walkMaxSpeed, vY) - vY, walkSpeedModY);
 			}
 		}
 		

@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.windcorp.crystalfarm.logic.GameManager;
-import ru.windcorp.crystalfarm.logic.Ticker;
 import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 
@@ -108,6 +107,7 @@ public class Server {
 	
 	public void addAgent(Agent agent) {
 		agent.setServer(this);
+		agent.setTickLength(getWorld().getMeta().getTickLength());
 		
 		agent.setIsland(getWorld().getIslands().iterator().next());
 		getAgents().add(agent);

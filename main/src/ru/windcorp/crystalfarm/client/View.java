@@ -89,10 +89,10 @@ public class View {
 		if (!ModuleClient.DEBUG_OPTIMIZED_RENDER.get()) glScaled(scale, scale, 0);
 		glTranslated(-x, -y, 0);
 		
-		minX = (int) floor(x - GraphicsInterface.getWindowWidth()/2/scale);
-		maxX = (int) ceil(x + GraphicsInterface.getWindowWidth()/2/scale);
-		minY = (int) floor(y - GraphicsInterface.getWindowHeight()/2/scale);
-		maxY = (int) ceil(y + GraphicsInterface.getWindowHeight()/2/scale);
+		minX = (int) floor(x - GraphicsInterface.getWindowWidth()/2/scale - 0.5);
+		maxX = (int) ceil(x + GraphicsInterface.getWindowWidth()/2/scale - 0.5);
+		minY = (int) floor(y - GraphicsInterface.getWindowHeight()/2/scale - 0.5);
+		maxY = (int) ceil(y + GraphicsInterface.getWindowHeight()/2/scale - 0.5);
 		
 		GraphicsInterface.checkOpenGLErrors();
 	}

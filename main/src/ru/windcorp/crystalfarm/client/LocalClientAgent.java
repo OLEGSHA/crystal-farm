@@ -82,5 +82,15 @@ public class LocalClientAgent extends PlayerAgent {
 			proxy.getView().setTarget(profile.getEntity());
 		}
 	}
+	
+	@Override
+	public void setTickLength(long tickLength) {
+		super.setTickLength(tickLength);
+		
+		Proxy proxy = getProxy();
+		if (proxy != null) {
+			proxy.setTickLength(tickLength);
+		}
+	}
 
 }

@@ -15,14 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic;
+package ru.windcorp.crystalfarm.logic.server;
 
 import java.lang.ref.WeakReference;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import ru.windcorp.crystalfarm.logic.server.World;
-import ru.windcorp.crystalfarm.logic.server.WorldMeta;
+import ru.windcorp.crystalfarm.logic.GameManager;
+import ru.windcorp.crystalfarm.logic.Island;
+import ru.windcorp.crystalfarm.logic.Level;
 
 public class Ticker extends TimerTask {
 

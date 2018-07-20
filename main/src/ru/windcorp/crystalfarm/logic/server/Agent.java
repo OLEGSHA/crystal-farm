@@ -45,6 +45,10 @@ public abstract class Agent {
 		this.island = island;
 	}
 	
+	public void setTickLength(long tickLength) {
+		// To be overridden
+	}
+	
 	public void onServerShutdown() {
 		// To be overridden
 	}
