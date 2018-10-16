@@ -25,6 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.crystalfarm.struct.mod.Mod;
+import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.debug.er.ExecutionReport;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
@@ -55,8 +56,10 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	@Override
 	public void read(CountingDataInput input) throws IOException, SyntaxException {
 		int tileMapSize = input.readInt();
-		if (tileMapSize <= 0) {
-			throw new SyntaxException("Tile map size is non-positive (0x" + Integer.toHexString(tileMapSize) + ")");
+		if (tileMapSize < 0) {
+			throw new SyntaxException("Tile map size is negative (0x" + Integer.toHexString(tileMapSize) + ")");
+		} else if (tileMapSize == 0) {
+			Log.warn("Level " + getName() + " has zero-length tilemap. Either you are a developer or everything is broken");
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -127,7 +130,16 @@ public abstract class TileLevel<T extends Tile> extends Level {
 	}
 	
 	protected void writeTile(CountingDataOutput output, T tile) throws IOException {
-		output.writeInt(tile.getNid());
+		T template = getTileRegistry().get(tile.getId());
+		if (template == null) {
+			Log.error("Tile %s with ID %s has not been registered in tile registry %s",
+					tile.toString(),
+					tile.getId(),
+					getTileRegistry().getName());
+			template = getTileRegistry().getFallbackTile();
+		}
+		
+		output.writeInt(template.getNid());
 		output.pushCounter();
 		tile.writeAll(output);
 		output.writeInt((int) output.popCounter());

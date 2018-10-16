@@ -2,6 +2,12 @@
 welcome = I can now speak English just as they speak it in the US!
 
 # Tiles
+	# Ground
+		tile.Inbuilt.ground.DeepWater.name = Deep Waters
+		tile.Inbuilt.ground.ShallowWater.name = Shallows
+		tile.Inbuilt.ground.SandBeach.name = Sand Beach
+		tile.Inbuilt.ground.GravelBeach.name = Gravel Beach
+		tile.Inbuilt.ground.ShortGrass.name = Grass
 	# Entities
 		tile.Inbuilt.entity.Player.name = Player
 

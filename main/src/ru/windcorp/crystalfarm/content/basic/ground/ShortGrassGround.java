@@ -15,17 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic;
+package ru.windcorp.crystalfarm.content.basic.ground;
 
-import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.struct.mod.ModNameable;
+import ru.windcorp.crystalfarm.InbuiltMod;
 
-public abstract class BiomeProcessor extends ModNameable {
+public class ShortGrassGround extends GroundTile {
 
-	public BiomeProcessor(Mod mod, String name) {
-		super(mod, name);
+	public ShortGrassGround() {
+		super(InbuiltMod.INST, "ShortGrass", null);
+		setDefaultName();
 	}
 
-	public abstract void process(Island island, Biome biome, long seed);
-	
 }

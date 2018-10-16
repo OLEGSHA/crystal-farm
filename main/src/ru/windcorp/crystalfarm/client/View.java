@@ -27,7 +27,7 @@ import ru.windcorp.crystalfarm.logic.ViewTarget;
 public class View {
 	
 	public static final double MAX_SCALE = 4;
-	public static final double MIN_SCALE = 1.0/2;
+	public static final double MIN_SCALE = 1.0/200;
 	
 	private double scale;
 

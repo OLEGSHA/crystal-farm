@@ -34,7 +34,7 @@ public class TestGenerator extends BiomeProcessor {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void process(Island island, Biome biome) {
+	public void process(Island island, Biome biome, long seed) {
 		FullGridTileLevel<TestTile> testLevel = island.getLevel("Inbuilt:TestLevel", FullGridTileLevel.class);
 		for (int x = 0; x < testLevel.getSize(); ++x) {
 			for (int y = 0; y < testLevel.getSize(); ++y) {

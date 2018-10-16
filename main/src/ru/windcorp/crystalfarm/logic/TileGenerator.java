@@ -17,15 +17,9 @@
  */
 package ru.windcorp.crystalfarm.logic;
 
-import ru.windcorp.crystalfarm.struct.mod.Mod;
-import ru.windcorp.crystalfarm.struct.mod.ModNameable;
-
-public abstract class BiomeProcessor extends ModNameable {
-
-	public BiomeProcessor(Mod mod, String name) {
-		super(mod, name);
-	}
-
-	public abstract void process(Island island, Biome biome, long seed);
+@FunctionalInterface
+public interface TileGenerator<T extends Tile> {
+	
+	T generate(double x, double y, double z);
 	
 }

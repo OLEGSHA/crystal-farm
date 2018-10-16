@@ -18,6 +18,7 @@
 package ru.windcorp.crystalfarm.content.basic;
 
 import ru.windcorp.crystalfarm.InbuiltMod;
+import ru.windcorp.crystalfarm.content.basic.biomes.TemperateForestBiome;
 import ru.windcorp.crystalfarm.content.basic.controls.PlayerMoveControl;
 import ru.windcorp.crystalfarm.content.basic.entity.EntityTile;
 import ru.windcorp.crystalfarm.content.basic.entity.PlayerEntity;
@@ -26,7 +27,6 @@ import ru.windcorp.crystalfarm.content.basic.ground.*;
 import ru.windcorp.crystalfarm.content.basic.object.*;
 import ru.windcorp.crystalfarm.content.basic.test.*;
 import ru.windcorp.crystalfarm.logic.BiomeRegistry;
-import ru.windcorp.crystalfarm.logic.GridTile;
 import ru.windcorp.crystalfarm.logic.IslandFactory;
 import ru.windcorp.crystalfarm.logic.TileRegistries;
 import ru.windcorp.crystalfarm.logic.TileRegistry;
@@ -42,8 +42,7 @@ public class JobRegisterContentBasic extends ModuleJob {
 
 	@Override
 	protected void runImpl() {
-		TileRegistry<GroundTile> groundLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "GroundLevel", GroundTile.class);
-		TileRegistries.register(groundLevelRegistry);
+		registerGroundLevel();
 		
 		TileRegistry<FloorTile> floorLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "FloorLevel", FloorTile.class);
 		TileRegistries.register(floorLevelRegistry);
@@ -76,19 +75,19 @@ public class JobRegisterContentBasic extends ModuleJob {
 				new TestCameraZoomControl("In",    1.25, "PRESS EQUAL"),
 				new TestCameraZoomControl("Out", 1/1.25, "PRESS MINUS")
 				);
-		
-		TileRegistry<TestTile> testLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "TestLevel", TestTile.class);
-		testLevelRegistry.register(new TestTile());
-		TileRegistries.register(testLevelRegistry);
-		
-		TileRegistry<GridTile> treeLevelRegistry = new TileRegistry<>(InbuiltMod.INST, "TreeLevel", GridTile.class);
-		treeLevelRegistry.register(new TestTreeTile());
-		TileRegistries.register(treeLevelRegistry);
-		
-		IslandFactory.registerIslandLevelProvider(new TestLevelProvider());
-		BiomeRegistry.register(new TestBiome());
 
 		IslandFactory.registerIslandLevelProvider(new BasicLevelProvider());
+		BiomeRegistry.register(new TemperateForestBiome());
+	}
+
+	private void registerGroundLevel() {
+		TileRegistry<GroundTile> reg = new TileRegistry<>(InbuiltMod.INST, "GroundLevel", GroundTile.class);
+		TileRegistries.register(reg);
+		
+		reg.register(new DeepWaterGround());
+		reg.register(new ShallowWaterGround());
+		reg.register(new ShortGrassGround());
+		reg.register(new SandBeachGround());
 	}
 
 	private void registerEntityLevel() {

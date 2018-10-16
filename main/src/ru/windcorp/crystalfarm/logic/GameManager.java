@@ -54,15 +54,19 @@ public class GameManager {
 	public static boolean isClient() {
 		return localClient != null;
 	}
+	
+	public static long getRandomSeed() {
+		return System.currentTimeMillis() ^ System.nanoTime();
+	}
 
-	public static boolean generateNewWorld(Resource resource) {
+	public static boolean generateNewWorld(Resource resource, long seed) {
 		Log.topic("Worldgen");
 		
 		try {
 			Log.info("Generating island Test");
 			Island island = IslandFactory.createIsland("TestIsland", 100);
 			island.getMeta().setDisplayName("Test Island");
-			BiomeRegistry.get("Inbuilt:TestBiome").generate(island);
+			BiomeRegistry.get("Inbuilt:TemperateForest").generate(island, seed);
 			
 			Log.info("Saving world");
 			World world = WorldFactory.createWorld(resource);

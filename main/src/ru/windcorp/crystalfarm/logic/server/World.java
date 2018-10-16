@@ -37,6 +37,7 @@ import ru.windcorp.crystalfarm.logic.IslandFactory;
 import ru.windcorp.crystalfarm.logic.exception.UnknownVersionException;
 import ru.windcorp.crystalfarm.logic.exception.UnknownWorldDataException;
 import ru.windcorp.crystalfarm.logic.exception.WrongMagicValueException;
+import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.grh.Resource;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
@@ -130,6 +131,8 @@ public class World {
 		
 		PlayerEntity entity = new PlayerEntity();
 		island.getLevel("Inbuilt:EntityLevel", EntityLevel.class).spawnPlayer(entity);
+		
+		entity.move(island.getSize() / 2, island.getSize() / 2);
 
 		profile.setEntity(entity);
 	}
@@ -236,44 +239,85 @@ public class World {
 	}
 	
 	public void write(OutputStream os) throws IOException {
-		CountingDataOutput output = new CountingDataOutput(os);
+		Log.topic("Write World");
+		Log.debug("Started writing world");
 		
-		output.writeLong(MAGIC_VALUE);
-		output.writeByte(VERSION_EARTH_PONY);
-		getMeta().writeAll(output);
-		
-		synchronized (getData()) {
-			output.writeInt(getData().size());
+		try {
+			CountingDataOutput output = new CountingDataOutput(os);
 			
-			for (Data data : getData().values()) {
-				output.writeUTF(data.getName());
-				
-				output.pushCounter();
-				data.writeAll(output);
-				output.writeInt((int) output.popCounter());
+			Log.topic("Header & Meta");
+			Log.debug("Writing header and meta");
+			try {
+				output.writeLong(MAGIC_VALUE);
+				output.writeByte(VERSION_EARTH_PONY);
+				getMeta().writeAll(output);
+			} finally {
+				Log.end("Header & Meta");
 			}
-		}
-		
-		synchronized (getPlayerProfiles()) {
-			output.writeInt(getPlayerProfiles().size());
 			
-			for (PlayerProfile profile : getPlayerProfiles().values()) {
-				output.writeUTF(profile.getLogin());
-				profile.write(output);
+			Log.topic("Data");
+			Log.debug("Writing data");
+			try {
+				synchronized (getData()) {
+					output.writeInt(getData().size());
+					
+					for (Data data : getData().values()) {
+						output.writeUTF(data.getName());
+						
+						output.pushCounter();
+						data.writeAll(output);
+						output.writeInt((int) output.popCounter());
+					}
+				}
+			} finally {
+				Log.end("Data");
 			}
-		}
-		
-		synchronized (getIslands()) {
-			output.writeInt(getIslands().size());
 			
-			for (Island island : getIslands()) {
-				output.writeUTF(island.getName());
-				output.writeInt(island.getSize());
-				
-				output.pushCounter();
-				island.write(output);
-				output.writeInt((int) output.popCounter());
+			Log.topic("Profiles");
+			Log.debug("Writing player profiles");
+			
+			try {
+				synchronized (getPlayerProfiles()) {
+					output.writeInt(getPlayerProfiles().size());
+					
+					for (PlayerProfile profile : getPlayerProfiles().values()) {
+						output.writeUTF(profile.getLogin());
+						profile.write(output);
+					}
+				}
+			} finally {
+				Log.end("Profiles");
 			}
+			
+			Log.topic("Islands");
+			Log.debug("Writing islands");
+			
+			try {
+				synchronized (getIslands()) {
+					output.writeInt(getIslands().size());
+					
+					for (Island island : getIslands()) {
+						Log.topic(island.getName());
+						Log.debug("Writing island " + island.getName());
+						try {
+							output.writeUTF(island.getName());
+							output.writeInt(island.getSize());
+							
+							output.pushCounter();
+							island.write(output);
+							output.writeInt((int) output.popCounter());
+						} finally {
+							Log.end(island.getName());
+						}
+					}
+				}
+			} finally {
+				Log.end("Islands");
+			}
+			
+			Log.debug("Writing world done");
+		} finally {
+			Log.end("Write World");
 		}
 	}
 

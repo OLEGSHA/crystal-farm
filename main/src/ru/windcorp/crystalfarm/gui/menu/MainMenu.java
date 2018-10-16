@@ -68,7 +68,8 @@ public class MainMenu extends GuiLayer {
 								TString.translated("TMP_gen").toFont(),
 								button -> {
 									if (GameManager.generateNewWorld(
-											CrystalFarmResourceManagers.RM_FILE_WD.getResource("testWorld.earthpony.cfsave"))) return;
+											CrystalFarmResourceManagers.RM_FILE_WD.getResource("testWorld.earthpony.cfsave"),
+											GameManager.getRandomSeed())) return;
 									Notifier.positive(TString.translated("TMP_gen.success"));
 								}
 						));

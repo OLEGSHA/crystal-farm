@@ -83,6 +83,7 @@ public class TileRegistry<T extends Tile> extends ModNameable {
 			for (T tile : getTiles()) {
 				tile.setNid(nid);
 				result[nid] = tile.getId();
+				nid++;
 			}
 			
 			return result;

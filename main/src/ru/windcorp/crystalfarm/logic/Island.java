@@ -27,6 +27,7 @@ import ru.windcorp.crystalfarm.logic.exception.UnknownIslandDataException;
 import ru.windcorp.crystalfarm.logic.exception.UnknownLevelException;
 import ru.windcorp.crystalfarm.logic.server.World;
 import ru.windcorp.tge2.util.Nameable;
+import ru.windcorp.tge2.util.debug.Log;
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 import ru.windcorp.tge2.util.stream.CountingDataInput;
 import ru.windcorp.tge2.util.stream.CountingDataOutput;
@@ -173,24 +174,48 @@ public class Island extends Nameable {
 	}
 	
 	public void write(CountingDataOutput output) throws IOException {
-		getMeta().writeAll(output);
-		
-		output.writeInt(getData().length);
-		for (Data data : getData()) {
-			output.writeUTF(data.getName());
-			
-			output.pushCounter();
-			data.writeAll(output);
-			output.writeInt((int) output.popCounter());
+		Log.topic("Meta");
+		Log.debug("Writing metadata");
+		try {
+			getMeta().writeAll(output);
+		} finally {
+			Log.end("Meta");
 		}
 		
-		output.writeInt(getLevels().length);
-		for (Level level : getLevels()) {
-			output.writeUTF(level.getName());
-			
-			output.pushCounter();
-			level.write(output);
-			output.writeInt((int) output.popCounter());
+		Log.topic("Data");
+		Log.debug("Writing data");
+		try {
+			output.writeInt(getData().length);
+			for (Data data : getData()) {
+				output.writeUTF(data.getName());
+				
+				output.pushCounter();
+				data.writeAll(output);
+				output.writeInt((int) output.popCounter());
+			}
+		} finally {
+			Log.end("Data");
+		}
+		
+		Log.topic("Levels");
+		Log.debug("Writing levels");
+		try {
+			output.writeInt(getLevels().length);
+			for (Level level : getLevels()) {
+				Log.topic(level.getName());
+				Log.debug("Writing level " + level.getName());
+				try {
+					output.writeUTF(level.getName());
+					
+					output.pushCounter();
+					level.write(output);
+					output.writeInt((int) output.popCounter());
+				} finally {
+					Log.end(level.getName());
+				}
+			}
+		} finally {
+			Log.end("Levels");
 		}
 	}
 	

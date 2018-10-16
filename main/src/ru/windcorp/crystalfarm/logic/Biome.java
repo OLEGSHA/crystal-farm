@@ -44,11 +44,11 @@ public class Biome extends ModNameable {
 		getProcessors().add(e);
 	}
 
-	public void generate(Island island) {
+	public void generate(Island island, long seed) {
 		island.getMeta().setBiome(this);
 		getProcessors().forEach(processor -> {
 			try {
-				processor.process(island, this);
+				processor.process(island, this, seed);
 			} catch (Exception e) {
 				ExecutionReport.reportError(e, null,
 						"Biome processor %s for biome %s failed to execute", processor, this);

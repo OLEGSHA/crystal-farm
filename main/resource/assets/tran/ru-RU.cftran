@@ -2,6 +2,12 @@
 welcome = Теперь я могу говорить по-русски ну прям как в России!
 
 # Плитки
+	# Земля
+		tile.Inbuilt.ground.DeepWater.name = Глубоководье
+		tile.Inbuilt.ground.ShallowWater.name = Мелководье
+		tile.Inbuilt.ground.SandBeach.name = Песчаный пляж
+		tile.Inbuilt.ground.GravelBeach.name = Галичный пляж
+		tile.Inbuilt.ground.ShortGrass.name = Трава
 	# Существа
 		tile.Inbuilt.entity.Player.name = Игрок
 
