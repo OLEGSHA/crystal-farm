@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
@@ -623,6 +625,54 @@ public class StringUtil {
 		}
 		
 		return string;
+	}
+	
+	@SafeVarargs
+	public static Collection<String> allCombinations(Iterable<String>... parts) {
+		StringBuilder sb = new StringBuilder();
+		Collection<String> result = new ArrayList<>();
+		buildCombinations(sb, result, parts, 0);
+		return result;
+	}
+
+	private static void buildCombinations(StringBuilder sb, Collection<String> result, Iterable<String>[] parts,
+			int index) {
+		if (index >= parts.length) {
+			result.add(sb.toString());
+		} else {
+			int startLength = sb.length();
+			for (String part : parts[index]) {
+				sb.append(part);
+				buildCombinations(sb, result, parts, index + 1);
+				sb.setLength(startLength);
+			}
+		}
+	}
+	
+	@SafeVarargs
+	public static String[] allCombinations(String[]... parts) {
+		StringBuilder sb = new StringBuilder();
+		
+		int length = 1;
+		for (String[] array : parts) length *= array.length;
+		String[] result = new String[length];
+		
+		buildCombinations(sb, result, new int[] {0}, parts, 0);
+		return result;
+	}
+
+	private static void buildCombinations(StringBuilder sb, String[] result, int[] resultIndex, String[][] parts,
+			int index) {
+		if (index >= parts.length) {
+			result[resultIndex[0]++] = sb.toString();
+		} else {
+			int startLength = sb.length();
+			for (String part : parts[index]) {
+				sb.append(part);
+				buildCombinations(sb, result, resultIndex, parts, index + 1);
+				sb.setLength(startLength);
+			}
+		}
 	}
 	
 }
