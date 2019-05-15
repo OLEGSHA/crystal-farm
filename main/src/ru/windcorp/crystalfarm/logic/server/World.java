@@ -17,6 +17,8 @@
  */
 package ru.windcorp.crystalfarm.logic.server;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -327,12 +329,17 @@ public class World {
 	
 	public void load() throws IOException, SyntaxException {
 		getResource().checkRead(problem -> { throw new IOException(problem); });
-		read(getResource().getInputStream());
+		BufferedInputStream bis = new BufferedInputStream(getResource().getInputStream());
+		read(bis);
+		bis.close();
 	}
 	
 	public void save() throws IOException {
 		getResource().checkWrite(problem -> { throw new IOException(problem); });
-		write(getResource().getOutputStream());
+		BufferedOutputStream bos = new BufferedOutputStream(getResource().getOutputStream());
+		write(bos);
+		bos.flush();
+		bos.close();
 	}
 
 }

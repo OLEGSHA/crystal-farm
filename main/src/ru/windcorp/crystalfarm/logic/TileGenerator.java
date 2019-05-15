@@ -22,4 +22,13 @@ public interface TileGenerator<T extends Tile> {
 	
 	T generate(double x, double y, double z);
 	
+	default void setSeed(long seed) {
+		// do nothing
+	}
+	
+	default void unsetSeed() {
+		// do nothing
+	}
+	
+	
 }

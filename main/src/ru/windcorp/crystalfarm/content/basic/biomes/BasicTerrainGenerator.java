@@ -96,19 +96,25 @@ public class BasicTerrainGenerator extends BiomeProcessor {
 		double z;
 		double size = island.getSize();
 		
-		for (int x = 0; x < level.getSize(); ++x) {
-			for (int y = 0; y < level.getSize(); ++y) {
-				z = getZ(
-						noise,
-						x,
-						y,
-						frequency,
-						noiseAmplitude,
-						scale,
-						amplitude,
-						size);
-				level.setTile(tiles.get(z).generate(x, y, z), x, y);
+		try {
+			tiles.getElements().forEach(generator -> generator.setSeed(seed));
+			
+			for (int x = 0; x < level.getSize(); ++x) {
+				for (int y = 0; y < level.getSize(); ++y) {
+					z = getZ(
+							noise,
+							x,
+							y,
+							frequency,
+							noiseAmplitude,
+							scale,
+							amplitude,
+							size);
+					level.setTile(tiles.get(z).generate(x, y, z), x, y);
+				}
 			}
+		} finally {
+			tiles.getElements().forEach(generator -> generator.unsetSeed());
 		}
 	}
 

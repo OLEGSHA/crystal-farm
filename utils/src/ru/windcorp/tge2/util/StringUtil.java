@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.function.IntFunction;
 
 import ru.windcorp.tge2.util.exceptions.SyntaxException;
 
@@ -238,6 +239,71 @@ public class StringUtil {
 	
 	public static String iteratorToString(Iterator<?> iterator) {
 		return iteratorToString(iterator, "; ");
+	}
+	
+	public static <T> String supplierToString(IntFunction<T> supplier,
+			int length,
+			String separator,
+			String empty,
+			String nullPlaceholder,
+			String nullSupplier) {
+		
+		if (separator == null) {
+			throw new IllegalArgumentException(new NullPointerException());
+		}
+		
+		if (supplier == null) {
+			return nullSupplier;
+		}
+		
+		if (length == 0) {
+			return empty;
+		}
+		
+		T element = supplier.apply(0);
+		
+		if (length < 0) {
+			if (element == null) {
+				return empty;
+			}
+			
+			StringBuilder sb = new StringBuilder(element.toString());
+			
+			int i = 0;
+			while ((element = supplier.apply(i++)) != null) {
+				sb.append(separator);
+				sb.append(element);
+			}
+			
+			return sb.toString();
+		} else {
+			StringBuilder sb = new StringBuilder(element == null ? nullPlaceholder : element.toString());
+			
+			for (int i = 1; i < length; ++i) {
+				sb.append(separator);
+				element = supplier.apply(i);
+				sb.append(element == null ? nullPlaceholder : element.toString());
+			}
+			
+			return sb.toString();
+		}
+		
+	}
+	
+	public static String supplierToString(IntFunction<?> supplier, int length, String separator) {
+		return supplierToString(supplier, length, separator, "[empty]", "[null]", "[null supplier]");
+	}
+	
+	public static String supplierToString(IntFunction<?> supplier, String separator) {
+		return supplierToString(supplier, -1, separator, "[empty]", "[null]", "[null supplier]");
+	}
+	
+	public static String supplierToString(IntFunction<?> supplier, int length) {
+		return supplierToString(supplier, length, "; ");
+	}
+	
+	public static String supplierToString(IntFunction<?> supplier) {
+		return supplierToString(supplier, -1, "; ");
 	}
 	
 	public static byte[] toJavaByteArray(String str) {
