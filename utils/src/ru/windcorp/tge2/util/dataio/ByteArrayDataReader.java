@@ -34,5 +34,14 @@ public class ByteArrayDataReader extends AbstractByteDataReader {
 	public boolean hasMore() {
 		return index < array.length;
 	}
+	
+	@Override
+	public void skip(long bytes) throws IOException {
+		if (index + bytes > Integer.MAX_VALUE) {
+			index = Integer.MAX_VALUE;
+		} else {
+			index += bytes;
+		}
+	}
 
 }

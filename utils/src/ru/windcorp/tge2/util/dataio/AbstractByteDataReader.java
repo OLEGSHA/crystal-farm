@@ -89,5 +89,17 @@ public abstract class AbstractByteDataReader extends AbstractDataReader {
 	public String readString() throws IOException {
 		return new String(readArray(), DataIOUtils.UTF_8);
 	}
+	
+	@Override
+	public boolean supportsSkip() {
+		return true;
+	}
+	
+	@Override
+	public void skip(long bytes) throws IOException {
+		for (long i = 0; i < bytes; ++i) {
+			readByte();
+		}
+	}
 
 }

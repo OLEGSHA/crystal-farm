@@ -8,7 +8,8 @@ public class ArrayIterator<E> implements Iterator<E> {
 	private final E[] array;
 	private int next;
 	
-	public ArrayIterator(E[] array) {
+	@SafeVarargs
+	public ArrayIterator(E... array) {
 		this.array = array;
 	}
 

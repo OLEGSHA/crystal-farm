@@ -13,7 +13,7 @@ public abstract class UnixArgument<T> implements Comparable<UnixArgument<?>> {
 	public static final int ARGUMENTS_ALL = 2;
 	
 	public static final Collection<Class<?>> ALLOWED_ARGUMENT_TYPES = Arrays.asList(
-			String.class, String[].class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Character.class);
+			String.class, String[].class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Character.class, Boolean.class);
 	
 	private final String name;
 	private final Character letter;
@@ -154,7 +154,7 @@ public abstract class UnixArgument<T> implements Comparable<UnixArgument<?>> {
 				list.add(input.next());
 			}
 			
-			// Since Class<T> is String[].class then T is String[], then run(T) expects String[] as argument.
+			// Since Class<T> is String[].class then T is String[], then run(T) expects String[] as argument -- this is safe
 			return run((T) list.toArray(new String[0]));
 		}
 		
@@ -215,6 +215,14 @@ public abstract class UnixArgument<T> implements Comparable<UnixArgument<?>> {
 			}
 			
 			return (T) (Character) input.charAt(0);
+		} else if (getArgumentType() == Boolean.class) {
+			if (input.equalsIgnoreCase("true")) {
+				return (T) Boolean.TRUE;
+			} else if (input.equalsIgnoreCase("false")) {
+				return (T) Boolean.FALSE;
+			} else {
+				throw new UnixArgumentInvalidSyntaxException("Could not parse " + input + " as a boolean value (\"true\" or \"false\" expected)", this);
+			}
 		} else {
 			return null;
 		}

@@ -39,5 +39,10 @@ public class InputStreamDataReader extends AbstractByteDataReader implements Clo
 	public void close() throws IOException {
 		getInputStream().close();
 	}
+	
+	@Override
+	public void skip(long bytes) throws IOException {
+		getInputStream().skip(bytes);
+	}
 
 }

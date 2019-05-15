@@ -186,7 +186,7 @@ public abstract class Tile extends Updateable implements ViewTarget, Collideable
 			if (canCollide()) {
 				level.getCollideables().add(this);
 			} else {
-				level.getCollideables().remove(null);
+				level.getCollideables().remove(this);
 			}
 		}
 	}

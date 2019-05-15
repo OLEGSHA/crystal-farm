@@ -74,7 +74,7 @@ public class World {
 	}
 	
 	public void addData(Collection<Data> data) {
-		data.forEach(datum -> getData().put(datum.getName(), datum));
+		data.forEach(datum -> getData().put(datum.getId(), datum));
 	}
 	
 	public Collection<Island> getIslands() {
@@ -264,7 +264,7 @@ public class World {
 					output.writeInt(getData().size());
 					
 					for (Data data : getData().values()) {
-						output.writeUTF(data.getName());
+						output.writeUTF(data.getId());
 						
 						output.pushCounter();
 						data.writeAll(output);

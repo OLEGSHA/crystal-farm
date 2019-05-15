@@ -15,14 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic;
+package ru.windcorp.crystalfarm.content.basic.items;
 
-import ru.windcorp.crystalfarm.struct.mod.Mod;
+public class IllegalStackOperationException extends RuntimeException {
 
-public abstract class Data extends UpdateableModID {
+	private static final long serialVersionUID = 3251740644599550712L;
 	
-	public Data(Mod mod, String name) {
-		super(mod, name);
+	private final ItemStack itemStack;
+	private final Item item;
+	
+	public IllegalStackOperationException(String message, ItemStack itemStack, Item item) {
+		super(message);
+		this.itemStack = itemStack;
+		this.item = item;
+	}
+
+	public ItemStack getItemStack() {
+		return itemStack;
+	}
+
+	public Item getItem() {
+		return item;
 	}
 
 }

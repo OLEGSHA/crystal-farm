@@ -66,6 +66,7 @@ public class Lang {
 										SAFE_CHARS,
 										UNSAFE_CHARS
 										));
+						lang.getMap().put(parts[0], parts[1]);
 					}
 				}
 			}

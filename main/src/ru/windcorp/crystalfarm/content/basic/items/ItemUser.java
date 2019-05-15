@@ -15,14 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package ru.windcorp.crystalfarm.logic;
+package ru.windcorp.crystalfarm.content.basic.items;
 
-import ru.windcorp.crystalfarm.struct.mod.Mod;
-
-public abstract class Data extends UpdateableModID {
-	
-	public Data(Mod mod, String name) {
-		super(mod, name);
-	}
+public interface ItemUser {
 
 }

@@ -97,7 +97,7 @@ public class Island extends Nameable {
 	
 	public Data getData(String name) {
 		for (int i = 0; i < data.length; ++i) {
-			if (data[i].getName().equals(name)) {
+			if (data[i].getId().equals(name)) {
 				return data[i];
 			}
 		}
@@ -187,7 +187,7 @@ public class Island extends Nameable {
 		try {
 			output.writeInt(getData().length);
 			for (Data data : getData()) {
-				output.writeUTF(data.getName());
+				output.writeUTF(data.getId());
 				
 				output.pushCounter();
 				data.writeAll(output);
