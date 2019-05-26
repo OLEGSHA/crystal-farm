@@ -243,6 +243,31 @@ public class StringUtil {
 		return iteratorToString(iterator, "; ");
 	}
 	
+	public static String iterableToString(Iterable<?> iterable,
+			String separator,
+			String empty,
+			String nullPlaceholder,
+			String nullIterable) {
+		
+		if (separator == null) {
+			throw new IllegalArgumentException(new NullPointerException());
+		}
+		
+		if (iterable == null) {
+			return nullIterable;
+		}
+		
+		return iteratorToString(iterable.iterator(), separator, empty, nullPlaceholder, nullIterable);
+	}
+	
+	public static String iterableToString(Iterable<?> iterable, String separator) {
+		return iterableToString(iterable, separator, "[empty]", "[null]", "[null iterable]");
+	}
+	
+	public static String iterableToString(Iterable<?> iterable) {
+		return iterableToString(iterable, "; ");
+	}
+	
 	public static <T> String supplierToString(IntFunction<T> supplier,
 			int length,
 			String separator,
